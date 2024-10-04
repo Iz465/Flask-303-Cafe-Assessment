@@ -1,0 +1,35 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 style="margin-bottom: 100px; text-align: center;"> Employment </h1>
+
+{% for employee in range(1,11) %}
+<div class = "employeeCard">
+  <div class = "employeeTextCard">
+    <div class ="text kanit-thin">
+      <p class="kanit-regular" style="text-align: center; font-size: 28px;">temp: name</p>
+      <p class="kanit-regular" style="text-align: center;">Income: temp</p>
+      <p>temp: employee Description</p>
+      <div class = "employButton">
+        <button onclick="openPopup()">Apply</button>
+      </div>
+    </div>
+  </div>
+  <img class = "employImage" src="{{employee.image_url}}"></img>
+</div>
+
+
+{% endfor %}
+
+<div class = "popup" id="popup">
+  <button class = "closeBtn" onclick="closePopup()">&times;</button>
+  <h5 style="padding: 20px;">Enter your details to apply</h5>
+  <label>Name:</label> <input/> <br/> <br/>
+  <label>Address:</label> <input/> <br/> <br/>
+  <label>Age:</label> <input/> <br/> <br/>
+  <button>Apply</button>
+</div>
+
+
+{% endblock %}

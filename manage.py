@@ -43,7 +43,7 @@ def rewards():
         return redirect(url_for('welcome-index'))
 
     # show the form, it wasn't submitted
-    return render_template('welcome-index.html')
+    return render_template('rewards-index.html')
 @app.route('/employ')
 def employ():
     if request.method == 'POST':
@@ -54,7 +54,7 @@ def employ():
         return redirect(url_for('welcome-index'))
 
     # show the form, it wasn't submitted
-    return render_template('welcome-index.html')
+    return render_template('employ-index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
