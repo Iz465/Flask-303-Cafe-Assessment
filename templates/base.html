@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cafe </title>
+    
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
+    
+    <link href="{{ url_for('static', filename='popup.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='footer.css') }}" rel = "stylesheet">
+    <link href ="{{ url_for('static', filename='employ.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='fontstyles.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='mainpage.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='carousel.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='popup.js') }}"></script> 
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script> 
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    
+
+
+
+
+  </head>
+  <body>
+<div style="height: 5vh;"></div>
+    <h1 class="kanit-thin" style="text-align: center; padding: 10px;">Cafe</h1>
+<div class="page-container">
+      <div class = "navigation kanit-thin">
+        <a href="{{ url_for('home') }}">Cafe</a>
+        <a href="{{ url_for('menu') }}">Menu</a>
+        <a href="{{ url_for('rewards') }}">Rewards</a>
+        <a href="{{ url_for('employ') }}">Employment</a>
+      </div>
+   
+
+  
+
+   
+    {% block content %}
+    {% endblock %}
+    <div style="height: 400px;">
+    </div>
+    <div style="height: 10vh;">
+    <div class ="footer inconsolata">
+      <div style="align-self: center;">
+        <div class = "flex-class"> <img src="{{ url_for('static', filename='images/phone.svg') }}"> <p>1111111</p> </div>
+        <div class = "flex-class"> <img src="{{ url_for('static', filename='images/location.svg') }}"> <p>Auckland</p> </div>
+        <div class = "flex-class"> <img src="{{ url_for('static', filename='images/email.svg') }}"> <p>Cafe@Gmail.com</p> </div>
+        <div class = "flex-class"> <img src="{{ url_for('static', filename='images/available.svg') }}"> <p>Mon-Fri, 7Am - 4pm</p> </div>
+      
+      </div>
+      <div style="align-self: center;">
+        <div class = "flex-class"> <img src="{{ url_for('static', filename='images/available.svg') }}"> <p>1900</p> </div>
+        <div class = "flex-class"> <img src="{{ url_for('static', filename='images/available.svg') }}"> <p>Cafe Newsletter</p> </div>
+        <p></p>
+      </div>
+      <div style="align-self: center; display: flex; flex-direction: column;">
+      <img src = "{{ url_for('static', filename='images/instagram.svg') }}">
+      <img src = "{{ url_for('static', filename='images/facebook.svg') }}">
+      <img src = "{{ url_for('static', filename='images/twitter.svg') }}">
+      <img src = "{{ url_for('static', filename='images/youtube.svg') }}">
+    </div>
+    </div>
+  </div>
+
+  </body>
+</html>

@@ -1,0 +1,43 @@
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  
+
+ 
+}
+
+p {
+  margin: 0;
+}
+
+
+.page-container {
+  position: relative;
+  min-height: 100%;
+
+}
+
+
+
+.content {
+  padding-bottom: 100px;
+}
+
+
+.navigation {
+  display: flex;
+  justify-content: space-around;
+  font-size: 25px;
+  /*background-color: rgba(184,216,190,1); */
+}
+
+.navigation, a {
+  color: black;
+}
+
+
+
+
+

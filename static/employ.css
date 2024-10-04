@@ -1,0 +1,45 @@
+
+
+.employImage {
+  height: 50vh;
+  width: auto;
+}
+
+.employeeCard {
+  display: flex;
+  justify-content: space-around;  
+}
+
+.employeeTextCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 80vh;
+  background-color: beige;
+  border-radius: 15px; 
+  border-color: rgb(146, 102, 190);
+  border-width: 5px;
+  border-style: solid;
+  
+
+}
+
+
+
+.employButton  {
+  text-align: center;
+}
+
+.employButton button {
+  background: none;
+  border: none;
+}
+
+.text {
+  height: 80%;
+}
+
+.employeeCard p {
+  padding-left: 50px;
+  padding-right: 50px;
+}

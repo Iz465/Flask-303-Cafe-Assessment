@@ -1,0 +1,38 @@
+
+.popup {
+  display: none;
+  position: fixed;
+  background-color:beige;
+  top: 20%;
+  left: 40%;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 10px 10px 10px rgba(0,0, 0,0.5)
+  
+}
+
+.popup p, .popup h3 {
+  text-align: center;
+}
+
+.popup label {
+  display: flex;
+}
+
+
+
+.popupBackground {
+  display: none;
+  background-color: rgba(0,0, 0,0.4);
+}
+
+.closeBtn {
+  position: absolute;
+  right: 10px;
+  top: 0px;
+  cursor: pointer;
+  font-size: 20px;
+  background: none;
+  border: none;
+
+}
