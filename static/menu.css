@@ -1,0 +1,51 @@
+
+
+.menucontroler{
+    background-color: azure;
+    width: 80%;
+    margin: auto;
+}
+#data{
+    display: flex;
+    align-content: space-around;
+    flex-direction: row;
+    padding: 0%;
+    width: 80%;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: auto;
+}
+.item-image{
+    width: 100%;
+}
+.item-cont{
+    overflow: hidden;
+    width: 15%;
+    flex-direction: column;
+    background-color: whitesmoke;
+    height: 240px;
+}
+.item-cont:hover .item-image{
+    height: 20%;
+}
+.item-content{
+    margin-left: 10%;
+    flex-direction: column;
+}
+.item-lable{
+    font-size: large;
+}
+.item-price{
+    margin: 0;
+}
+.desc{
+    margin-top: 0;
+}
+.Menu{
+    width: 80%;
+    margin: auto;
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: column;
+}

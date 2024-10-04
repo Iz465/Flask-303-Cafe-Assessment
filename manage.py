@@ -29,10 +29,10 @@ def menu():
 
         # redirect to end the POST handling
         # the redirect can be to the same route or somewhere else
-        return redirect(url_for('welcome-index'))
+        return redirect(url_for('menu-index.html'))
 
     # show the form, it wasn't submitted
-    return render_template('welcome-index.html')
+    return render_template('menu-index.html')
 @app.route('/rewards')
 def rewards():
     if request.method == 'POST':

@@ -1,0 +1,46 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<body>
+  
+ 
+  <div class="Menu">
+      <div class="menucontroler">
+          <ul>
+              <label for="name">Sort by: </label>
+              <select id="combobox" onchange="combochange()">
+                  <option id="op1" value="name">name (A - Z)</option>
+                  <option id="op2" value="price">price (low - high)</option>
+              </select>
+              <label for="search">Search</label>
+              <input type="text" id="search" name="search" onchange="search()">
+          </ul>
+      </div>
+      <ul id="data">
+        {#This here section needs rework once database has been implemented#}
+        {% for i in range(1,11) -%}
+        <div class = "item-cont">
+          <img title="product-img" class = "item-image" alt="Image-alt" src=""></img>
+          <div class = "item-content">
+            <div>
+              <a><p class="kanit-regular" style="text-align: center; font-size: 28px;">Name</p></a>
+              <p class="item-desc">Description</p>
+          
+            </div>
+          </div>
+          
+        </div>
+        {%- endfor%}
+      
+        
+      </ul>
+
+  </div>
+
+  
+</body>
+<script>
+  getData();
+</script>
+{% endblock %}
+

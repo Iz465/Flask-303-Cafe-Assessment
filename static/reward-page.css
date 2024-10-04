@@ -1,0 +1,62 @@
+
+.reward-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+   
+}
+
+.reward-items {
+    background-color: rgba(184,216,190,.35);
+    text-align: center;
+    padding: 20px;
+    width: 50vh;
+    margin: 20px;
+    border-color: rgba(184,216,190,1);
+    border-style: solid;
+    cursor: pointer;
+}
+
+.reward-items h6 {
+   padding: 25px 0 0 0;
+}
+
+.reward-items p {
+    margin: 0; 
+    padding: 0; 
+}
+
+
+.reward-image {
+max-height: 30dvh;
+}
+
+
+.reward-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 40dvh;
+    text-align: center;
+    
+}
+
+
+
+
+
+.reward-description {
+    background-color: rgba(184,216,190,1);
+    width: 100%;
+    display: flex;
+}
+
+.reward-description-2 {
+    align-self: center;
+    height: 60%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+   
+}
