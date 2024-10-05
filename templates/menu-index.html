@@ -18,19 +18,20 @@
       </div>
       <ul id="data">
         {#This here section needs rework once database has been implemented#}
-        {% for i in range(1,11) -%}
+        {% for items in data %}
         <div class = "item-cont">
-          <img title="product-img" class = "item-image" alt="Image-alt" src=""></img>
+          <img title="product-img" class = "item-image" alt="Image-alt" src="{{items[3]}}"></img>
           <div class = "item-content">
             <div>
-              <a><p class="kanit-regular" style="text-align: center; font-size: 28px;">Name</p></a>
-              <p class="item-desc">Description</p>
+              <a><p class="kanit-regular" style="text-align: center; font-size: 28px;">{{items[0]}}</p></a>
+              <p class="item-desc">{{items[1]}}</p>
           
             </div>
           </div>
           
         </div>
-        {%- endfor%}
+      
+        {% endfor %}
       
         
       </ul>

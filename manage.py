@@ -1,4 +1,5 @@
 from flask import Flask, redirect, url_for, request, render_template
+import sqlite3
 app = Flask(__name__)
 
 @app.route('/')
@@ -24,15 +25,11 @@ def home():
 
 @app.route('/menu')
 def menu():
-    if request.method == 'POST':
-        # do stuff when the form is submitted
-
-        # redirect to end the POST handling
-        # the redirect can be to the same route or somewhere else
-        return redirect(url_for('menu-index.html'))
-
-    # show the form, it wasn't submitted
-    return render_template('menu-index.html')
+    connect = sqlite3.connect('database.db') 
+    cursor = connect.cursor() 
+    cursor.execute('SELECT * FROM MENU')
+    data = cursor.fetchall()
+    return render_template('menu-index.html', data = data)
 @app.route('/rewards')
 def rewards():
     if request.method == 'POST':
