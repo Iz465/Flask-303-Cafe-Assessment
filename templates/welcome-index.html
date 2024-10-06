@@ -2,13 +2,17 @@
 {% extends 'base.html' %}
 {% block content %}
 
+
+
+
 <div class="carousel-container">
   <img class = "showing carousel-images" src = "{{ url_for('static', filename='images/holding-coffee.webp') }}">
-  <img class = "carousel-images" src = "{{ url_for('static', filename='images/holding-coffee.webp') }}">
-  <img class = "carousel-images" src = "{{ url_for('static', filename='images/holding-coffee.webp') }}">
+  <img class = "carousel-images" src = "{{ url_for('static', filename='images/churro.jpg') }}">
+  <img class = "carousel-images" src = "{{ url_for('static', filename='images/coffee-beans.jpg') }}">
 </div>
 
-<script src="{{ url_for('static', filename='/scripts/carousel.js') }}"></script>
+
+<script src="{{ url_for('static', filename='scripts/carousel.js') }}"></script> 
    
 {% endblock %}
 

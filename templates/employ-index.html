@@ -2,21 +2,22 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1 style="margin-bottom: 100px; text-align: center;"> Employment </h1>
 
+<div style="height: 10%;"></div>
 {% for employee in range(1,11) %}
-<div class = "employeeCard">
+<div style="height: 10%;"></div>
+<div class = "employeeCard kanit-regular">
   <div class = "employeeTextCard">
-    <div class ="text kanit-thin">
-      <p class="kanit-regular" style="text-align: center; font-size: 28px;">temp: name</p>
-      <p class="kanit-regular" style="text-align: center;">Income: temp</p>
-      <p>temp: employee Description</p>
+      <h2 style="text-align: center;">Baker</h2>
+      <p style="text-align: center;">$54,000 Yearly</p>
+      <p class="kanit-regular">Bakers needed Bakers needed Bakers needed Bakers will bake pastries sweet, bitter and savoury. High cash made here. No experience required. Learning on job given. Learn with the best chefs, bakers, 
+        baristas, owners, waiters and serve to best customers. Test Paragraph Test.
+      </p>
       <div class = "employButton">
         <button onclick="openPopup()">Apply</button>
       </div>
-    </div>
   </div>
-  <img class = "employImage" src="{{employee.image_url}}"></img>
+  <img src="{{ url_for('static', filename='images/churro.jpg') }}"></img> <!--{{employee.image_url}}-->
 </div>
 
 

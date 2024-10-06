@@ -2,20 +2,26 @@
 
 
 .carousel-container {
-  height: 70vh;
+  height: 130%;
+  
 }
 
-.carousel-container img {
-  height: 70vh;
-   position: absolute; 
+ .carousel-container img {
+
+  height: 80%;
+  max-width: 90%;
+  position: absolute;
   left: 50%;
-  top: -18%;
+  top: -5%;
   transform: translate(-50%, 50%); 
   opacity: 0;
   transition: opacity 2s ease-in-out;
-}
+} 
+
+
 
 .carousel-container img.showing {
+
   opacity: 1;
 }
 

@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
     <title>Cafe </title>
     
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -20,7 +21,7 @@
     <script src="{{ url_for('static', filename='scripts/popup.js') }}"></script> 
     <script src="{{ url_for('static', filename='scripts/jquery.js') }}"></script> 
     <script src="{{ url_for('static', filename='scripts/menuloader.js') }}"></script> 
-    <script src="{{ url_for('static', filename='scripts/carousel.js') }}"></script> 
+ 
    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -31,25 +32,27 @@
 
   </head>
   <body>
-<div style="height: 5vh;"></div>
-    <h1 class="kanit-thin" style="text-align: center; padding: 10px;">Cafe</h1>
+
+
 <div class="page-container">
-      <div class = "navigation kanit-thin">
+  <div style="height: 5%;"></div>
+    <h1 class="kanit-thin" style="text-align: center;">Cafe</h1>
+    <div class = "navigation kanit-thin">
         <a href="{{ url_for('home') }}">Cafe</a>
         <a href="{{ url_for('menu') }}">Menu</a>
         <a href="{{ url_for('rewards') }}">Rewards</a>
         <a href="{{ url_for('employ') }}">Employment</a>
-      </div>
-   
-
-  
-
-   
-    {% block content %}
-    {% endblock %}
-    <div style="height: 400px;">
     </div>
-    <div style="height: 10vh;">
+   
+
+
+
+   
+{% block content %}
+    {% endblock %} 
+  
+  
+   <div class = "footer-space"></div>
     <div class ="footer inconsolata">
       <div style="align-self: center;">
         <div class = "flex-class"> <img src="{{ url_for('static', filename='images/phone.svg') }}"> <p>1111111</p> </div>
@@ -70,7 +73,7 @@
       <img src = "{{ url_for('static', filename='images/youtube.svg') }}">
     </div>
     </div>
-  </div>
+
 
   </body>
 </html>

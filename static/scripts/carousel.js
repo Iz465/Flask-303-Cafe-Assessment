@@ -1,4 +1,3 @@
-
 let carouselbackgrounds = document.querySelectorAll(".carousel-images")
 
 let imageIndex = 0;
