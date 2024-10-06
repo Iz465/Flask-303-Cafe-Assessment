@@ -1,6 +1,21 @@
 from flask import Flask, redirect, url_for, request, render_template
 import sqlite3
 app = Flask(__name__)
+connect = sqlite3.connect('database.db')
+
+
+def getdb_dict():
+        connect.row_factory = sqlite3.Row
+        values = connect.execute("SELECT * FROM MENU").fetchall()
+        connect.close()
+        list_accumulator = []
+        for item in values:
+            list_accumulator.append({k: item[k] for k in item.keys()})
+        for i in list_accumulator:
+            print(i.keys())
+        return list_accumulator
+
+database_dict = getdb_dict()
 
 @app.route('/')
 def index():
@@ -23,13 +38,19 @@ def home():
     # show the form, it wasn't submitted
     return render_template('welcome-index.html')
 
-@app.route('/menu')
+@app.route('/menu', methods=["POST","GET"])
 def menu():
-    connect = sqlite3.connect('database.db') 
-    cursor = connect.cursor() 
-    cursor.execute('SELECT * FROM MENU')
-    data = cursor.fetchall()
+    data = database_dict
+    if request.method == 'POST':
+        sortbyvalue = request.form.get("sortdropdown")
+        print("SORTING BY VALUE: ",str(sortbyvalue))
+        # redirect to end the POST handling
+        # the redirect can be to the same route or somewhere else
+        return render_template('menu-index.html')
+
+    # show the form, it wasn't submitted
     return render_template('menu-index.html', data = data)
+
 @app.route('/rewards')
 def rewards():
     if request.method == 'POST':
@@ -52,6 +73,7 @@ def employ():
 
     # show the form, it wasn't submitted
     return render_template('employ-index.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

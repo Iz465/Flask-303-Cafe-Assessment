@@ -7,24 +7,28 @@
   <div class="Menu">
       <div class="menucontroler">
           <ul>
+            <form action="http://127.0.0.1:5000/menu" class="SortSelection" method="POST">
               <label for="name">Sort by: </label>
-              <select id="combobox" onchange="combochange()">
+              <select class="sortForm" id="sortdropdownselector" type="text" name="sortdropdown" place onchange="this.form.submit()">
+                  <option id="op0">Sort by</option>
                   <option id="op1" value="name">name (A - Z)</option>
                   <option id="op2" value="price">price (low - high)</option>
+                  
               </select>
               <label for="search">Search</label>
               <input type="text" id="search" name="search" onchange="search()">
+            </form>
           </ul>
       </div>
       <ul id="data">
         {#This here section needs rework once database has been implemented#}
         {% for items in data %}
         <div class = "item-cont">
-          <img title="product-img" class = "item-image" alt="Image-alt" src="{{items[3]}}"></img>
+          <img title="product-img" class = "item-image" alt="Image-alt" src="{{items.img_url}}"></img>
           <div class = "item-content">
             <div>
-              <a><p class="kanit-regular" style="text-align: center; font-size: 28px;">{{items[0]}}</p></a>
-              <p class="item-desc">{{items[1]}}</p>
+              <a><p class="kanit-regular" style="text-align: center; font-size: 28px;">{{items.title}}</p></a>
+              <p class="item-desc">{{items.description}}</p>
           
             </div>
           </div>
@@ -40,8 +44,5 @@
 
   
 </body>
-<script>
-  getData();
-</script>
 {% endblock %}
 
