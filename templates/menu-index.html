@@ -9,7 +9,7 @@
           <ul>
             <form action="http://127.0.0.1:5000/menu" class="SortSelection" method="POST">
               <label for="name">Sort by: </label>
-              <select class="sortForm" id="sortdropdownselector" type="text" name="sortdropdown" place onchange="this.form.submit()">
+              <select class="sortForm" id="sortdropdownselector" type="text" name="sortdropdown" onchange="this.form.submit()">
                   <option id="op0">Sort by</option>
                   <option id="op1" value="name">name (A - Z)</option>
                   <option id="op2" value="price">price (low - high)</option>
@@ -26,7 +26,7 @@
         <div class = "item-cont">
           <img title="product-img" class = "item-image" alt="Image-alt" src="{{items.img_url}}"></img>
           <div class = "item-content">
-            <div>
+            <div class="item-text">
               <a><p class="kanit-regular" style="text-align: center; font-size: 28px;">{{items.title}}</p></a>
               <p class="item-desc">{{items.description}}</p>
           

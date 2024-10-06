@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, request, render_template
 import sqlite3
+import menuhandler
 app = Flask(__name__)
 connect = sqlite3.connect('database.db')
 
@@ -40,16 +41,17 @@ def home():
 
 @app.route('/menu', methods=["POST","GET"])
 def menu():
-    data = database_dict
+    data_dict = database_dict
+    handler = menuhandler.MenuHandler(data_dict)
     if request.method == 'POST':
         sortbyvalue = request.form.get("sortdropdown")
         print("SORTING BY VALUE: ",str(sortbyvalue))
         # redirect to end the POST handling
         # the redirect can be to the same route or somewhere else
-        return render_template('menu-index.html')
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, data=handler.sorteddata())
 
     # show the form, it wasn't submitted
-    return render_template('menu-index.html', data = data)
+    return render_template('menu-index.html', data = data_dict)
 
 @app.route('/rewards')
 def rewards():
