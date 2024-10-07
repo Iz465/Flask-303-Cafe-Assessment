@@ -7,8 +7,10 @@ cur = connect.cursor()
 class DatabaseManager:
     def __init__(self):
         self.data = []
-        self.insertitems_execute = "INSERT INTO MENU VALUES(?, ?, ?, ?)"
-        self.getitems_excecute = "SELECT title, description, price FROM MENU"
+        self.deletetable_execute = "" ### "DROP TABLE <tablename>"
+        self.createtable_execute = "" ### replace this with something like: CREATE TABLE IF NOT EXISTS <tablename>(title TEXT, description TEXT, price REAL, img_url TEXT)
+        self.insertitems_execute = "" ### amount of ? determines number of keys in table
+        self.getitems_excecute = "" ### "SELECT title, description, price FROM <tablename>"
         self.commonfunc = [self.show_tables.__name__,self.show_values.__name__, self.newitem.__name__,self.importjson.__name__]
 
     def show_tables(self):
@@ -27,17 +29,7 @@ class DatabaseManager:
         connect.commit() 
     
     def importjson(self,jsondict):
-        connect.execute("DROP TABLE MENU") 
-        connect.commit()
-        cur.execute("CREATE TABLE IF NOT EXISTS MENU(title TEXT, description TEXT, price REAL, img_url TEXT)")
-        data = []
-        for item in jsondict['item']:
-            data.append([item["title"],item["cont"],item["price"],item["img_url"]])
-        for d in data:
-            print (d)
-            
-        cur.executemany("INSERT INTO MENU VALUES(?, ?, ?, ?)", data)
-        connect.commit()
+        return 0
 
     def show_values(self):
         res = cur.execute(self.getitems_excecute)
@@ -50,9 +42,23 @@ class Menu(DatabaseManager):
     def __init__(self):
         super().__init__()
         cur.execute("CREATE TABLE IF NOT EXISTS MENU(title TEXT, description TEXT, price REAL, img_url TEXT)")
+        self.deletetable_execute = "DROP TABLE MENU"
         self.data = ["title", "description", "price", "Img url"]
         self.insertitems_execute = "INSERT INTO MENU VALUES(?, ?, ?, ?)"
         self.getitems_excecute = "SELECT title, description, price FROM MENU"
+    
+    def importjson(self,jsondict):
+        connect.execute(self.deletetable_execute) 
+        connect.commit()
+        cur.execute(self.createtable_execute)
+        data = []
+        for item in jsondict['item']:
+            data.append([item["title"],item["cont"],item["price"],item["img_url"]]) #case sensative
+        for d in data:
+            print (d)
+            
+        cur.executemany(self.insertitems_execute, data)
+        connect.commit()
     
 
 def managedatabases(obj):
