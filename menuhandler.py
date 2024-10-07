@@ -1,12 +1,12 @@
-from enum import Enum
+
 from operator import itemgetter
-class Sort(Enum):
-    NAME = 1
-    PRICE = 2
 
 class MenuHandler():
     def __init__(self, data_dict):
         self.data = data_dict
-    def sorteddata(self):
-        sorted_list = sorted(self.data, key=itemgetter('title'))
+    def sorteddata(self, method_sort):
+        if method_sort == "name":
+            sorted_list = sorted(self.data, key=itemgetter('title'))
+        elif method_sort == "price":
+            sorted_list = sorted(self.data, key=itemgetter('price'))
         return sorted_list

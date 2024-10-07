@@ -12,8 +12,6 @@ def getdb_dict():
         list_accumulator = []
         for item in values:
             list_accumulator.append({k: item[k] for k in item.keys()})
-        for i in list_accumulator:
-            print(i.keys())
         return list_accumulator
 
 database_dict = getdb_dict()
@@ -46,9 +44,8 @@ def menu():
     if request.method == 'POST':
         sortbyvalue = request.form.get("sortdropdown")
         print("SORTING BY VALUE: ",str(sortbyvalue))
-        # redirect to end the POST handling
-        # the redirect can be to the same route or somewhere else
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, data=handler.sorteddata())
+
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, data=handler.sorteddata(sortbyvalue))
 
     # show the form, it wasn't submitted
     return render_template('menu-index.html', data = data_dict)

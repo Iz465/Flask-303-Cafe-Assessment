@@ -10,7 +10,7 @@
             <form action="http://127.0.0.1:5000/menu" class="SortSelection" method="POST">
               <label for="name">Sort by: </label>
               <select class="sortForm" id="sortdropdownselector" type="text" name="sortdropdown" onchange="this.form.submit()">
-                  <option id="op0">Sort by</option>
+                  <option id="op0" >Sort by {{sortbyvalue}}</option>
                   <option id="op1" value="name">name (A - Z)</option>
                   <option id="op2" value="price">price (low - high)</option>
                   
@@ -28,7 +28,7 @@
           <div class = "item-content">
             <div class="item-text">
               <a><p class="item-title">{{items.title}}</p></a>
-              <p class="item-price">{{items.price}}</p>
+              <p class="item-price">${{items.price}}</p>
               <p class="item-desc">Ingredients: <br>{{items.description}}</p>
           
             </div>
