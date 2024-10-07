@@ -10,13 +10,17 @@
             <form action="http://127.0.0.1:5000/menu" class="SortSelection" method="POST">
               <label for="name">Sort by: </label>
               <select class="sortForm" id="sortdropdownselector" type="text" name="sortdropdown" onchange="this.form.submit()">
-                  <option id="op0" >Sort by {{sortbyvalue}}</option>
-                  <option id="op1" value="name">name (A - Z)</option>
-                  <option id="op2" value="price">price (low - high)</option>
+                <option id="op0" >Sort by {{sortbyvalue}}</option>
+                <option id="op1" value="name">name (A - Z)</option>
+                <option id="op2" value="price">price (low - high)</option>
                   
               </select>
+              
+            </form>
+            <form action="http://127.0.0.1:5000/menu/search" class="Searchform" method="POST">
               <label for="search">Search</label>
-              <input type="text" id="search" name="search" onchange="search()">
+              <input type="text" id="search" value="{{searchbyvalue}}" name="search">
+              <button type="submit">Search</button>
             </form>
           </ul>
       </div>

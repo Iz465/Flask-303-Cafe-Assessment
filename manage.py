@@ -50,6 +50,19 @@ def menu():
     # show the form, it wasn't submitted
     return render_template('menu-index.html', data = data_dict)
 
+@app.route('/menu/search', methods=["POST","GET"])
+def search():
+    data_dict = database_dict
+    handler = menuhandler.MenuHandler(data_dict)
+    if request.method == 'POST':
+        searchbyvalue = request.form.get("search")
+        print("SEARCHING VALUE: ",str(searchbyvalue))
+
+        return render_template('menu-index.html', searchbyvalue = searchbyvalue, data=handler.searchdata(searchbyvalue))
+
+    # show the form, it wasn't submitted
+    return render_template('menu-index.html', data = data_dict)
+
 @app.route('/rewards')
 def rewards():
     if request.method == 'POST':
