@@ -1,6 +1,20 @@
 from flask import Flask, redirect, url_for, request, render_template
 import sqlite3
+import menuhandler
 app = Flask(__name__)
+connect = sqlite3.connect('database.db')
+
+
+def getdb_dict():
+        connect.row_factory = sqlite3.Row
+        values = connect.execute("SELECT * FROM MENU").fetchall()
+        connect.close()
+        list_accumulator = []
+        for item in values:
+            list_accumulator.append({k: item[k] for k in item.keys()})
+        return list_accumulator
+
+database_dict = getdb_dict()
 
 @app.route('/')
 def index():
@@ -23,13 +37,32 @@ def home():
     # show the form, it wasn't submitted
     return render_template('welcome-index.html')
 
-@app.route('/menu')
+@app.route('/menu', methods=["POST","GET"])
 def menu():
-    connect = sqlite3.connect('database.db') 
-    cursor = connect.cursor() 
-    cursor.execute('SELECT * FROM MENU')
-    data = cursor.fetchall()
-    return render_template('menu-index.html', data = data)
+    data_dict = database_dict
+    handler = menuhandler.MenuHandler(data_dict)
+    if request.method == 'POST':
+        sortbyvalue = request.form.get("sortdropdown")
+        print("SORTING BY VALUE: ",str(sortbyvalue))
+
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, data=handler.sorteddata(sortbyvalue))
+
+    # show the form, it wasn't submitted
+    return render_template('menu-index.html', data = data_dict)
+
+@app.route('/menu/search', methods=["POST","GET"])
+def search():
+    data_dict = database_dict
+    handler = menuhandler.MenuHandler(data_dict)
+    if request.method == 'POST':
+        searchbyvalue = request.form.get("search")
+        print("SEARCHING VALUE: ",str(searchbyvalue))
+
+        return render_template('menu-index.html', searchbyvalue = searchbyvalue, data=handler.searchdata(searchbyvalue))
+
+    # show the form, it wasn't submitted
+    return render_template('menu-index.html', data = data_dict)
+
 @app.route('/rewards')
 def rewards():
     if request.method == 'POST':
@@ -52,6 +85,7 @@ def employ():
 
     # show the form, it wasn't submitted
     return render_template('employ-index.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

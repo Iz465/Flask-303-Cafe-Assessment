@@ -1,51 +1,62 @@
-
-
-.menucontroler{
-    background-color: azure;
-    width: 80%;
-    margin: auto;
-}
 #data{
+    padding: 5%;
+    margin:auto;
     display: flex;
-    align-content: space-around;
     flex-direction: row;
-    padding: 0%;
-    width: 80%;
     flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin: auto;
+    max-width: 80%;
+    gap: 5%;
+    background-color: lightslategray;
 }
-.item-image{
+.item-cont {
+    position: relative;
+    width: 20%;
+}
+  
+.item-image {
+    display: block;
     width: 100%;
+    height: auto;
+    padding-bottom: 15%;
 }
-.item-cont{
+
+.item-content {
+    white-space: nowrap;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #008CBA;
     overflow: hidden;
-    width: 15%;
-    flex-direction: column;
-    background-color: whitesmoke;
-    height: 240px;
+    width: 100%;
+    height: 15%;
+    transition: .5s ease;
 }
-.item-cont:hover .item-image{
-    height: 20%;
+
+.item-cont:hover .item-content {
+    height: 50%;
 }
-.item-content{
-    margin-left: 10%;
-    flex-direction: column;
+
+.item-text {
+    width: 100%;
+    color: white;
+    font-size: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: left;
+    padding-left: 30%;
+    left: 30%;
+    top: 4rem;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
 }
-.item-lable{
-    font-size: large;
+.item-title{
+    font-size: 27px;
 }
-.item-price{
-    margin: 0;
+.item-desc{
+    font-size:medium;
 }
-.desc{
-    margin-top: 0;
-}
-.Menu{
+.menucontroler{
     width: 80%;
     margin: auto;
-    background-color: aliceblue;
-    display: flex;
-    flex-direction: column;
 }
