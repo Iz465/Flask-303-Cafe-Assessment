@@ -1,0 +1,13 @@
+.product-container{
+    display: flex;
+    flex-direction: column;
+    background-color:azure;
+}
+.product-display{
+    display: flex;
+    flex-direction: row;
+}
+.product-info{
+    display: flex;
+    flex-direction: row;
+}

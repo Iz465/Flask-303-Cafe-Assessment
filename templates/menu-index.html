@@ -18,7 +18,7 @@
               
               <label for="search">Search</label>
               <input type="text" id="search" value="{{searchbyvalue}}" name="search">
-              <button type="submit">Search</button>
+              
             </form>
           </ul>
       </div>
@@ -26,16 +26,18 @@
         {#This here section needs rework once database has been implemented#}
         {% for items in data %}
         <div class = "item-cont">
+          <form action="http://127.0.0.1:5000/{{items.id}}" method="POST">
           <img title="product-img" class = "item-image" alt="Image-alt" src="{{items.img_url}}"></img>
           <div class = "item-content">
             <div class="item-text">
               <a><p class="item-title">{{items.title}}</p></a>
               <p class="item-price">${{items.price}}</p>
               <p class="item-desc">Ingredients: <br>{{items.description}}</p>
+              <button type="submit">Search</button>
           
             </div>
           </div>
-          
+          </form>
         </div>
       
         {% endfor %}

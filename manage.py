@@ -14,17 +14,19 @@ def getdb_dict():
             list_accumulator.append({k: item[k] for k in item.keys()})
         return list_accumulator
 
-database_dict = getdb_dict()
+database_menu = getdb_dict()
 
+### ROUTE TO HOME PAGE ###
 @app.route('/')
 def index():
     return render_template('welcome-index.html')
-#http://127.0.0.1:5000/admin
+
+### ROUTE TO ADMIN
 @app.route('/admin')
 def hello_admin():
     return "hello Admin"
 
-#http://127.0.0.1:5000/guest/<guest>
+### HOME PAGE OPERANDS ###
 @app.route('/home')
 def home():
     if request.method == 'POST':
@@ -37,6 +39,7 @@ def home():
     # show the form, it wasn't submitted
     return render_template('welcome-index.html')
 
+### MENU PAGES OPERANDS ###
 @app.route('/menu', methods=["POST","GET"])
 def menu():
     data_dict = []
@@ -45,17 +48,28 @@ def menu():
         searchbyvalue = request.form.get("search")
         sortbyvalue = request.form.get("sortdropdown")
         if len(searchbyvalue) > 0:
-            data_dict = handler.searchdata(database_dict,searchbyvalue)
+            data_dict = handler.searchdata(database_menu,searchbyvalue)
             print("GRATER THAN 0")
             data_dict = handler.sorteddata(data_dict,sortbyvalue)
         else:
-            data_dict = handler.sorteddata(database_dict,sortbyvalue)
+            data_dict = handler.sorteddata(database_menu,sortbyvalue)
 
         return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict)
 
     # show the form, it wasn't submitted
     return render_template('menu-index.html', data = data_dict)
 
+@app.route('/<int:product_id>', methods=["POST","GET"])
+def product(product_id):
+    product_item = {}
+    for product in database_menu:
+        if product['id'] == product_id:
+            product_item = product
+    
+    return render_template("product-index.html", product = product_item)
+
+
+### REWARDS PAGE OPERANDS
 @app.route('/rewards')
 def rewards():
     if request.method == 'POST':
@@ -67,6 +81,8 @@ def rewards():
 
     # show the form, it wasn't submitted
     return render_template('rewards-index.html')
+
+### EMPLOY PAGE OPERANDS ###
 @app.route('/employ')
 def employ():
     if request.method == 'POST':
