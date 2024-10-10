@@ -39,26 +39,19 @@ def home():
 
 @app.route('/menu', methods=["POST","GET"])
 def menu():
-    data_dict = database_dict
-    handler = menuhandler.MenuHandler(data_dict)
-    if request.method == 'POST':
-        sortbyvalue = request.form.get("sortdropdown")
-        print("SORTING BY VALUE: ",str(sortbyvalue))
-
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, data=handler.sorteddata(sortbyvalue))
-
-    # show the form, it wasn't submitted
-    return render_template('menu-index.html', data = data_dict)
-
-@app.route('/menu/search', methods=["POST","GET"])
-def search():
-    data_dict = database_dict
-    handler = menuhandler.MenuHandler(data_dict)
+    data_dict = []
+    handler = menuhandler.MenuHandler()
     if request.method == 'POST':
         searchbyvalue = request.form.get("search")
-        print("SEARCHING VALUE: ",str(searchbyvalue))
+        sortbyvalue = request.form.get("sortdropdown")
+        if len(searchbyvalue) > 0:
+            data_dict = handler.searchdata(database_dict,searchbyvalue)
+            print("GRATER THAN 0")
+            data_dict = handler.sorteddata(data_dict,sortbyvalue)
+        else:
+            data_dict = handler.sorteddata(database_dict,sortbyvalue)
 
-        return render_template('menu-index.html', searchbyvalue = searchbyvalue, data=handler.searchdata(searchbyvalue))
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict)
 
     # show the form, it wasn't submitted
     return render_template('menu-index.html', data = data_dict)
