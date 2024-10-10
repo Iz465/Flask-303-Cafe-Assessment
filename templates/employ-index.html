@@ -21,16 +21,41 @@
 
 {% endfor %}
 
+
 <div class = "popup" id="popup">
+  <form action="http://127.0.0.1:5000/employ" method="POST">
   <button class = "closeBtn" onclick="closePopup()">&times;</button>
-  <h5 style="padding: 20px;">Enter your details to apply</h5>
-  <label>Name:</label> <input/> <br/> <br/>
-  <label>Address:</label> <input/> <br/> <br/>
-  <label>Age:</label> <input/> <br/> <br/>
-  <button>Apply</button>
+  {{ form.hidden_tag() }}
+
+  {{ form.first_name.label }}
+  {{ form.first_name }} 
+ 
+
+  {{ form.last_name.label }} 
+  {{ form.last_name }} 
+
+
+  {{ form.age.label }} 
+  {{ form.age }}
+
+
+  {{ form.address.label }} 
+  {{ form.address }} 
+
+  {{ form.phone_number.label }} 
+  {{ form.phone_number }}
+  
+  {{ form.email.label }} 
+  {{ form.email }} <br/> <br/>
+
+  {{ form.submit }}
+</form>
 </div>
 
 
 {% endblock %}
 
 
+{% for error in form.first_name.errors %}
+<p style="color: red;">{{error}}</p>
+{% endfor %}

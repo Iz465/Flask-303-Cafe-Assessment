@@ -1,7 +1,9 @@
 from flask import Flask, redirect, url_for, request, render_template
+from forms import EmployForm
 import sqlite3
 import menuhandler
 app = Flask(__name__)
+app.secret_key = '4fdgdfgasd12asf'
 connect = sqlite3.connect('database.db')
 
 
@@ -69,23 +71,20 @@ def rewards():
     return render_template('rewards-index.html')
 
 
-@app.route('/employ')
+@app.route('/employ', methods=['POST', 'GET'])
 def employ():
+    form = EmployForm()
     if request.method == 'POST':
-        # do stuff when the form is submitted
+        return redirect(url_for('employ'))
 
-        # redirect to end the POST handling
-        # the redirect can be to the same route or somewhere else
-        return redirect(url_for('welcome-index'))
 
-    # show the form, it wasn't submitted
     connect = sqlite3.connect('database.db')
     connect.row_factory = sqlite3.Row
     cur = connect.cursor()
     cur.execute("select * from Employment_Options")
     rows = cur.fetchall()
     print(rows)
-    return render_template('employ-index.html', rows = rows)
+    return render_template('employ-index.html', rows = rows, form = form)
 
 
 if __name__ == '__main__':
