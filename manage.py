@@ -67,6 +67,8 @@ def rewards():
 
     # show the form, it wasn't submitted
     return render_template('rewards-index.html')
+
+
 @app.route('/employ')
 def employ():
     if request.method == 'POST':
@@ -77,7 +79,13 @@ def employ():
         return redirect(url_for('welcome-index'))
 
     # show the form, it wasn't submitted
-    return render_template('employ-index.html')
+    connect = sqlite3.connect('database.db')
+    connect.row_factory = sqlite3.Row
+    cur = connect.cursor()
+    cur.execute("select * from Employment_Options")
+    rows = cur.fetchall()
+    print(rows)
+    return render_template('employ-index.html', rows = rows)
 
 
 if __name__ == '__main__':
