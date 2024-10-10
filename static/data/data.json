@@ -5,6 +5,7 @@
             "title" : "Long black",
             "price" : 6.99,
             "cont": "Coffee, Water",
+            "description": "A long black is a style of coffee commonly found in Australia and New Zealand, made by pouring a single shot (or double shot) of espresso into hot water. It is similar to an americano, in which hot water is poured into one shot of espresso.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -12,6 +13,7 @@
             "title" : "Esspresso",
             "price" : 7.99,
             "cont": "Coffee, Water",
+            "description": "Espresso is a concentrated form of coffee produced by forcing hot water under high pressure through finely-ground coffee beans. Originating in Italy, espresso has become one of the most popular coffee-brewing methods worldwide. It is characterized by its small serving size, typically 25 to 30 ml, and its distinctive layers: a dark body topped with a lighter-colored foam called crema.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -19,6 +21,7 @@
             "title" : "Capuchino",
             "price" : 8.99,
             "cont": "Coffee, Water",
+            "description": "Cappuccino is an espresso-based coffee drink that is traditionally prepared with steamed milk including a layer of milk foam.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -26,6 +29,7 @@
             "title" : "Tea",
             "price" : 9.99,
             "cont": "Coffee, Water",
+            "description": "Tea is an aromatic beverage prepared by pouring hot or boiling water over cured or fresh leaves of Camellia sinensis, an evergreen shrub native to East Asia which probably originated in the borderlands of southwestern China and northern Myanmar.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -33,6 +37,7 @@
             "title" : "Latte",
             "price" : 1.99,
             "cont": "Coffee, Water",
+            "description": "Caffè latte, often shortened to just latte in English, is a coffee drink of Italian origin made with espresso and steamed milk, traditionally served in a glass. Variants include the chocolate-flavored mocha or replacing the coffee with another beverage base such as masala chai (spiced Indian tea), mate, matcha, turmeric or rooibos; alternatives to milk, such as soy milk, coconut milk, almond milk or oat milk, are also used.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -40,6 +45,7 @@
             "title" : "Hot Chocolate",
             "price" : 6.99,
             "cont": "Coffee, Water",
+            "description": "Hot chocolate, also known as hot cocoa or drinking chocolate, is a heated drink consisting of shaved or melted chocolate or cocoa powder, heated milk or water, and usually a sweetener. It is often garnished with whipped cream or marshmallows. Hot chocolate made with melted chocolate is sometimes called drinking chocolate, characterized by less sweetness and a thicker consistency.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -47,6 +53,7 @@
             "title" : "Irish  Coffe",
             "price" : 4.99,
             "cont": "Coffee, Water",
+            "description": "Irish coffee is a caffeinated alcoholic drink consisting of Irish whiskey, hot coffee and sugar, which has been stirred and topped with cream (sometimes cream liqueur). The coffee is drunk through the cream.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -54,6 +61,7 @@
             "title" : "Iced Coffe",
             "price" : 3.99,
             "cont" : "Coffee, Ice",
+            "description":"Iced coffee is a coffee beverage served cold. It may be prepared either by brewing coffee normally (i.e. carafe, French press, etc.) and then serving it over ice or in cold milk or by brewing the coffee cold. In hot brewing, sweeteners and flavoring may be added before cooling, as they dissolve faster. Iced coffee can also be sweetened with pre-dissolved sugar in water",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -61,6 +69,7 @@
             "title" : "Chai Latte",
             "price" : 2.99,
             "cont": "Coffee, Water",
+            "description": "Masala chai is a popular beverage throughout South Asia, originating in India. It is made by brewing black tea in milk and water, and then by sweetening with sugar. Adding aromatic herbs and spices creates masala chai, although chai is often prepared unspiced.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -68,20 +77,23 @@
             "title" : "Chai Tea",
             "price" : 3.99,
             "cont": "Coffee, Water",
+            "description": "Masala chai is a popular beverage throughout South Asia, originating in India. It is made by brewing black tea in milk and water, and then by sweetening with sugar. Adding aromatic herbs and spices creates masala chai, although chai is often prepared unspiced.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
             "id" : 11,
-            "title" : "Mocha",
+            "title" : "Caffe Mocha",
             "price" : 2.99,
             "cont": "Coffee, Water",
+            "description": "A caffè mocha, also called mocaccino, is a chocolate-flavoured warm beverage that is a variant of a caffè latte, commonly served in a glass rather than a mug. Other commonly used spellings are mochaccino and also mochachino.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
             "id" : 12,
-            "title" : "Frappochino",
+            "title" : "Frappuchino",
             "price" : 3.99,
             "cont": "Coffee, Water",
+            "description": "Frappuccino is a line of blended iced coffee drinks sold by Starbucks. It may consist of coffee or crème base, blended with ice and ingredients such as flavored syrups and usually topped with whipped cream and or spices. It may also include blended Starbucks refreshers. ",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -89,6 +101,7 @@
             "title" : "Iced Tea",
             "price" : 5.99,
             "cont": "Coffee, Water",
+            "description": "Iced tea is a form of cold tea. Though it is usually served in a glass with ice, it can refer to any tea that has been chilled or cooled. It may be sweetened with sugar or syrup.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         },
         {
@@ -96,6 +109,7 @@
             "title" : "Iced Chocolate",
             "price" : 7.99,
             "cont": "Coffee, Water",
+            "description": "Chocolate sauce, milk, ice cream (vanilla- or chocolate ice cream), and lots of ice cubes. While this is a delicious dessert, this may not be the best go-to everyday recipe. This iced chocolate milk is more like regular chocolate milk. It’s super accessible and so rich and refreshing at the same time.",
             "img_url" : "https://img.freepik.com/premium-vector/8-bit-pixel-coffee-cup-logo-drink-game-assets-vector-illustration_614713-310.jpg"
         }
     ]

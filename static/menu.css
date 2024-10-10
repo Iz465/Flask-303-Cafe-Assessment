@@ -22,10 +22,11 @@ a.clickable-div{
 }
   
 .item-image {
+    height: 400px;
     display: block;
     width: 100%;
-    height: auto;
     padding-bottom: 15%;
+    object-fit: cover;
 }
 
 .item-content {

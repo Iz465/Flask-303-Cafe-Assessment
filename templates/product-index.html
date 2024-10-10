@@ -5,13 +5,44 @@
         <link href="{{ url_for('static', filename='product.css') }}" rel="stylesheet">
     </head>
     <div class="product-container">
-        <div class="product-display">
-            <img class="product-img" src="{{product.img_url}}" alt="">
-            <h1 class="product-title">{{product.title}}</h1>
+        <div class="Header">
+            <div class="product-display">
+                <div class="image-container">
+                    <img class="product-img" src="{{product.img_url}}" alt="">
+                </div>
+                <div class="title-container">
+                    <h1 class="product-title">{{product.title}}</h1>
+                </div>
+            </div>
         </div>
+        
         <div class="product-info">
-            <p class="product-description">{{product.description}}</p>
-            <p class="product-something">TEMPLATE INFORMATION</p>
+            <div class="center-container">
+                <div class="info-col1">
+                    <div class="product-description">{{product.description}}</div>
+                </div>
+                <div class="info-col2">
+                    <div class="product-something">
+                        <p>Size options</p>
+                        <div class="size-options">
+                            
+                            <div class="bev-size div1">
+                                <img class="cup-svg" src="https://www.svgrepo.com/show/490658/coffee-to-go.svg" alt="">
+                            </div>
+                            
+                            <div class="bev-size div2">
+                                <img class="cup-svg" src="https://www.svgrepo.com/show/490658/coffee-to-go.svg" alt="">
+                            </div>
+                            <div class="bev-size div3">
+                                <img class="cup-svg" src="https://www.svgrepo.com/show/490658/coffee-to-go.svg" alt="">
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+            
         </div>
 
     </div>

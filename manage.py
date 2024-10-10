@@ -57,7 +57,8 @@ def menu():
         return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict)
 
     # show the form, it wasn't submitted
-    return render_template('menu-index.html', data = data_dict)
+    print("Rendr: Default")
+    return render_template('menu-index.html', data = database_menu)
 
 @app.route('/<int:product_id>', methods=["POST","GET"])
 def product(product_id):
