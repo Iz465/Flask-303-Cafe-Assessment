@@ -5,6 +5,7 @@
 
 
 <div style="height: 10%;"></div>
+{#
 {% for row  in rows %}
 <div style="height: 10%;"></div>
 <div class = "employeeCard kanit-regular">
@@ -20,17 +21,13 @@
 </div>
 
 
-{% endfor %}
-
-{% if open_popup %}
-openPopup()
-{% endif %}
+{% endfor %} #}
 
 <div class = "popup" id="popup">
 
   <button class = "closeBtn" onclick="closePopup()">&times;</button>
   <form action="http://127.0.0.1:5000/employ" method="POST">
-  {{ form.hidden_tag() }}
+ {# {{ form.hidden_tag() }}
 
   {{ form.first_name.label }}
   {{ form.first_name }} 
@@ -73,15 +70,7 @@ openPopup()
 </form>
 </div>
 
-{% if open_popup %}
-<script>
-    window.onload = function() {
-       var button = null
-        openPopup(button);
-    };
-</script>
-
-{% endif %}
+#}
 
 
 
