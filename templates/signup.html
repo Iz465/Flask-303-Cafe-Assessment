@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <form action="http://127.0.0.1:5000/signup" method="POST">
+            <div class="log-container">
+                {{ form.name.label }} <br>
+                {{ form.name }}
+                <br>
+
+                {{ form.gender.label }} {{ form.gender}}
+                <br>
+                {{ form.email.label }} <br>
+                {{ form.email }}
+                <br>
+                {{ form.submit }}
+                <br>
+
+            </div>
+        </form>
+    </body>
+</html>

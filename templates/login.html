@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <form action="http://127.0.0.1:5000/login" method="post">
+            <div class="log-container">
+                {{ form.name.label }} <br>
+                {{ form.name }}
+                <br>
+                {{ form.email.label }} <br>
+                {{ form.email }}
+                <br>
+                {{ form.submit }}
+                <br>
+
+            </div>
+        </form>
+        <a href="{{ url_for('signup') }}">dont have an account? sign up</a>
+    </body>
+</html>

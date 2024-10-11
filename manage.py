@@ -1,7 +1,9 @@
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, url_for, request, render_template, flash
+from forms import SignUpForm
 import sqlite3
 import menuhandler
 app = Flask(__name__)
+app.secret_key = "Dev Key"
 connect = sqlite3.connect('database.db')
 
 
@@ -25,6 +27,35 @@ def index():
 @app.route('/admin')
 def hello_admin():
     return "hello Admin"
+
+### LOGIN OPERANDS
+@app.route('/login',methods=['GET','POST'])
+def login():
+    form = SignUpForm()
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('All Fields Required')
+            return render_template('login.html', form = form)
+        else:
+            return 'Success'
+    if request.method == 'GET':
+        return render_template('login.html', form = form)
+
+@app.route('/signup',methods=['GET','POST'])
+def signup():
+    form = SignUpForm(request.form)
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('All Fields Required')
+            print("error occurance")
+            return render_template('signup.html', form = form)
+        else:
+            print('printing form:')
+            print(f'{form.name.data}\n{form.email.data}\n{form.gender.data}')
+            return f'{form.name}\n{form.email}\n{form.gender}'
+    if request.method == 'GET':
+        print("getting form")
+        return render_template('signup.html', form = form)
 
 ### HOME PAGE OPERANDS ###
 @app.route('/home')
