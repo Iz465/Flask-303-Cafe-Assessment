@@ -1,9 +1,7 @@
 from flask import Flask, redirect, url_for, request, render_template
-from forms import EmployForm
 import sqlite3
 import menuhandler
 app = Flask(__name__)
-app.secret_key = '4fdgdfgasd12asf'
 connect = sqlite3.connect('database.db')
 
 
@@ -16,17 +14,19 @@ def getdb_dict():
             list_accumulator.append({k: item[k] for k in item.keys()})
         return list_accumulator
 
-database_dict = getdb_dict()
+database_menu = getdb_dict()
 
+### ROUTE TO HOME PAGE ###
 @app.route('/')
 def index():
     return render_template('welcome-index.html')
-#http://127.0.0.1:5000/admin
+
+### ROUTE TO ADMIN
 @app.route('/admin')
 def hello_admin():
     return "hello Admin"
 
-#http://127.0.0.1:5000/guest/<guest>
+### HOME PAGE OPERANDS ###
 @app.route('/home')
 def home():
     if request.method == 'POST':
@@ -39,6 +39,7 @@ def home():
     # show the form, it wasn't submitted
     return render_template('welcome-index.html')
 
+### MENU PAGES OPERANDS ###
 @app.route('/menu', methods=["POST","GET"])
 def menu():
     data_dict = []
@@ -47,17 +48,29 @@ def menu():
         searchbyvalue = request.form.get("search")
         sortbyvalue = request.form.get("sortdropdown")
         if len(searchbyvalue) > 0:
-            data_dict = handler.searchdata(database_dict,searchbyvalue)
+            data_dict = handler.searchdata(database_menu,searchbyvalue)
             print("GRATER THAN 0")
             data_dict = handler.sorteddata(data_dict,sortbyvalue)
         else:
-            data_dict = handler.sorteddata(database_dict,sortbyvalue)
+            data_dict = handler.sorteddata(database_menu,sortbyvalue)
 
         return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict)
 
     # show the form, it wasn't submitted
-    return render_template('menu-index.html', data = data_dict)
+    print("Rendr: Default")
+    return render_template('menu-index.html', data = database_menu)
 
+@app.route('/<int:product_id>', methods=["POST","GET"])
+def product(product_id):
+    product_item = {}
+    for product in database_menu:
+        if product['id'] == product_id:
+            product_item = product
+    
+    return render_template("product-index.html", product = product_item)
+
+
+### REWARDS PAGE OPERANDS
 @app.route('/rewards')
 def rewards():
     if request.method == 'POST':
@@ -70,28 +83,19 @@ def rewards():
     # show the form, it wasn't submitted
     return render_template('rewards-index.html')
 
-
-@app.route('/employ', methods=['POST', 'GET'])
+### EMPLOY PAGE OPERANDS ###
+@app.route('/employ')
 def employ():
-    form = EmployForm()
-    connect = sqlite3.connect('database.db')
-    connect.row_factory = sqlite3.Row
-    cur = connect.cursor()
-    cur.execute("select * from Employment_Options")
-    rows = cur.fetchall()
-    
     if request.method == 'POST':
-        if form.validate_on_submit() == False:
-            return render_template('employ-index.html', rows = rows, form = form, open_popup = True)
-       
-          
-        
-    return render_template('employ-index.html', rows = rows, form = form, open_popup = False)
- 
- 
+        # do stuff when the form is submitted
+
+        # redirect to end the POST handling
+        # the redirect can be to the same route or somewhere else
+        return redirect(url_for('welcome-index'))
+
+    # show the form, it wasn't submitted
+    return render_template('employ-index.html')
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-

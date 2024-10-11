@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<body>
+    <head>
+        <link href="{{ url_for('static', filename='product.css') }}" rel="stylesheet">
+    </head>
+    <div class="product-container">
+        <div class="Header">
+            <div class="product-display">
+                <div class="image-container">
+                    <img class="product-img" src="{{product.img_url}}" alt="">
+                </div>
+                <div class="title-container">
+                    <h1 class="product-title">{{product.title}}</h1>
+                </div>
+            </div>
+        </div>
+        
+        <div class="product-info">
+            <div class="center-container">
+                <div class="info-col1">
+                    <div class="product-description inconsolata">{{product.description}}</div>
+                </div>
+                <div class="info-col2">
+                    <div class="product-something">
+                        <h3 class="kanit-regular">Size options</h3>
+                        <div class="size-options">
+                            
+                            <div class="bev-size div1">
+                                <img class="cup-svg" src="https://www.svgrepo.com/show/490658/coffee-to-go.svg" alt="">
+                                <p>150 ml</p>
+                            </div>
+                            
+                            <div class="bev-size div2">
+                                <img class="cup-svg" src="https://www.svgrepo.com/show/490658/coffee-to-go.svg" alt="">
+                                <p>200 ml</p>
+                            </div>
+                            <div class="bev-size div3">
+                                <img class="cup-svg" src="https://www.svgrepo.com/show/490658/coffee-to-go.svg" alt="">
+                                <p>250 ml</p>
+                            </div>
+                            
+                        </div>
+                        <div class="add-to-cart">
+                            <p class="disclamer">Please note, This product contains: <br> {{product.contains}}</p>
+                            <button class="cart-button">Add to cart</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+
+  
+</body>
+{% endblock %}

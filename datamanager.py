@@ -41,19 +41,19 @@ class DatabaseManager:
 class Menu(DatabaseManager):
     def __init__(self):
         super().__init__()
-        cur.execute("CREATE TABLE IF NOT EXISTS MENU(title TEXT, description TEXT, price REAL, img_url TEXT)")
+        cur.execute("CREATE TABLE IF NOT EXISTS MENU(id INT, title TEXT, contains TEXT, description TEXT, price REAL, img_url TEXT)")
         self.deletetable_execute = "DROP TABLE MENU"
-        self.data = ["title", "description", "price", "Img url"]
-        self.insertitems_execute = "INSERT INTO MENU VALUES(?, ?, ?, ?)"
+        self.data = ["id","title", "contains", "description", "price", "Img url"]
+        self.insertitems_execute = "INSERT INTO MENU VALUES(?, ?, ?, ?, ?, ?)"
         self.getitems_excecute = "SELECT title, description, price FROM MENU"
     
     def importjson(self,jsondict):
         connect.execute(self.deletetable_execute) 
         connect.commit()
-        cur.execute(self.createtable_execute)
+        cur.execute("CREATE TABLE IF NOT EXISTS MENU(id INT, title TEXT, contains TEXT, description TEXT, price REAL, img_url TEXT)")
         data = []
         for item in jsondict['item']:
-            data.append([item["title"],item["cont"],item["price"],item["img_url"]]) #case sensative
+            data.append([item["id"],item["title"],item["cont"],item["description"],item["price"],item["img_url"]]) #case sensative
         for d in data:
             print (d)
             
