@@ -3,6 +3,7 @@
 {% block content %}
 
 
+
 <div style="height: 10%;"></div>
 {% for row  in rows %}
 <div style="height: 10%;"></div>
@@ -21,41 +22,71 @@
 
 {% endfor %}
 
+{% if open_popup %}
+openPopup()
+{% endif %}
 
 <div class = "popup" id="popup">
-  <form action="http://127.0.0.1:5000/employ" method="POST">
+
   <button class = "closeBtn" onclick="closePopup()">&times;</button>
+  <form action="http://127.0.0.1:5000/employ" method="POST">
   {{ form.hidden_tag() }}
 
   {{ form.first_name.label }}
   {{ form.first_name }} 
+  {% for error in form.first_name.errors %}
+  <span style="color: red;">{{ error }}</span><br>
+  {% endfor %}
  
 
   {{ form.last_name.label }} 
-  {{ form.last_name }} 
+  {{ form.last_name }}
+  {% for error in form.last_name.errors %}
+  <span style="color: red;">{{ error }}</span><br>
+  {% endfor %} 
 
 
   {{ form.age.label }} 
   {{ form.age }}
+  {% for error in form.age.errors %}
+  <span style="color: red;">{{ error }}</span><br>
+  {% endfor %}
 
 
   {{ form.address.label }} 
-  {{ form.address }} 
+  {{ form.address }}
+
 
   {{ form.phone_number.label }} 
   {{ form.phone_number }}
+  {% for error in form.phone_number.errors %}
+  <span style="color: red;">{{ error }}</span><br>
+  {% endfor %}
   
   {{ form.email.label }} 
-  {{ form.email }} <br/> <br/>
+  {{ form.email }}
+  {% for error in form.email.errors %}
+  <span style="color: red;">{{ error }}</span><br>
+  {% endfor %} <br/> <br/>
 
   {{ form.submit }}
 </form>
 </div>
 
+{% if open_popup %}
+<script>
+    window.onload = function() {
+       var button = null
+        openPopup(button);
+    };
+</script>
+
+{% endif %}
+
+
 
 {% endblock %}
 
 
-{% for error in form.first_name.errors %}
-<p style="color: red;">{{error}}</p>
-{% endfor %}
+
+

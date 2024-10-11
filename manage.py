@@ -74,18 +74,24 @@ def rewards():
 @app.route('/employ', methods=['POST', 'GET'])
 def employ():
     form = EmployForm()
-    if request.method == 'POST':
-        return redirect(url_for('employ'))
-
-
     connect = sqlite3.connect('database.db')
     connect.row_factory = sqlite3.Row
     cur = connect.cursor()
     cur.execute("select * from Employment_Options")
     rows = cur.fetchall()
-    print(rows)
-    return render_template('employ-index.html', rows = rows, form = form)
+    
+    if request.method == 'POST':
+        if form.validate_on_submit() == False:
+            return render_template('employ-index.html', rows = rows, form = form, open_popup = True)
+       
+          
+        
+    return render_template('employ-index.html', rows = rows, form = form, open_popup = False)
+ 
+ 
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
