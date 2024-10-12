@@ -1,19 +1,28 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    </head>
     <body>
-        <form action="http://127.0.0.1:5000/login" method="post">
-            <div class="log-container">
-                {{ form.name.label }} <br>
-                {{ form.name }}
-                <br>
-                {{ form.email.label }} <br>
-                {{ form.email }}
-                <br>
-                {{ form.submit }}
-                <br>
+        <div class="form-container">
+            <form action="http://127.0.0.1:5000/signup" method="POST">
+                <div>
+                    {{ form.name.label }} <br>
+                    {{ form.name }}
+                    <br>
 
-            </div>
-        </form>
-        <a href="{{ url_for('signup') }}">dont have an account? sign up</a>
+                    {{ form.gender.label }} {{ form.gender}}
+                    <br>
+                    {{ form.email.label }} <br>
+                    {{ form.email }}
+                    <br>
+                    {{ form.submit }}
+                    <br>
+
+                </div>
+            </form>
+            <a href="{{ url_for('signup') }}">dont have an account? sign up</a>
+        </div>
+        
     </body>
 </html>
