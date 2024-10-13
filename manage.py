@@ -1,7 +1,9 @@
 from flask import Flask, redirect, url_for, request, render_template
 import sqlite3
 import menuhandler
+import random
 from forms import EmployForm
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 connect = sqlite3.connect('database.db')
@@ -21,7 +23,7 @@ database_menu = getdb_dict()
 ### ROUTE TO HOME PAGE ###
 @app.route('/')
 def index():
-    return render_template('welcome-index.html')
+    return redirect(url_for('home'))
 
 ### ROUTE TO ADMIN
 @app.route('/admin')
@@ -31,25 +33,48 @@ def hello_admin():
 ### HOME PAGE OPERANDS ###
 @app.route('/home')
 def home():
-    if request.method == 'POST':
-        # do stuff when the form is submitted
-
-        # redirect to end the POST handling
-        # the redirect can be to the same route or somewhere else
-        return redirect(url_for('welcome-index'))
                                                   
- #   connect = sqlite3.connect('database.db')
- #   cursor = connect.cursor()
- #   cursor.execute("Select * FROM MENU WHERE id = ?", (5,))
- #   product = cursor.fetchone()
+    connect = sqlite3.connect('database.db')
+    connect.row_factory = sqlite3.Row
+    cursor = connect.cursor()
+    
 
- #   if product is None:
- #       add_product = "Insert INTO Discounts (ID, Name, Contains, Description, Price, Image_Url) Values (?,?,?,?,?,?)"
- #       cursor.execute(add_product, (product[0], product[1], product[2], product[3], product[4], product[5]))
- #       connect.commit()
-       
+    cursor.execute("Select MIN(id), MAX(id) from MENU")
+    min_id, max_id = cursor.fetchone()
 
-    return render_template('welcome-index.html')
+    cursor.execute("Select * FROM MENU WHERE id = ?", (random.randrange(min_id,max_id + 1),))
+    product = cursor.fetchone()
+
+    if product is not None: # checks whether there is a product with that id.
+        cursor.execute("Select * From Discounts")
+        empty_check = cursor.fetchall()
+        print("length is",len(empty_check)) # using this so only one product can be put in discount table
+        if len(empty_check) < 1:
+            cursor.execute("SELECT * FROM Discounts WHERE ID = ?", (product[0],))
+            discount_product = cursor.fetchone()
+            if discount_product is None: # checks whether that specific menu product is in the discount table.
+                add_product = "Insert INTO Discounts (ID, Name, Contains, Description, Price, Image_Url, Time_Added) Values (?,?,?,?,?,?,?)"
+                cursor.execute(add_product, (product[0], product[1], product[2], product[3], product[4], product[5], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+                connect.commit()
+                print("Product is added to discount table")
+            else:
+                print("Product is already in discount table")
+        else:
+            cursor.execute("SELECT * FROM Discounts")
+            discount_product = cursor.fetchone()
+            product_start_time = datetime.strptime(discount_product[6], '%Y-%m-%d %H:%M:%S')
+            if datetime.now() > product_start_time + timedelta(days=1):
+                cursor.execute("DELETE From Discounts") # this will delete all rows from Discounts database, allowing another product to be stored in it.
+                connect.commit()
+            else:
+                now = datetime.now()
+                timeleft = timedelta(days=1) - (now -  product_start_time) 
+                print(f"Product still has {timeleft} time left")
+            
+    cursor.execute("SELECT * FROM Discounts") 
+    rows = cursor.fetchall()
+    connect.close()
+    return render_template('welcome-index.html', rows = rows)
 
 
 
