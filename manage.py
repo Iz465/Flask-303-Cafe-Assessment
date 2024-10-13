@@ -74,7 +74,8 @@ def home():
     cursor.execute("SELECT * FROM Discounts") 
     rows = cursor.fetchall()
     connect.close()
-    return render_template('welcome-index.html', rows = rows)
+    timeleft_converted = int(timeleft.total_seconds()) 
+    return render_template('welcome-index.html', rows = rows, timeleft_converted = timeleft_converted)
 
 
 

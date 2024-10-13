@@ -14,6 +14,8 @@
 <img class = "showing carousel-images" src = "{{ row.Image_Url }}" style="max-height: 20%; margin-left: 5%; margin-top: 5%;">
 <p style="margin-left: 5%;">Special Item of the Day</p>
 <p style="margin-left: 5%;">{{row.Name}} 50% off</p>
+<p style="margin-left: 5%;">Time left: <span id="display_time"></span></p>
+
 {% endfor %}
 
 <div class="carousel-container">
@@ -24,9 +26,30 @@
 
 
 
+<script>
+  var timeleft = {{ timeleft_converted }}
 
 
+
+    
+
+  function update_time() {
+    var hours = Math.floor(timeleft / 3600);
+    var minutes = Math.floor((timeleft % 3600) / 60);
+    var seconds = timeleft % 60;
+    formatted_time = hours + "h " + minutes + "m " + seconds + "s ";
+   
+    document.getElementById("display_time").innerHTML = formatted_time
+    timeleft--;
+  }
+
+  setInterval(update_time, 1000);
+
+</script>
+
+{#
 <script src="{{ url_for('static', filename='scripts/carousel.js') }}"></script> 
+#}
    
 {% endblock %}
 
