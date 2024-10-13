@@ -7,11 +7,11 @@
 
 
 <div class = "reward-container">
-    {% for reward in range(1,11) %}
-     <div class = "reward-items" onclick="openPopup(this)" data-reward-name = "{{reward.name}}">
-      <img class="reward-image" src="{{reward.image_url}}">
-        <h6 class="inconsolata">Temp reward name</h6> 
-              <p class="inconsolata">Points: temp reward points</p>
+    {% for row in rows %}
+     <div class = "reward-items" onclick="openPopup(this)" data-reward-name = "{{row.Name}}">
+      <img class="reward-image" src="{{row.Image_Url}}">
+        <h6 class="inconsolata">{{row.Name}}</h6> 
+              <p class="inconsolata">Points: {{row.Points}}</p>
      </div>
     
      {% endfor %}
