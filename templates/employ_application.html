@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div style="text-align: center; padding: 5px;">
+
+
+<h1>Employment Application </h1><br><br>
+<form action="http://127.0.0.1:5000/employ-application" method="POST">
+{{ form.hidden_tag() }}
+
+{% for error in form.name.errors %}
+<span style="color: red;">{{ error }}</span><br>
+{% endfor %}
+{{ form.name.label }} <br>
+{{ form.name }} <br><br>
+
+{% for error in form.age.errors %}
+<span style="color: red;">{{ error }}</span><br>
+{% endfor %}
+{{ form.age.label }} <br>
+{{ form.age }} <br><br>
+
+{% for error in form.gender.errors %}
+<span style="color: red;">{{ error }}</span><br>
+{% endfor %}
+{{ form.gender.label }} <br>
+{{ form.gender }} <br><br>
+
+
+{% for error in form.address.errors %}
+<span style="color: red;">{{ error }}</span><br>
+{% endfor %}
+{{ form.address.label }} <br>
+{{ form.address }} <br><br>
+
+{% for error in form.phone_number.errors %}
+<span style="color: red;">{{ error }}</span><br>
+{% endfor %}
+{{ form.phone_number.label }} <br>
+{{ form.phone_number }} <br><br>
+
+{% for error in form.email.errors %}
+<span style="color: red;">{{ error }}</span><br>
+{% endfor %}
+{{ form.email.label }} <br>
+{{ form.email }} <br><br>
+
+{{ form.submit }}
+</form>
+</div>
+
+
+{% endblock %}
+

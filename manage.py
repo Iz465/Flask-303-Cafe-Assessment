@@ -6,7 +6,10 @@ from forms import EmployForm
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
+app.secret_key = 'dfhdfhdfhdfh'
 connect = sqlite3.connect('database.db')
+
+
 
 
 def getdb_dict():
@@ -45,6 +48,8 @@ def home():
     cursor.execute("Select * FROM MENU WHERE id = ?", (random.randrange(min_id,max_id + 1),))
     product = cursor.fetchone()
 
+    timeleft = timedelta(0) 
+
     if product is not None: # checks whether there is a product with that id.
         cursor.execute("Select * From Discounts")
         empty_check = cursor.fetchall()
@@ -57,6 +62,7 @@ def home():
                 cursor.execute(add_product, (product[0], product[1], product[2], product[3], product[4], product[5], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                 connect.commit()
                 print("Product is added to discount table")
+                timeleft = timedelta(days=1)
             else:
                 print("Product is already in discount table")
         else:
@@ -66,10 +72,11 @@ def home():
             if datetime.now() > product_start_time + timedelta(days=1):
                 cursor.execute("DELETE From Discounts") # this will delete all rows from Discounts database, allowing another product to be stored in it.
                 connect.commit()
+                return redirect(url_for('home'))
             else:
                 now = datetime.now()
                 timeleft = timedelta(days=1) - (now -  product_start_time) 
-                print(f"Product still has {timeleft} time left")
+                print(f"Product still has {timeleft} time left") 
             
     cursor.execute("SELECT * FROM Discounts") 
     rows = cursor.fetchall()
@@ -143,5 +150,14 @@ def employ():
     return render_template('employ-index.html', rows = rows)
 
 
+@app.route('/employ-application', methods = ['POST', 'GET'])
+def employ_application():
+    form = EmployForm()
+    if request.method == 'POST':
+        if form.validate() == False:
+            return render_template('employ_application.html', form = form)
+
+    return render_template('employ_application.html', form = form)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 
