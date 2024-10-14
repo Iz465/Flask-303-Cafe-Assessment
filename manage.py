@@ -1,13 +1,15 @@
 from flask import Flask, redirect, url_for, request, render_template, flash
-from forms import SignUpForm
+from forms import SignUpForm, Login
 import sqlite3
-import menuhandler
+from datahandler import MenuHandler, UsersHandler
 app = Flask(__name__)
 app.secret_key = "Dev Key"
 connect = sqlite3.connect('database.db')
 
+isloggedin= False
 
-def getdb_dict():
+
+def getmenu_dict():
         connect.row_factory = sqlite3.Row
         values = connect.execute("SELECT * FROM MENU").fetchall()
         connect.close()
@@ -15,8 +17,17 @@ def getdb_dict():
         for item in values:
             list_accumulator.append({k: item[k] for k in item.keys()})
         return list_accumulator
+def getusers_dict():
+        connect.row_factory = sqlite3.Row
+        values = connect.execute("SELECT * FROM USERS").fetchall()
+        connect.close()
+        list_accumulator = []
+        for item in values:
+            list_accumulator.append({k: item[k] for k in item.keys()})
+        return list_accumulator
 
-database_menu = getdb_dict()
+database_menu = getmenu_dict()
+database_users = getusers_dict
 
 ### ROUTE TO HOME PAGE ###
 @app.route('/')
@@ -31,27 +42,33 @@ def hello_admin():
 ### LOGIN OPERANDS
 @app.route('/login',methods=['GET','POST'])
 def login():
-    form = SignUpForm()
+    form = Login(request.form)
+    userhandler = UsersHandler()
     if request.method == 'POST':
-        if form.validate() == False:
+        if form.validate() == False and userhandler.login(form.data):
             flash('All Fields Required')
             return render_template('login.html', form = form)
         else:
-            return 'Success'
+            print(currentuser)
+            currentuser = form.data
+            print(currentuser)
+            return redirect(url_for('welcome-index'))
     if request.method == 'GET':
         return render_template('login.html', form = form)
 
 @app.route('/signup',methods=['GET','POST'])
 def signup():
     form = SignUpForm(request.form)
+    userhandler = UsersHandler()
     if request.method == 'POST':
         if form.validate() == False:
             flash('All Fields Required')
             print("error occurance")
             return render_template('signup.html', form = form)
         else:
+            userhandler.signup(form.data)
             print('printing form:')
-            print(f'{form.name.data}\n{form.email.data}\n{form.gender.data}')
+            print(form.data)
             return f'{form.name}\n{form.email}\n{form.gender}'
     if request.method == 'GET':
         print("getting form")
@@ -60,6 +77,7 @@ def signup():
 ### HOME PAGE OPERANDS ###
 @app.route('/home')
 def home():
+    print(currentuser)
     if request.method == 'POST':
         # do stuff when the form is submitted
 
@@ -74,7 +92,7 @@ def home():
 @app.route('/menu', methods=["POST","GET"])
 def menu():
     data_dict = []
-    handler = menuhandler.MenuHandler()
+    handler = MenuHandler()
     if request.method == 'POST':
         searchbyvalue = request.form.get("search")
         sortbyvalue = request.form.get("sortdropdown")

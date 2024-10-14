@@ -5,16 +5,13 @@
     </head>
     <body>
         <div class="form-container">
-            <form action="http://127.0.0.1:5000/signup" method="POST">
+            <form action="http://127.0.0.1:5000/login" method="POST">
                 <div>
-                    {{ form.name.label }} <br>
-                    {{ form.name }}
-                    <br>
-
-                    {{ form.gender.label }} {{ form.gender}}
-                    <br>
                     {{ form.email.label }} <br>
                     {{ form.email }}
+                    <br>
+                    {{ form.password.label }} <br>
+                    {{ form.password }}
                     <br>
                     {{ form.submit }}
                     <br>

@@ -37,6 +37,28 @@ p {
 }
 
 
+.head-banner{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+}
+.login-container{
+  display: flex;
+  margin-left: auto;
+  width: 5%;
+  height: 100px;
+}
+.login-img{
+  width: 100%;
+}
+.title{
+  margin-left: auto;
+}
 
-
-
+a.loginbutton{
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
