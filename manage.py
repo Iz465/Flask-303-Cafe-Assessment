@@ -11,6 +11,7 @@ app.secret_key = "Dev Key"
 connect = sqlite3.connect('database.db')
 
 isloggedin= False
+loggedin =[]
 
 
 def getmenu_dict():
@@ -182,7 +183,7 @@ def employ():
      
         return redirect(url_for('welcome-index'))
 
-  
+    
     connect = sqlite3.connect('database.db') #make images 3000 height and 2000 width
     connect.row_factory = sqlite3.Row
     cur = connect.cursor()
@@ -190,6 +191,19 @@ def employ():
     rows = cur.fetchall()
     return render_template('employ-index.html', rows = rows)
 
+@app.route('/employ_application', methods= ['POST', 'GET'])
+def employ_application():
+    form = EmployForm()
+    if 'username' in loggedin:   
+        if request.method == 'POST':
+         if form.validate() == False:
+              return render_template('employ_application.html', form = form, check_form = True)
+        else:
+            return render_template('employ_application.html', form = form, check_form = False)
+        return render_template('employ_application.html', form = form, check_form = True)
+    else:
+        return render_template('employ_application.html', form = form, check_form = False, notloggedin = False)
+        
 
 if __name__ == '__main__':
     app.run(debug=True)

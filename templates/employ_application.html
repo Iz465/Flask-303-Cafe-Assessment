@@ -5,49 +5,30 @@
 
 
 <h1>Employment Application </h1><br><br>
-<form action="http://127.0.0.1:5000/employ-application" method="POST">
+{% if check_form %}
+<form action="http://127.0.0.1:5000/employ_application" method="POST">
 {{ form.hidden_tag() }}
 
-{% for error in form.name.errors %}
+{% for error in form.job_reason.errors %}
 <span style="color: red;">{{ error }}</span><br>
 {% endfor %}
-{{ form.name.label }} <br>
-{{ form.name }} <br><br>
-
-{% for error in form.age.errors %}
-<span style="color: red;">{{ error }}</span><br>
-{% endfor %}
-{{ form.age.label }} <br>
-{{ form.age }} <br><br>
-
-{% for error in form.gender.errors %}
-<span style="color: red;">{{ error }}</span><br>
-{% endfor %}
-{{ form.gender.label }} <br>
-{{ form.gender }} <br><br>
-
-
-{% for error in form.address.errors %}
-<span style="color: red;">{{ error }}</span><br>
-{% endfor %}
-{{ form.address.label }} <br>
-{{ form.address }} <br><br>
-
-{% for error in form.phone_number.errors %}
-<span style="color: red;">{{ error }}</span><br>
-{% endfor %}
-{{ form.phone_number.label }} <br>
-{{ form.phone_number }} <br><br>
-
-{% for error in form.email.errors %}
-<span style="color: red;">{{ error }}</span><br>
-{% endfor %}
-{{ form.email.label }} <br>
-{{ form.email }} <br><br>
+{{ form.job_reason.label }} <br>
+{{ form.job_reason(style="height:30vw;width:30%") }} <br><br>
 
 {{ form.submit }}
 </form>
+{% endif %}
+
+{% if not check_form %}
+{% if notloggedin %}
+<h1>Application Received. Will be reviewed</h1>
+{% endif %}
+{% if not notloggedin %}
+<h1>Sorry. You can not access this page unless logged in.</h1>
+{% endif %}
+{% endif %}
 </div>
+
 
 
 {% endblock %}
