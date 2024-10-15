@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="form-container">
+            <form action="http://127.0.0.1:5000/signup" method="POST">
+                <div>
+                    {{ form.name.label }} <br>
+                    {{ form.name }}
+                    <br>
+
+                    {{ form.gender.label }} {{ form.gender}}
+                    <br>
+                    {{ form.email.label }} <br>
+                    {{ form.email }}
+                    <br>
+                    {{ form.password.label }} <br>
+                    {{ form.password }}
+                    <br>
+                    {{ form.submit }}
+                    <br>
+
+                </div>
+            </form>
+        </div>
+        
+    </body>
+</html>

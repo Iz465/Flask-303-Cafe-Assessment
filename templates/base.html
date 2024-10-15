@@ -36,14 +36,26 @@
 
 <div class="page-container">
   <div style="height: 5%;"></div>
-    <h1 class="kanit-thin" style="text-align: center;">Cafe</h1>
-    <div class = "navigation kanit-thin">
-        <a href="{{ url_for('home') }}">Cafe</a>
-        <a href="{{ url_for('menu') }}">Menu</a>
-        <a href="{{ url_for('rewards') }}">Rewards</a>
-        <a href="{{ url_for('employ') }}">Employment</a>
+  <div class="head-banner">
+    <h1 class="kanit-thin title" style="text-align: center;">Cafe</h1>
+    
+    <div class="login-container">
+      <a class="loginbutton" href="{{ url_for('login') }}">
+        <div class="img-container">
+          <img class="login-img" src="https://www.svgrepo.com/show/532363/user-alt-1.svg" alt="">
+        </div>
+      </a>
+      
     </div>
-   
+  </div>
+  
+  <div class = "navigation kanit-thin">
+      <a href="{{ url_for('home') }}">Cafe</a>
+      <a href="{{ url_for('menu') }}">Menu</a>
+      <a href="{{ url_for('rewards') }}">Rewards</a>
+      <a href="{{ url_for('employ') }}">Employment</a>
+  </div>
+  
 
 
 

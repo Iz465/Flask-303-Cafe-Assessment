@@ -1,18 +1,19 @@
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, url_for, request, render_template, flash
+from forms import SignUpForm, Login
 import sqlite3
-import menuhandler
 import random
 from forms import EmployForm
 from datetime import datetime, timedelta
 
+from datahandler import MenuHandler, UsersHandler
 app = Flask(__name__)
-app.secret_key = 'dfhdfhdfhdfh'
+app.secret_key = "Dev Key"
 connect = sqlite3.connect('database.db')
 
+isloggedin= False
 
 
-
-def getdb_dict():
+def getmenu_dict():
         connect.row_factory = sqlite3.Row
         values = connect.execute("SELECT * FROM MENU").fetchall()
         connect.close()
@@ -20,9 +21,17 @@ def getdb_dict():
         for item in values:
             list_accumulator.append({k: item[k] for k in item.keys()})
         return list_accumulator
+def getusers_dict():
+        connect.row_factory = sqlite3.Row
+        values = connect.execute("SELECT * FROM USERS").fetchall()
+        connect.close()
+        list_accumulator = []
+        for item in values:
+            list_accumulator.append({k: item[k] for k in item.keys()})
+        return list_accumulator
 
-database_menu = getdb_dict()
-
+database_menu = getmenu_dict()
+currentuser = {"":""}
 ### ROUTE TO HOME PAGE ###
 @app.route('/')
 def index():
@@ -32,6 +41,42 @@ def index():
 @app.route('/admin')
 def hello_admin():
     return "hello Admin"
+
+### LOGIN OPERANDS
+@app.route('/login',methods=['GET','POST'])
+def login():
+    form = Login(request.form)
+    userhandler = UsersHandler()
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('All Fields Required')
+            return render_template('login.html', form = form)
+        else:
+            if userhandler.login(form.data) == True:
+                currentuser = userhandler.currentuser
+                print(currentuser)
+                return render_template('profile.html', name = currentuser)
+            return render_template('login.html', form = form)
+    if request.method == 'GET':
+        return render_template('login.html', form = form)
+
+@app.route('/signup',methods=['GET','POST'])
+def signup():
+    form = SignUpForm(request.form)
+    userhandler = UsersHandler()
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('All Fields Required')
+            print("error occurance")
+            return render_template('signup.html', form = form)
+        else:
+            userhandler.signup(form.data)
+            print('printing form:')
+            print(form.data)
+            return f'{form.name}\n{form.email}\n{form.gender}'
+    if request.method == 'GET':
+        print("getting form")
+        return render_template('signup.html', form = form)
 
 ### HOME PAGE OPERANDS ###
 @app.route('/home')
@@ -47,9 +92,7 @@ def home():
 
     cursor.execute("Select * FROM MENU WHERE id = ?", (random.randrange(min_id,max_id + 1),))
     product = cursor.fetchone()
-
-    timeleft = timedelta(0) 
-
+    timeleft = None
     if product is not None: # checks whether there is a product with that id.
         cursor.execute("Select * From Discounts")
         empty_check = cursor.fetchall()
@@ -62,7 +105,6 @@ def home():
                 cursor.execute(add_product, (product[0], product[1], product[2], product[3], product[4], product[5], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                 connect.commit()
                 print("Product is added to discount table")
-                timeleft = timedelta(days=1)
             else:
                 print("Product is already in discount table")
         else:
@@ -72,11 +114,10 @@ def home():
             if datetime.now() > product_start_time + timedelta(days=1):
                 cursor.execute("DELETE From Discounts") # this will delete all rows from Discounts database, allowing another product to be stored in it.
                 connect.commit()
-                return redirect(url_for('home'))
             else:
                 now = datetime.now()
                 timeleft = timedelta(days=1) - (now -  product_start_time) 
-                print(f"Product still has {timeleft} time left") 
+                print(f"Product still has {timeleft} time left")
             
     cursor.execute("SELECT * FROM Discounts") 
     rows = cursor.fetchall()
@@ -90,7 +131,7 @@ def home():
 @app.route('/menu', methods=["POST","GET"])
 def menu():
     data_dict = []
-    handler = menuhandler.MenuHandler()
+    handler = MenuHandler()
     if request.method == 'POST':
         searchbyvalue = request.form.get("search")
         sortbyvalue = request.form.get("sortdropdown")
@@ -150,14 +191,5 @@ def employ():
     return render_template('employ-index.html', rows = rows)
 
 
-@app.route('/employ-application', methods = ['POST', 'GET'])
-def employ_application():
-    form = EmployForm()
-    if request.method == 'POST':
-        if form.validate() == False:
-            return render_template('employ_application.html', form = form)
-
-    return render_template('employ_application.html', form = form)
-
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run(debug=True)
