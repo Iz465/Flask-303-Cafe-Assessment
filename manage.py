@@ -27,8 +27,7 @@ def getusers_dict():
         return list_accumulator
 
 database_menu = getmenu_dict()
-database_users = getusers_dict
-
+currentuser = {"":""}
 ### ROUTE TO HOME PAGE ###
 @app.route('/')
 def index():
@@ -45,14 +44,15 @@ def login():
     form = Login(request.form)
     userhandler = UsersHandler()
     if request.method == 'POST':
-        if form.validate() == False and userhandler.login(form.data):
+        if form.validate() == False:
             flash('All Fields Required')
             return render_template('login.html', form = form)
         else:
-            print(currentuser)
-            currentuser = form.data
-            print(currentuser)
-            return redirect(url_for('welcome-index'))
+            if userhandler.login(form.data) == True:
+                currentuser = userhandler.currentuser
+                print(currentuser)
+                return render_template('profile.html', name = currentuser)
+            return render_template('login.html', form = form)
     if request.method == 'GET':
         return render_template('login.html', form = form)
 

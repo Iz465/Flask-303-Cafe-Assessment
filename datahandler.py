@@ -32,6 +32,7 @@ class UsersHandler(Handler):
         super().__init__()
         self.sortingmethods = ["name","email"]
         self.tablevalues = ["cart","name", "email", "gender", "password"]
+        self.currentuser = {}
     def signup(self,user):
         connect = sqlite3.connect('database.db') 
         cur = connect.cursor()
@@ -44,16 +45,19 @@ class UsersHandler(Handler):
         connect = sqlite3.connect('database.db') 
         cur = connect.cursor()
         userfromdb = {}
+        print("Logging in...")
         try:
             cur.execute(f"SELECT * FROM USERS WHERE email ='{user['email']}'")
             usertemp = cur.fetchone()
             userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4]}
             print(userfromdb)
         except(IOError):
+            print("error occurance")
             print(IOError)
         
         if userfromdb['password'] == user['password']:
             print("Login Success")
+            self.currentuser = userfromdb
             return True
         else:
             print("Login Fail")
