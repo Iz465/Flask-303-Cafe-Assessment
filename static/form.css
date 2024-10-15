@@ -1,0 +1,18 @@
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+}
+.form-container{
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    background-color: cadetblue;
+    border: 3px solid gray;
+    border-radius: 5%;
+}

@@ -60,6 +60,14 @@ class Menu(DatabaseManager):
         cur.executemany(self.insertitems_execute, data)
         connect.commit()
     
+class User(DatabaseManager):
+    def __init__(self):
+        super().__init__()
+        cur.execute("CREATE TABLE IF NOT EXISTS USERS(cart TEXT, name TEXT, email TEXT, gender TEXT, password TEXT)")
+        self.deletetable_execute = "DROP TABLE USERS"
+        self.data = ["cart","name", "email", "gender", "password"]
+        self.insertitems_execute = "INSERT INTO USERS VALUES(?, ?, ?, ?, ?)"
+        self.getitems_excecute = "SELECT name, email FROM USERS"
 
 def managedatabases(obj):
     count = 0
@@ -87,13 +95,16 @@ def adminmenu():
         menumanager = Menu()
         managedatabases(menumanager)
     if x == "2":
+        usermanager = User()
+        managedatabases(usermanager)
+    if x == "3":
         j = parcejson()
         print(j.items())
 
 
 
 def main():
-    print("select option \n1: Menu manager\n2: Read Json ")
+    print("select option \n1: Menu manager\n2: USERS manager\n3: Read Json ")
     adminmenu()
     connect.close()
 
