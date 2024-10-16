@@ -20,12 +20,13 @@
 {% endif %}
 
 {% if not check_form %}
-{% if notloggedin %}
+{% if form_done %}
 <h1>Application Received. Will be reviewed</h1>
 {% endif %}
-{% if not notloggedin %}
+
+
 <h1>Sorry. You can not access this page unless logged in.</h1>
-{% endif %}
+
 {% endif %}
 </div>
 
