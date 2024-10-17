@@ -4,6 +4,7 @@ import sqlite3
 import random
 from forms import EmployForm
 from datetime import datetime, timedelta
+import sqlite_functions
 
 from datahandler import MenuHandler, UsersHandler
 app = Flask(__name__)
@@ -90,11 +91,9 @@ def signup():
 @app.route('/home')
 def home():
                                                   
-    connect = sqlite3.connect('database.db')
-    connect.row_factory = sqlite3.Row
+    connect = sqlite_functions.sqlite_connection()
     cursor = connect.cursor()
     
-
     cursor.execute("Select MIN(id), MAX(id) from MENU")
     min_id, max_id = cursor.fetchone()
 
@@ -105,8 +104,7 @@ def home():
     if product is not None: # checks whether there is a product with that id.
         cursor.execute("Select * From Discounts")
         empty_check = cursor.fetchall()
-        print("length is",len(empty_check)) # using this so only one product can be put in discount table
-        if len(empty_check) < 1:
+        if len(empty_check) < 1: # using this so only one product can be put in discount table
             cursor.execute("SELECT * FROM Discounts WHERE ID = ?", (product[0],))
             discount_product = cursor.fetchone()
             if discount_product is None: # checks whether that specific menu product is in the discount table.
@@ -131,7 +129,8 @@ def home():
     cursor.execute("SELECT * FROM Discounts") 
     rows = cursor.fetchall()
     connect.close()
-    timeleft_converted = int(timeleft.total_seconds()) 
+    if timeleft is not None:
+        timeleft_converted = int(timeleft.total_seconds()) 
     return render_template('welcome-index.html', rows = rows, timeleft_converted = timeleft_converted)
 
 
@@ -171,53 +170,55 @@ def product(product_id):
 @app.route('/rewards')
 def rewards():
     if request.method == 'POST':
-        # do stuff when the form is submitted
-
-        # redirect to end the POST handling
-        # the redirect can be to the same route or somewhere else
         return redirect(url_for('welcome-index'))
 
-    connect = sqlite3.connect('database.db')
-    connect.row_factory = sqlite3.Row
-    cur = connect.cursor()
-    cur.execute("select * from Rewards")
-    rows = cur.fetchall()
+    rows = sqlite_functions.get_table('Rewards')
     return render_template('rewards-index.html', rows = rows)
 
 ### EMPLOY PAGE OPERANDS ###
 @app.route('/employ')
 def employ():
     if request.method == 'POST':
-     
         return redirect(url_for('welcome-index'))
-
     
-    connect = sqlite3.connect('database.db') #make images 3000 height and 2000 width
-    connect.row_factory = sqlite3.Row
-    cur = connect.cursor()
-    cur.execute("select * from EmployJobs")
-    rows = cur.fetchall()
+    rows = sqlite_functions.get_table('EmployJobs') # Make images 3000 height and 2000 width
     return render_template('employ-index.html', rows = rows)
+
 
 @app.route('/employ_application', methods= ['POST', 'GET'])
 def employ_application():
     form = EmployForm()
-    print(session['loggedin'])
     if 'loggedin' in session and session['loggedin']:   
         if request.method == 'POST':
             if form.validate() == False:
                 return render_template('employ_application.html', form = form, check_form = True)
             else:
-                return render_template('employ_application.html', form = form, check_form = False, form_done = True)
+                connect = sqlite3.connect('database.db')
+                cursor = connect.cursor()
+                cursor.execute("Select id FROM Employ_Application")
+                employ_ids = cursor.fetchall()
+                check_users = [row[0] for row in employ_ids] # This adds the ids into the check users from the employ ids tuple, so they can be accessed individually.
+                if session['currentuser']['id'] not in check_users:
+                    cursor.execute("Insert INTO Employ_Application (id,name, job_reason) VALUES (?,?,?)", (session['currentuser']['id'],session['currentuser']['name'], request.form['job_reason'])) 
+                    connect.commit()
+                    connect.close() 
+                    return render_template('employ_application.html', form = form, check_form = False, form_done = True)
+                else:
+                    return render_template('employ_application.html', already_applied = True)
         else:
             return render_template('employ_application.html', form = form, check_form = True)
     else:
-        return render_template('employ_application.html', form = form, check_form = False)
+        return render_template('employ_application.html', notloggedin = True)
+
+
+
+@app.route('/application_review', methods = ['POST', 'GET'])
+def application_review():
+    rows = sqlite_functions.get_table('Employ_Application')
+    return render_template('review_application.html', rows = rows)
         
 
 if __name__ == '__main__':
     app.run(debug=True)
 
 
-     #  session['currentuser'] = userhandler.currentuser
-      #          session['loggedin'] = True 

@@ -19,15 +19,19 @@
 </form>
 {% endif %}
 
-{% if not check_form %}
+
 {% if form_done %}
 <h1>Application Received. Will be reviewed</h1>
 {% endif %}
 
-
+{% if notloggedin %}
 <h1>Sorry. You can not access this page unless logged in.</h1>
-
 {% endif %}
+
+{% if already_applied %}
+<h1>You have already applied for a job. You can not apply again.</h1>
+{% endif %}
+
 </div>
 
 
