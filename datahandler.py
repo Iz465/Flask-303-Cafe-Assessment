@@ -65,4 +65,9 @@ class UsersHandler(Handler):
         else:
             print("Login Fail")
             return False
+    def addtocart(self, user, product_id): # make this append data to user database
+        if self.login(user) == True:
+            msg = f"Successfully validated current user, adding product {product_id}"
+            print(msg)
+            return msg
     

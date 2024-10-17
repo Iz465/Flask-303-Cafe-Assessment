@@ -7,6 +7,7 @@
   <div class="Menu">
       <div class="menucontroler">
           <ul>
+            <h2>Welcome {{currentuser.name}}</h2>
             <form action="http://127.0.0.1:5000/menu" class="SortSelection" method="POST">
               <label for="name">Sort by: </label>
               <select class="sortForm" id="sortdropdownselector" type="text" name="sortdropdown" onchange="this.form.submit()">
@@ -26,18 +27,17 @@
         {#This here section needs rework once database has been implemented#}
         {% for items in data %}
         <div class = "item-cont">
-          <form action="http://127.0.0.1:5000/{{items.id}}" method="POST">
-          <img title="product-img" class = "item-image" alt="Image-alt" src="{{items.img_url}}"></img>
-          <div class = "item-content">
-            <div class="item-text">
-              <a><p class="item-title">{{items.title}}</p></a>
-              <p class="item-price">${{items.price}}</p>
-              <p class="item-desc">Ingredients: <br>{{items.contains}}</p>
-              <button type="submit">Search</button>
-          
+          <a href="http://127.0.0.1:5000/{{items.id}}" method="POST">
+            <img title="product-img" class = "item-image" alt="Image-alt" src="{{items.img_url}}"></img>
+            <div class = "item-content">
+              <div class="item-text">
+                <p class="item-title">{{items.title}}</p>
+                <p class="item-price">${{items.price}}</p>
+                <p class="item-desc">Ingredients: <br>{{items.contains}}</p>
+            
+              </div>
             </div>
-          </div>
-          </form>
+          </a>
         </div>
       
         {% endfor %}

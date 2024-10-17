@@ -68,6 +68,10 @@ class User(DatabaseManager):
         self.data = ["cart","name", "email", "gender", "password"]
         self.insertitems_execute = "INSERT INTO USERS VALUES(?, ?, ?, ?, ?)"
         self.getitems_excecute = "SELECT name, email FROM USERS"
+    def reset(self):
+        cur.execute(self.deletetable_execute)
+        cur.execute("CREATE TABLE IF NOT EXISTS USERS(cart TEXT, name TEXT, email TEXT, gender TEXT, password TEXT)")
+        connect.commit()
 
 def managedatabases(obj):
     count = 0
@@ -83,6 +87,8 @@ def managedatabases(obj):
         obj.newitem()
     if ans == "4":
         obj.importjson(parcejson())
+    if ans == "5":
+        obj.reset()
     
     
 

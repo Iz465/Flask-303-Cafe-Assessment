@@ -43,7 +43,10 @@
                         </div>
                         <div class="add-to-cart">
                             <p class="disclamer">Please note, This product contains: <br> {{product.contains}}</p>
-                            <button class="cart-button">Add to cart</button>
+                            <form action="http://127.0.0.1:5000/{{product.id}}" method="post">
+                                <button class="cart-button" value="{{product}}" name="add-to-cart" type="submit">Add to cart</button>
+                            </form>
+                            
                         </div>
                     </div>
 

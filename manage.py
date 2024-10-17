@@ -6,21 +6,10 @@ from forms import EmployForm
 from datetime import datetime, timedelta
 from datahandler import MenuHandler, UsersHandler
 
-from flask_sqlalchemy import SQLAlchemy
-
-from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required
-
-from flask_bcrypt import Bcrypt
-
-from flask_login import LoginManager
-
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' # Using SQLite as the database 
-db = SQLAlchemy(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 
 app.secret_key = "Dev Key"
@@ -96,7 +85,7 @@ def signup():
             userhandler.signup(form.data)
             print('printing form:')
             print(form.data)
-            return f'{form.name}\n{form.email}\n{form.gender}'
+            return redirect(url_for('login'))
     if request.method == 'GET':
         print("getting form")
         return render_template('signup.html', form = form)
@@ -146,7 +135,8 @@ def home():
     cursor.execute("SELECT * FROM Discounts") 
     rows = cursor.fetchall()
     connect.close()
-    timeleft_converted = int(timeleft.total_seconds()) 
+    if timeleft is not None:
+        timeleft_converted = int(timeleft.total_seconds()) 
     return render_template('welcome-index.html', rows = rows, timeleft_converted = timeleft_converted)
 
 
@@ -166,11 +156,11 @@ def menu():
         else:
             data_dict = handler.sorteddata(database_menu,sortbyvalue)
 
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict)
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'])
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
-    return render_template('menu-index.html', data = database_menu)
+    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'])
 
 @app.route('/<int:product_id>', methods=["POST","GET"])
 def product(product_id):
@@ -178,8 +168,12 @@ def product(product_id):
     for product in database_menu:
         if product['id'] == product_id:
             product_item = product
+    if request.method == "POST":
+        userhandler = UsersHandler()
+        userhandler.addtocart(session["currentuser"],request.form.get("add-to-cart"))
     
-    return render_template("product-index.html", product = product_item)
+    return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
+
 
 
 ### REWARDS PAGE OPERANDS
