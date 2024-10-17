@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div style="text-align: center; padding: 5px;">
+
+
+<h1>Employment Application </h1><br><br>
+{% if check_form %}
+<form action="http://127.0.0.1:5000/employ_application" method="POST">
+{{ form.hidden_tag() }}
+
+{% for error in form.job_reason.errors %}
+<span style="color: red;">{{ error }}</span><br>
+{% endfor %}
+{{ form.job_reason.label }} <br>
+{{ form.job_reason(style="height:30vw;width:30%") }} <br><br>
+
+{{ form.submit }}
+</form>
+{% endif %}
+
+{% if not check_form %}
+{% if form_done %}
+<h1>Application Received. Will be reviewed</h1>
+{% endif %}
+
+
+<h1>Sorry. You can not access this page unless logged in.</h1>
+
+{% endif %}
+</div>
+
+
+
+{% endblock %}
+

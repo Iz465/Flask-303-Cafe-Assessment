@@ -36,8 +36,8 @@ class UsersHandler(Handler):
     def signup(self,user):
         connect = sqlite3.connect('database.db') 
         cur = connect.cursor()
-        data = ["", user["name"], user["email"], user["gender"], user["password"]]
-        cur.execute("INSERT INTO USERS VALUES(?, ?, ?, ?, ?)", data)
+        data = [ user["name"], user["email"], user["gender"], user["password"]]
+        cur.execute("INSERT INTO USERS (name, email, gender, password) VALUES (?, ?, ?, ?)", data)
         connect.commit() 
         connect.close()
         return 0
@@ -49,13 +49,16 @@ class UsersHandler(Handler):
         try:
             cur.execute(f"SELECT * FROM USERS WHERE email ='{user['email']}'")
             usertemp = cur.fetchone()
-            userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4]}
-            print(userfromdb)
+            if usertemp is None: # Makes it so no error will happen if email isnt in USER database.
+                print('Invalid login details')
+            else:
+                userfromdb = {self.tablevalues[0]: usertemp[1], self.tablevalues[1] : usertemp[2], self.tablevalues[2] : usertemp[3], self.tablevalues[3] : usertemp[4], self.tablevalues[4] : usertemp[5]}
+                print(userfromdb)
         except(IOError):
             print("error occurance")
             print(IOError)
         
-        if userfromdb['password'] == user['password']:
+        if 'password' in userfromdb and userfromdb['password'] == user['password']: # This makes it so no error if wrong password is input.
             print("Login Success")
             self.currentuser = userfromdb
             return True

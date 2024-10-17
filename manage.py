@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, render_template, flash
+from flask import Flask, redirect, url_for, request, render_template, flash, session
 from forms import SignUpForm, Login
 import sqlite3
 import random
@@ -26,14 +26,8 @@ login_manager.init_app(app)
 app.secret_key = "Dev Key"
 connect = sqlite3.connect('database.db')
 
-class User(UserMixin):
-
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True)
-    password_hash = db.Column(db.String(128))
-
-    def __repr__(self):
-        return f'<User {self.username}>'
+isloggedin= False
+loggedin =[]
 
 def getmenu_dict():
         connect.row_factory = sqlite3.Row
@@ -55,9 +49,13 @@ def getusers_dict():
 database_menu = getmenu_dict()
 
 ### ROUTE TO HOME PAGE ###
-@app.route('/')
+@app.route('/', methods = ['POST', 'GET'])
 def index():
-    return redirect(url_for('home'))
+    if request.method == 'POST':
+        session['loggedin'] == False
+        return redirect(url_for('home', loggedin = session['loggedin']))
+    session['loggedin'] = False 
+    return redirect(url_for('home', loggedin = session['loggedin']))
 
 ### ROUTE TO ADMIN
 @app.route('/admin')
@@ -74,10 +72,12 @@ def login():
             flash('All Fields Required')
             return render_template('login.html', form = form)
         else:
-            if userhandler.login(form.data) == True:
-                currentuser = userhandler.currentuser
+            if userhandler.login(form.data) == True: 
+                session['currentuser'] = userhandler.currentuser # Storing user info in here so it can be accessed in other pages.
+                session['loggedin'] = True # This will mean there is a user currently logged in. Will be set to false when the user logs out.
+                currentuser = session['currentuser']
                 print(currentuser)
-                return render_template('profile.html', name = currentuser)
+                return render_template('profile.html', name = currentuser, loggedin = session['loggedin'])
             return render_template('login.html', form = form)
     if request.method == 'GET':
         return render_template('login.html', form = form)
@@ -90,6 +90,7 @@ def signup():
         if form.validate() == False:
             flash('All Fields Required')
             print("error occurance")
+            print("Errors:", form.errors)
             return render_template('signup.html', form = form)
         else:
             userhandler.signup(form.data)
@@ -115,6 +116,7 @@ def home():
     cursor.execute("Select * FROM MENU WHERE id = ?", (random.randrange(min_id,max_id + 1),))
     product = cursor.fetchone()
     timeleft = None
+    timeleft_converted = 0
     if product is not None: # checks whether there is a product with that id.
         cursor.execute("Select * From Discounts")
         empty_check = cursor.fetchall()
@@ -204,7 +206,7 @@ def employ():
      
         return redirect(url_for('welcome-index'))
 
-  
+    
     connect = sqlite3.connect('database.db') #make images 3000 height and 2000 width
     connect.row_factory = sqlite3.Row
     cur = connect.cursor()
@@ -212,9 +214,25 @@ def employ():
     rows = cur.fetchall()
     return render_template('employ-index.html', rows = rows)
 
+@app.route('/employ_application', methods= ['POST', 'GET'])
+def employ_application():
+    form = EmployForm()
+    print(session['loggedin'])
+    if 'loggedin' in session and session['loggedin']:   
+        if request.method == 'POST':
+            if form.validate() == False:
+                return render_template('employ_application.html', form = form, check_form = True)
+            else:
+                return render_template('employ_application.html', form = form, check_form = False, form_done = True)
+        else:
+            return render_template('employ_application.html', form = form, check_form = True)
+    else:
+        return render_template('employ_application.html', form = form, check_form = False)
+        
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-
     app.run(debug=True)
+
+
+     #  session['currentuser'] = userhandler.currentuser
+      #          session['loggedin'] = True 

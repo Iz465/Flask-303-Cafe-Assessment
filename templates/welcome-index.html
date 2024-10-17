@@ -1,20 +1,16 @@
 
 {% extends 'base.html' %}
 {% block content %}
-
-{#
-<div class="carousel-container">
-  <img class = "showing carousel-images" src = "{{ url_for('static', filename='images/holding-coffee.webp') }}">
-  <img class = "carousel-images" src = "{{ url_for('static', filename='images/churro.jpg') }}">
-  <img class = "carousel-images" src = "{{ url_for('static', filename='images/coffee-beans.jpg') }}">
-</div>
-#}
  
 {% for row in rows %}
+
 <img class = "showing carousel-images" src = "{{ row.Image_Url }}" style="max-height: 20%; margin-left: 5%; margin-top: 5%;">
-<p style="margin-left: 5%;">Special Item of the Day</p>
-<p style="margin-left: 5%;">{{row.Name}} 50% off</p>
-<p style="margin-left: 5%;">Time left: <span id="display_time"></span></p>
+<form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="inconsolata" style="margin-left: 5%;">
+<p>Special Item of the Day</p>
+<p>{{row.Name}} 50% off</p>
+<p>Time left: <span id="display_time"></span></p>
+<button type="submit">Order</button>
+</form>
 
 {% endfor %}
 
@@ -23,8 +19,6 @@
   <img class = "carousel-images" src = "{{ url_for('static', filename='images/churro.jpg') }}">
   <img class = "carousel-images" src = "{{ url_for('static', filename='images/coffee-beans.jpg') }}">
 </div>
-
-
 
 <script>
   var timeleft = {{ timeleft_converted }}
@@ -41,15 +35,21 @@
    
     document.getElementById("display_time").innerHTML = formatted_time
     timeleft--;
+    if (timeleft <= 0){
+       document.getElementById("display_time").innerHTML = "Refresh Page"
+    }
+     
+     
   }
+  
 
   setInterval(update_time, 1000);
 
 </script>
 
-{#
+
 <script src="{{ url_for('static', filename='scripts/carousel.js') }}"></script> 
-#}
+
    
 {% endblock %}
 
