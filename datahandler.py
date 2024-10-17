@@ -52,7 +52,7 @@ class UsersHandler(Handler):
             if usertemp is None: # Makes it so no error will happen if email isnt in USER database.
                 print('Invalid login details')
             else:
-                userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4]}
+                userfromdb = {self.tablevalues[0]: usertemp[1], self.tablevalues[1] : usertemp[2], self.tablevalues[2] : usertemp[3], self.tablevalues[3] : usertemp[4], self.tablevalues[4] : usertemp[5]}
                 print(userfromdb)
         except(IOError):
             print("error occurance")

@@ -20,7 +20,7 @@
     <link href="{{ url_for('static', filename='menu.css') }}" rel="stylesheet">
     <script src="{{ url_for('static', filename='scripts/popup.js') }}"></script> 
     <script src="{{ url_for('static', filename='scripts/jquery.js') }}"></script> 
-    <script src="{{ url_for('static', filename='scripts/carousel.js') }}"></script> 
+
  
    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -43,6 +43,9 @@
       <a class="loginbutton" href="{{ url_for('login') }}">
         <div class="img-container">
           <img class="login-img" src="https://www.svgrepo.com/show/532363/user-alt-1.svg" alt="">
+          {% if loggedin %}
+          <form action="http://127.0.0.1:5000/" method="POST"><input type="submit" value="logout"><form></form>
+          {% endif %}
         </div>
       </a>
       
@@ -89,3 +92,7 @@
 
   </body>
 </html>
+
+
+
+</script>

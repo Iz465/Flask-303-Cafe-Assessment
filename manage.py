@@ -34,10 +34,13 @@ def getusers_dict():
 database_menu = getmenu_dict()
 currentuser = {"":""}
 ### ROUTE TO HOME PAGE ###
-@app.route('/')
+@app.route('/', methods = ['POST', 'GET'])
 def index():
+    if request.method == 'POST':
+        session['loggedin'] == False
+        return redirect(url_for('home', loggedin = session['loggedin']))
     session['loggedin'] = False 
-    return redirect(url_for('home'))
+    return redirect(url_for('home', loggedin = session['loggedin']))
 
 ### ROUTE TO ADMIN
 @app.route('/admin')
@@ -59,7 +62,7 @@ def login():
                 session['loggedin'] = True # This will mean there is a user currently logged in. Will be set to false when the user logs out.
                 currentuser = session['currentuser']
                 print(currentuser)
-                return render_template('profile.html', name = currentuser)
+                return render_template('profile.html', name = currentuser, loggedin = session['loggedin'])
             return render_template('login.html', form = form)
     if request.method == 'GET':
         return render_template('login.html', form = form)
