@@ -164,14 +164,18 @@ def menu():
 
 @app.route('/<int:product_id>', methods=["POST","GET"])
 def product(product_id):
+    print(request.method)
     product_item = {}
     for product in database_menu:
         if product['id'] == product_id:
             product_item = product
-    if request.method == "POST":
-        userhandler = UsersHandler()
-        userhandler.addtocart(session["currentuser"],request.form.get("add-to-cart"))
     
+    if request.method == "POST":
+        usr = session["currentuser"]
+        userhandler = UsersHandler()
+        msg =userhandler.addtocart(usr,product_item)
+        print(msg)
+        userhandler.parcecart(session['currentuser'])
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
 
 

@@ -58,16 +58,61 @@ class UsersHandler(Handler):
             print("error occurance")
             print(IOError)
         
+        connect.close()
         if 'password' in userfromdb and userfromdb['password'] == user['password']: # This makes it so no error if wrong password is input.
             print("Login Success")
             self.currentuser = userfromdb
+            self.currentuser['cart'] = self.parcecart(userfromdb)
             return True
         else:
             print("Login Fail")
             return False
+    def parcecart(self, user):
+        lis = []
+        print(user['cart'])
+        cleanstr = user['cart'].rstrip('/')
+        items = cleanstr.split('/')
+        for item in items:
+            values = item.split(',')
+            lis.append({"title":values[0], "size":values[1],"quantity":values[2]})
+        counter =0
+        for lisitems in lis:
+            counter += 1
+            print(lisitems)
+        return lis
+
     def addtocart(self, user, product_id): # make this append data to user database
         if self.login(user) == True:
-            msg = f"Successfully validated current user, adding product {product_id}"
-            print(msg)
-            return msg
+            quantity_placeholder = 1
+            size_placeholder = "s"
+            connect = sqlite3.connect('database.db') 
+            cur = connect.cursor()
+            cur.execute(f"SELECT * FROM USERS WHERE email ='{user['email']}'")
+            usertemp = cur.fetchone()
+            print(usertemp)
+            current_cart = usertemp['cart']
+            if product_id['title'] in current_cart:
+                return "Already in cart, function to add more needed"
+
+            newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder}/"
+
+            current_cart = current_cart + newitem
+
+            
+            val = (str(current_cart),user["email"])
+            command = (f"UPDATE USERS SET cart = '{val[0]}' WHERE email = '{val[1]}'")
+            cur.execute(command)
+            connect.commit()
+            connect.close()
+            return 0
+    def updateusr(self,user):
+        connect = sqlite3.connect('database.db') 
+        cur = connect.cursor()
+        cur.execute(f"SELECT * FROM USERS WHERE email ='{user['email']}'")
+        usertemp = cur.fetchone()
+        connect.close()
+        freshuser = usertemp
+        freshuser['cart'] = self.parcecart(usertemp)
+        return freshuser
+
     
