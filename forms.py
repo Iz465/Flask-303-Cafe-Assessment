@@ -13,6 +13,7 @@ class SignUpForm(FlaskForm):
     gender = RadioField('gender',choices=[('M','Male'), ('F','Female'),('O','Other')])
     email = StringField('email',[InputRequired("Please enter an email address"), Email("wrong format")])
     password = PasswordField('password',[InputRequired("Password Required")])
+    admin = RadioField('Are you an admin?', choices = [('Y', 'Yes'), ('N', 'No')])
     submit = SubmitField('Send')
 
 class Login(FlaskForm):

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div style="text-align: center; padding: 5px;">
+<div class="inconsolata" style="text-align: center; padding: 5px; min-height: 60%; display: flex; flex-direction: column; justify-content: space-around;">
 
-
-<h1>Employment Application </h1><br><br>
+<br><br>
+<h1>Employment Application</h1><br><br>
 {% if check_form %}
 <form action="http://127.0.0.1:5000/employ_application" method="POST">
 {{ form.hidden_tag() }}
@@ -21,15 +21,18 @@
 
 
 {% if form_done %}
-<h1>Application Received. Will be reviewed</h1>
+<h3>Application Received. Will be reviewed</h3>
 {% endif %}
 
 {% if notloggedin %}
-<h1>Sorry. You can not access this page unless logged in.</h1>
+
+    <h3>Sorry. You can not apply for a job unless you are logged in.</h3>
+
+
 {% endif %}
 
-{% if already_applied %}
-<h1>You have already applied for a job. You can not apply again.</h1>
+{% if already_applied %} 
+<h3>You have already applied for a job. You can not apply again.</h3>
 {% endif %}
 
 </div>

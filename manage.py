@@ -188,6 +188,9 @@ def employ():
 @app.route('/employ_application', methods= ['POST', 'GET'])
 def employ_application():
     form = EmployForm()
+   # if request.method == 'POST':
+      #  job_name = request.form['job_name']
+       # print(job_name)
     if 'loggedin' in session and session['loggedin']:   
         if request.method == 'POST':
             if form.validate() == False:
@@ -199,7 +202,8 @@ def employ_application():
                 employ_ids = cursor.fetchall()
                 check_users = [row[0] for row in employ_ids] # This adds the ids into the check users from the employ ids tuple, so they can be accessed individually.
                 if session['currentuser']['id'] not in check_users:
-                    cursor.execute("Insert INTO Employ_Application (id,name, job_reason) VALUES (?,?,?)", (session['currentuser']['id'],session['currentuser']['name'], request.form['job_reason'])) 
+                    cursor.execute("Insert INTO Employ_Application (id, name, gender, job_reason) VALUES (?,?,?,?)", 
+                    (session['currentuser']['id'],session['currentuser']['name'],session['currentuser']['gender'], request.form['job_reason'])) 
                     connect.commit()
                     connect.close() 
                     return render_template('employ_application.html', form = form, check_form = False, form_done = True)

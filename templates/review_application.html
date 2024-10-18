@@ -1,14 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<div style="display: flex; justify-content: space-around; min-height: 50%; width: 100%;">
+<div class="inconsolata" style="display: flex; flex-direction: column; justify-content: space-around;">
+
 <H1>Applicant Reviews</H1>
+<div>
 
+
+<table class="employ_table" border="2">
+<thead>
+<td>Name</td>
+<td>Gender</td>
+<td>Job</td>
+<td>Reason for Job</td>
+</thead>
 {% for row in rows %}
-
-<p>Name: {{row.Name}}</p>
-<p>Reason for Job</p>
-<p>{{row.job_reason}}</p>
-
+<tr>
+<td>{{row.name}}</td>
+<td>{{row.gender}}</td>
+<td>{{row.job}}</td>
+<td>{{row.job_reason}}</td>
+</tr>
 {% endfor %}
+</table>
+
+</div>
+
+</div>
+</div>
 
 {% endblock %}
