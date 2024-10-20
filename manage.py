@@ -137,7 +137,7 @@ def home():
     connect.close()
     if timeleft is not None:
         timeleft_converted = int(timeleft.total_seconds()) 
-    return render_template('welcome-index.html', rows = rows, timeleft_converted = timeleft_converted)
+    return render_template('welcome-index.html', currentuser = session['currentuser'], rows = rows, timeleft_converted = timeleft_converted)
 
 
 
