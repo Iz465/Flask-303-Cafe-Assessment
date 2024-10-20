@@ -13,6 +13,30 @@ connect = sqlite3.connect('database.db')
 
 isloggedin= False
 loggedin =[]
+num = 0
+
+
+@app.before_request # This happens everytime flask reloads, before the routes
+def before_request():
+    global num
+    if num <1:
+        session['currentuser'] = None
+    num += 1
+
+@app.context_processor
+def context_processor():
+    if 'currentuser' in session and session['currentuser'] is not None:
+        print("member is logged in")
+        session['loggedin'] = True
+        loggedin = session['loggedin']
+    else:
+        print("member is logged out")
+        session['loggedin'] = False
+        loggedin = session['loggedin']
+    print(loggedin)
+    print(session['currentuser'])
+    return dict(loggedin=loggedin)
+
 
 
 def getmenu_dict():
@@ -38,10 +62,11 @@ currentuser = {"":""}
 @app.route('/', methods = ['POST', 'GET'])
 def index():
     if request.method == 'POST':
-        session['loggedin'] == False
-        return redirect(url_for('home', loggedin = session['loggedin']))
-    session['loggedin'] = False 
-    return redirect(url_for('home', loggedin = session['loggedin']))
+        print("logging out of user")
+        session['currentuser'] = None
+        return redirect(url_for('home'))
+    print("not using logout post")
+    return redirect(url_for('home'))
 
 ### ROUTE TO ADMIN
 @app.route('/admin')
@@ -60,10 +85,9 @@ def login():
         else:
             if userhandler.login(form.data) == True: 
                 session['currentuser'] = userhandler.currentuser # Storing user info in here so it can be accessed in other pages.
-                session['loggedin'] = True # This will mean there is a user currently logged in. Will be set to false when the user logs out.
                 currentuser = session['currentuser']
                 print(currentuser)
-                return render_template('profile.html', name = currentuser, loggedin = session['loggedin'])
+                return render_template('profile.html', name = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
         return render_template('login.html', form = form)
@@ -173,6 +197,7 @@ def rewards():
         return redirect(url_for('welcome-index'))
 
     rows = sqlite_functions.get_table('Rewards')
+    print('logged in is: ',session['loggedin'])
     return render_template('rewards-index.html', rows = rows)
 
 ### EMPLOY PAGE OPERANDS ###
@@ -191,7 +216,7 @@ def employ_application():
    # if request.method == 'POST':
       #  job_name = request.form['job_name']
        # print(job_name)
-    if 'loggedin' in session and session['loggedin']:   
+    if 'loggedin' in session and session['loggedin']:  # This if statement will check first, whether session has loggedin and then if the loggedin value is set to true. So only logged in users can access this.  
         if request.method == 'POST':
             if form.validate() == False:
                 return render_template('employ_application.html', form = form, check_form = True)
