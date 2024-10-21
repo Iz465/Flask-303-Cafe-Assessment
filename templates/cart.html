@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <link href="{{ url_for('static', filename='cart.css') }}" rel="stylesheet">
+</head>
+<body>
+  
+ 
+  <div class="Menu">
+      <div class="menucontroler">
+          <ul>
+            <h2>{{currentuser.name}}'s cart</h2>
+      </div>
+      <ul id="cart_data">
+        {% for items in currentuser.cart %}
+        <div class = "item">
+          <img class="pic" src="{{items.img_url}}" alt="">
+          <div class="text-container">
+            <h3>{{items.title}} ({{items.size}})</h3>
+            <p>Quantity: {{items.quantity}}</p>
+          </div>
+          <button class="remove_item_button">X</button>
+          
+        </div>
+      
+        {% endfor %}
+      
+        
+      </ul>
+
+  </div>
+
+  
+</body>
+{% endblock %}

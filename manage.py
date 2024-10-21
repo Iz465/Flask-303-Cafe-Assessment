@@ -66,7 +66,7 @@ def login():
                 session['loggedin'] = True # This will mean there is a user currently logged in. Will be set to false when the user logs out.
                 currentuser = session['currentuser']
                 print(currentuser)
-                return render_template('profile.html', name = currentuser, loggedin = session['loggedin'])
+                return render_template('profile.html', currentuser = currentuser, loggedin = session['loggedin'])
             return render_template('login.html', form = form)
     if request.method == 'GET':
         return render_template('login.html', form = form)
@@ -174,10 +174,14 @@ def product(product_id):
         usr = session["currentuser"]
         userhandler = UsersHandler()
         msg =userhandler.addtocart(usr,product_item)
-        print(msg)
-        userhandler.parcecart(session['currentuser'])
+        print(usr)
+        session["currentuser"] = userhandler.updateusr(usr)
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
 
+### Cart PAGE
+@app.route('/cart', methods=["POST",'GET'])
+def cart():
+    return render_template('cart.html', currentuser = session["currentuser"])
 
 
 ### REWARDS PAGE OPERANDS

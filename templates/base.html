@@ -40,7 +40,10 @@
     <h1 class="kanit-thin title" style="text-align: center;">Cafe</h1>
 
     <div class="user-cart">
-      <img class="cart-img" src="https://www.svgrepo.com/show/528102/cart-3.svg" alt="">
+      <a href="{{url_for('cart')}}">
+        <img class="cart-img" src="https://www.svgrepo.com/show/528102/cart-3.svg" alt="">
+      </a>
+      
       <div class="dropdown-content">
         {% for item in currentuser.cart %}
         <a href="#">{{item.title}}</a>

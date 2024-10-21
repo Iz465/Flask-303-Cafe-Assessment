@@ -36,8 +36,8 @@ class UsersHandler(Handler):
     def signup(self,user):
         connect = sqlite3.connect('database.db') 
         cur = connect.cursor()
-        data = [ user["name"], user["email"], user["gender"], user["password"]]
-        cur.execute("INSERT INTO USERS (name, email, gender, password) VALUES (?, ?, ?, ?)", data)
+        data = ["", user["name"], user["email"], user["gender"], user["password"]]
+        cur.execute("INSERT INTO USERS (cart, name, email, gender, password) VALUES (?, ?, ?, ?, ?)", data)
         connect.commit() 
         connect.close()
         return 0
@@ -52,7 +52,9 @@ class UsersHandler(Handler):
             if usertemp is None: # Makes it so no error will happen if email isnt in USER database.
                 print('Invalid login details')
             else:
-                userfromdb = {self.tablevalues[0]: usertemp[1], self.tablevalues[1] : usertemp[2], self.tablevalues[2] : usertemp[3], self.tablevalues[3] : usertemp[4], self.tablevalues[4] : usertemp[5]}
+                print(self.tablevalues)
+                print(usertemp)
+                userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4]}
                 print(userfromdb)
         except(IOError):
             print("error occurance")
@@ -62,19 +64,21 @@ class UsersHandler(Handler):
         if 'password' in userfromdb and userfromdb['password'] == user['password']: # This makes it so no error if wrong password is input.
             print("Login Success")
             self.currentuser = userfromdb
-            self.currentuser['cart'] = self.parcecart(userfromdb)
+            self.currentuser['cart'] = self.parcecart(userfromdb["cart"])
             return True
         else:
             print("Login Fail")
             return False
-    def parcecart(self, user):
+    def parcecart(self, cart):
         lis = []
-        print(user['cart'])
-        cleanstr = user['cart'].rstrip('/')
-        items = cleanstr.split('/')
+        print(cart)
+        if cart == "":
+            return lis
+        cleanstr = cart.rstrip('|')
+        items = cleanstr.split('|')
         for item in items:
             values = item.split(',')
-            lis.append({"title":values[0], "size":values[1],"quantity":values[2]})
+            lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3]})
         counter =0
         for lisitems in lis:
             counter += 1
@@ -87,14 +91,14 @@ class UsersHandler(Handler):
             size_placeholder = "s"
             connect = sqlite3.connect('database.db') 
             cur = connect.cursor()
-            cur.execute(f"SELECT * FROM USERS WHERE email ='{user['email']}'")
+            cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
             usertemp = cur.fetchone()
             print(usertemp)
-            current_cart = usertemp['cart']
+            current_cart = usertemp[0] ### user temp is a tuple for some reason so this is how it is
             if product_id['title'] in current_cart:
                 return "Already in cart, function to add more needed"
 
-            newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder}/"
+            newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']}|"
 
             current_cart = current_cart + newitem
 
@@ -108,11 +112,11 @@ class UsersHandler(Handler):
     def updateusr(self,user):
         connect = sqlite3.connect('database.db') 
         cur = connect.cursor()
-        cur.execute(f"SELECT * FROM USERS WHERE email ='{user['email']}'")
+        cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
         usertemp = cur.fetchone()
         connect.close()
-        freshuser = usertemp
-        freshuser['cart'] = self.parcecart(usertemp)
+        freshuser = user
+        freshuser['cart'] = self.parcecart(usertemp[0])
         return freshuser
 
     
