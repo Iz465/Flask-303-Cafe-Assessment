@@ -32,6 +32,7 @@ class UsersHandler(Handler):
         super().__init__()
         self.sortingmethods = ["name","email"]
         self.tablevalues = ['id',"cart","name", "email", "gender", "password"]
+        self.adminvalues = ['id',"name", "email", "gender", "password"]
         self.currentuser = {}
     def signup(self,user):
         connect = sqlite3.connect('database.db') 
@@ -49,11 +50,25 @@ class UsersHandler(Handler):
         try:
             cur.execute(f"SELECT * FROM USERS WHERE email ='{user['email']}'")
             usertemp = cur.fetchone()
-            if usertemp is None: # Makes it so no error will happen if email isnt in USER database.
-                print('Invalid login details')
-            else:
+            if usertemp is not None:
                 userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4], self.tablevalues[5] : usertemp[5]}
                 print(userfromdb)
+                admin_check = False
+
+            if usertemp is None: # Makes it so no error will happen if email isnt in USER database.
+                print('Invalid login details')
+                cur.execute(f"Select * From ADMINS WHERE email ='{user['email']}'")
+                usertemp = cur.fetchone()
+                if usertemp is not None:
+                    userfromdb = {self.adminvalues[0]: usertemp[0], self.adminvalues[1] : usertemp[1], self.adminvalues[2] : usertemp[2], self.adminvalues[3] : usertemp[3], self.adminvalues[4] : usertemp[4]}
+                    print(userfromdb)
+                    admin_check = True
+                else:
+                    print('Invalid Admin and user login')
+                    admin_check = False
+                
+          
+
         except(IOError):
             print("error occurance")
             print(IOError)
@@ -61,8 +76,8 @@ class UsersHandler(Handler):
         if 'password' in userfromdb and userfromdb['password'] == user['password']: # This makes it so no error if wrong password is input.
             print("Login Success")
             self.currentuser = userfromdb
-            return True
+            return True, admin_check
         else:
             print("Login Fail")
-            return False
+            return False, admin_check
     

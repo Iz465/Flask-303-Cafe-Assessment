@@ -58,7 +58,9 @@
       <a href="{{ url_for('menu') }}">Menu</a>
       <a href="{{ url_for('rewards') }}">Rewards</a>
       <a href="{{ url_for('employ') }}">Employment</a>
+      {% if admin_check %}
       <a href="{{ url_for('application_review') }}">Admin</a>
+      {% endif %}
   </div>
   
 

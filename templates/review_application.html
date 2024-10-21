@@ -1,33 +1,88 @@
 {% extends 'base.html' %}
 {% block content %}
-
-<div style="display: flex; justify-content: space-around; min-height: 50%; width: 100%;">
-<div class="inconsolata" style="display: flex; flex-direction: column; justify-content: space-around;">
-
-<H1>Applicant Reviews</H1>
-<div>
-
-
-<table class="employ_table" border="2">
-<thead>
-<td>Name</td>
-<td>Gender</td>
-<td>Job</td>
-<td>Reason for Job</td>
-</thead>
-{% for row in rows %}
-<tr>
-<td>{{row.name}}</td>
-<td>{{row.gender}}</td>
-<td>{{row.job}}</td>
-<td>{{row.job_reason}}</td>
-</tr>
-{% endfor %}
-</table>
-
+<div style="height: 10%;"></div>
+<div style="height: 10%; text-align: center;">
+    <h1>Admin Page</h1>
 </div>
+<div style="display: flex; justify-content: space-around; min-height: 10%;">
+<H2>Applicant Reviews</H2>
+<h2>Users</h2>
+<h2>Products</h2>
+<h2>Jobs</h2>
+</div>
+<div class="inconsolata" style="display: flex; justify-content: space-around;">
 
-</div>
-</div>
+    <table class="employ_table" border="2">
+        <thead>
+        <td>Name</td>
+        <td>Gender</td>
+        <td>Job</td>
+        <td>Reason for Job</td>
+        </thead>
+        {% for row in rows %}
+        <tr>
+        <td>{{row.name}}</td>
+        <td>{{row.gender}}</td>
+        <td>{{row.job}}</td>
+        <td>{{row.job_reason}}</td>
+        </tr>
+        {% endfor %}
+        </table>
+
+    <table class="employ_table" border="2">
+        <thead>
+        <td>Name</td>
+        <td>Gender</td>
+        <td>Job</td>
+        <td>Reason for Job</td>
+        </thead>
+        {% for row in rows %}
+        <tr>
+        <td>{{row.name}}</td>
+        <td>{{row.gender}}</td>
+        <td>{{row.job}}</td>
+        <td>{{row.job_reason}}</td>
+        <td><button>Approve</button></td>
+        <td><button>Deny</button></td>
+        </tr>
+        {% endfor %}
+        </table>
+
+    <table class="employ_table" border="2">
+        <thead>
+        <td>Name</td>
+        <td>Gender</td>
+        <td>Job</td>
+        <td>Reason for Job</td>
+        </thead>
+        {% for row in rows %}
+        <tr>
+        <td>{{row.name}}</td>
+        <td>{{row.gender}}</td>
+        <td>{{row.job}}</td>
+        <td>{{row.job_reason}}</td>
+        </tr>
+        {% endfor %}
+        </table>
+
+    <table class="employ_table" border="2">
+        <thead>
+        <td>Name</td>
+        <td>Gender</td>
+        <td>Job</td>
+        <td>Reason for Job</td>
+        </thead>
+        {% for row in rows %}
+        <tr>
+        <td>{{row.name}}</td>
+        <td>{{row.gender}}</td>
+        <td>{{row.job}}</td>
+        <td>{{row.job_reason}}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    
+    
+    </div>
 
 {% endblock %}

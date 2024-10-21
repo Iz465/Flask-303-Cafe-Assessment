@@ -21,21 +21,23 @@ def before_request():
     global num
     if num <1:
         session['currentuser'] = None
+        session['admin_check'] = None
     num += 1
 
 @app.context_processor
 def context_processor():
     if 'currentuser' in session and session['currentuser'] is not None:
-        print("member is logged in")
         session['loggedin'] = True
         loggedin = session['loggedin']
     else:
-        print("member is logged out")
         session['loggedin'] = False
         loggedin = session['loggedin']
-    print(loggedin)
-    print(session['currentuser'])
-    return dict(loggedin=loggedin)
+    if 'admin_check' in session and session['admin_check'] is not None:
+        admin_check = session['admin_check']
+        return dict(loggedin=loggedin, admin_check = admin_check)
+    else:
+        return dict(loggedin=loggedin)
+
 
 
 
@@ -64,6 +66,7 @@ def index():
     if request.method == 'POST':
         print("logging out of user")
         session['currentuser'] = None
+        session['admin_check'] = None
         return redirect(url_for('home'))
     print("not using logout post")
     return redirect(url_for('home'))
@@ -83,10 +86,13 @@ def login():
             flash('All Fields Required')
             return render_template('login.html', form = form)
         else:
-            if userhandler.login(form.data) == True: 
+            login_check, admin_check = userhandler.login(form.data)
+            if login_check: 
                 session['currentuser'] = userhandler.currentuser # Storing user info in here so it can be accessed in other pages.
                 currentuser = session['currentuser']
                 print(currentuser)
+                print('admin check is : ', admin_check)
+                session['admin_check'] = admin_check
                 return render_template('profile.html', name = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
