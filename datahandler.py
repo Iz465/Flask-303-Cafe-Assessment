@@ -74,16 +74,28 @@ class UsersHandler(Handler):
         print(cart)
         if cart == "":
             return lis
+        print("CART:",cart)
         cleanstr = cart.rstrip('|')
+        cleanstr = cleanstr.rstrip(',')
+        cleanstr = cleanstr.rstrip('|')
         items = cleanstr.split('|')
+        print("ITEMS:",items)
         for item in items:
             values = item.split(',')
+            print(values)
             lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3]})
         counter =0
         for lisitems in lis:
             counter += 1
-            print(lisitems)
+            print("listitem:",lisitems)
         return lis
+    
+    def compresscart(self, cart):
+        compressedstr = ""
+        for item in cart:
+            compressedstr = compressedstr + f"{item['title']},{item['size']},{item['quantity']},{item['img_url']}|,"
+        return compressedstr
+            
 
     def addtocart(self, user, product_id): # make this append data to user database
         if self.login(user) == True:
@@ -104,6 +116,30 @@ class UsersHandler(Handler):
 
             
             val = (str(current_cart),user["email"])
+            command = (f"UPDATE USERS SET cart = '{val[0]}' WHERE email = '{val[1]}'")
+            cur.execute(command)
+            connect.commit()
+            connect.close()
+            return 0
+    def removefromcart(self,user,product_id):
+        if self.login(user) == True:
+            connect = sqlite3.connect('database.db') 
+            cur = connect.cursor()
+            cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
+            usertemp = cur.fetchone()
+
+            current_cart = usertemp[0] ### user temp is a tuple for some reason so this is how it is, in string form
+            if product_id not in current_cart:
+                return "Already not in cart ERROR, function to add more needed"
+
+            for item in user['cart']:
+                if product_id == item["title"]:
+                    print("REMOVING ITEM:", item)
+                    user["cart"].remove(item)
+            
+            compressedcart = self.compresscart(user["cart"])
+            
+            val = (str(compressedcart),user["email"])
             command = (f"UPDATE USERS SET cart = '{val[0]}' WHERE email = '{val[1]}'")
             cur.execute(command)
             connect.commit()

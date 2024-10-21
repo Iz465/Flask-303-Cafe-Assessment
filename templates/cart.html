@@ -19,7 +19,11 @@
             <h3>{{items.title}} ({{items.size}})</h3>
             <p>Quantity: {{items.quantity}}</p>
           </div>
-          <button class="remove_item_button">X</button>
+          <form action="http://127.0.0.1:5000/cart" class="remove_item_button" method="post">
+            
+            <button value="{{items.title}}" name="removeitem" type="submit" >X</button>
+          </form>
+          
           
         </div>
       

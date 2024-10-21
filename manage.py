@@ -181,6 +181,14 @@ def product(product_id):
 ### Cart PAGE
 @app.route('/cart', methods=["POST",'GET'])
 def cart():
+    if request.method == "POST":
+        usr = session["currentuser"]
+        userhandler = UsersHandler()
+        item = request.form.get("removeitem")
+        print("ITEM PRINTING:",item)
+        msg =userhandler.removefromcart(usr,item)
+        
+        session["currentuser"] = userhandler.updateusr(usr)
     return render_template('cart.html', currentuser = session["currentuser"])
 
 

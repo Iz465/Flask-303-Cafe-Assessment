@@ -24,5 +24,8 @@
 .remove_item_button{
     margin-left: auto;
     margin-right: 5%;
+    
+}
+button{
     background-color: rgb(219, 1, 1);
 }
