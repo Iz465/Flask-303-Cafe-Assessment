@@ -210,6 +210,9 @@ def product(product_id):
 ### Cart PAGE
 @app.route('/cart', methods=["POST",'GET'])
 def cart():
+    cart_total = 0
+    for item in session["currentuser"]["cart"]:
+        cart_total += item['price']
     if request.method == "POST":
         usr = session["currentuser"]
         userhandler = UsersHandler()
@@ -218,7 +221,7 @@ def cart():
         msg =userhandler.removefromcart(usr,item)
         
         session["currentuser"] = userhandler.updateusr(usr)
-    return render_template('cart.html', currentuser = session["currentuser"])
+    return render_template('cart.html', currentuser = session["currentuser"],cart_total = cart_total)
 
 
 ### REWARDS PAGE OPERANDS

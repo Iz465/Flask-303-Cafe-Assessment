@@ -32,3 +32,13 @@ button{
 .center-div{
     margin: auto;
 }
+.total-div{
+    margin-top: 5%;
+    display: flex;
+    position: relative;
+}
+.total-text{
+    padding: 1%;
+    border-radius: 5%;
+    background-color: cadetblue;
+}

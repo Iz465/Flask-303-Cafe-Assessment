@@ -99,7 +99,7 @@ class UsersHandler(Handler):
             values = cleanitem.split(',')
             for value in values:
                 print("VALUE:\n",value)
-            lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3], 'price':values[4]})
+            lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3], 'price':float(values[4])})
         counter =0
         for lisitems in lis:
             counter += 1
