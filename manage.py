@@ -88,11 +88,14 @@ def login():
             flash('All Fields Required')
             return render_template('login.html', form = form)
         else:
-            if userhandler.login(form.data) == True: 
+            login_check, admin_check = userhandler.login(form.data)
+            if login_check: 
                 session['currentuser'] = userhandler.currentuser # Storing user info in here so it can be accessed in other pages.
                 currentuser = session['currentuser']
                 print(currentuser)
-                return render_template('profile.html', currentuser = currentuser, loggedin = session['loggedin'])
+                print('admin check is : ', admin_check)
+                session['admin_check'] = admin_check
+                return render_template('profile.html', currentuser = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
         return render_template('login.html', form = form)
@@ -111,7 +114,7 @@ def signup():
             userhandler.signup(form.data)
             print('printing form:')
             print(form.data)
-            return redirect(url_for('login'))
+            return f'{form.name}\n{form.email}\n{form.gender}'
     if request.method == 'GET':
         print("getting form")
         return render_template('signup.html', form = form)
@@ -197,6 +200,7 @@ def product(product_id):
         usr = session["currentuser"]
         userhandler = UsersHandler()
         msg =userhandler.addtocart(usr,product_item)
+        print(msg)
         print(usr)
         session["currentuser"] = userhandler.updateusr(usr)
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
