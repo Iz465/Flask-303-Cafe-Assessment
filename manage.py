@@ -227,7 +227,7 @@ def rewards():
 
     rows = sqlite_functions.get_table('Rewards')
     print('logged in is: ',session['loggedin'])
-    return render_template('rewards-index.html', rows = rows)
+    return render_template('rewards-index.html', rows = rows, currentuser = session["currentuser"])
 
 ### EMPLOY PAGE OPERANDS ###
 @app.route('/employ')
@@ -236,7 +236,7 @@ def employ():
         return redirect(url_for('welcome-index'))
     
     rows = sqlite_functions.get_table('EmployJobs') # Make images 3000 height and 2000 width
-    return render_template('employ-index.html', rows = rows)
+    return render_template('employ-index.html', rows = rows, currentuser = session["currentuser"])
 
 
 @app.route('/employ_application', methods= ['POST', 'GET'])
@@ -260,20 +260,20 @@ def employ_application():
                     (session['currentuser']['id'],session['currentuser']['name'],session['currentuser']['gender'], request.form['job_reason'])) 
                     connect.commit()
                     connect.close() 
-                    return render_template('employ_application.html', form = form, check_form = False, form_done = True)
+                    return render_template('employ_application.html', form = form, check_form = False, form_done = True, currentuser = session["currentuser"])
                 else:
-                    return render_template('employ_application.html', already_applied = True)
+                    return render_template('employ_application.html', already_applied = True, currentuser = session["currentuser"])
         else:
-            return render_template('employ_application.html', form = form, check_form = True)
+            return render_template('employ_application.html', form = form, check_form = True, currentuser = session["currentuser"])
     else:
-        return render_template('employ_application.html', notloggedin = True)
+        return render_template('employ_application.html', notloggedin = True, currentuser = session["currentuser"])
 
 
 
 @app.route('/application_review', methods = ['POST', 'GET'])
 def application_review():
     rows = sqlite_functions.get_table('Employ_Application')
-    return render_template('review_application.html', rows = rows)
+    return render_template('review_application.html', rows = rows, currentuser = session["currentuser"])
         
 
 if __name__ == '__main__':
