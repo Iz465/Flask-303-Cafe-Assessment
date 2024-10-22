@@ -39,7 +39,22 @@
   <div style="height: 5%;"></div>
   <div class="head-banner">
     <h1 class="kanit-thin title" style="text-align: center;">Cafe</h1>
-    
+
+    <div class="user-cart">
+      <a href="{{url_for('cart')}}">
+        <img class="cart-img" src="https://www.svgrepo.com/show/528102/cart-3.svg" alt="">
+        {%if currentuser.cart|length > 0 %}
+          <div class="top-right"><p class="kanit-thin num">{{currentuser.cart|length}}</p></div>
+        {%endif%}
+      </a>
+      
+      <div class="dropdown-content">
+        {% for item in currentuser.cart %}
+        <a href="#">{{item.title}}</a>
+        {%endfor%}
+      </div>
+
+    </div>
     <div class="login-container">
       <a class="loginbutton" href="{{ url_for('login') }}">
         <div class="img-container">

@@ -7,7 +7,13 @@ from datetime import datetime, timedelta
 import sqlite_functions
 
 from datahandler import MenuHandler, UsersHandler
+
+
+
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' # Using SQLite as the database 
+
+
 app.secret_key = "Dev Key"
 connect = sqlite3.connect('database.db')
 
@@ -38,7 +44,6 @@ def context_processor():
     return dict(loggedin=loggedin)
 
 
-
 def getmenu_dict():
         connect.row_factory = sqlite3.Row
         values = connect.execute("SELECT * FROM MENU").fetchall()
@@ -57,7 +62,7 @@ def getusers_dict():
         return list_accumulator
 
 database_menu = getmenu_dict()
-currentuser = {"":""}
+
 ### ROUTE TO HOME PAGE ###
 @app.route('/', methods = ['POST', 'GET'])
 def index():
@@ -87,7 +92,7 @@ def login():
                 session['currentuser'] = userhandler.currentuser # Storing user info in here so it can be accessed in other pages.
                 currentuser = session['currentuser']
                 print(currentuser)
-                return render_template('profile.html', name = currentuser)
+                return render_template('profile.html', currentuser = currentuser, loggedin = session['loggedin'])
             return render_template('login.html', form = form)
     if request.method == 'GET':
         return render_template('login.html', form = form)
@@ -106,7 +111,7 @@ def signup():
             userhandler.signup(form.data)
             print('printing form:')
             print(form.data)
-            return f'{form.name}\n{form.email}\n{form.gender}'
+            return redirect(url_for('login'))
     if request.method == 'GET':
         print("getting form")
         return render_template('signup.html', form = form)
@@ -155,7 +160,7 @@ def home():
     connect.close()
     if timeleft is not None:
         timeleft_converted = int(timeleft.total_seconds()) 
-    return render_template('welcome-index.html', rows = rows, timeleft_converted = timeleft_converted)
+    return render_template('welcome-index.html', currentuser = session['currentuser'], rows = rows, timeleft_converted = timeleft_converted)
 
 
 
@@ -174,20 +179,40 @@ def menu():
         else:
             data_dict = handler.sorteddata(database_menu,sortbyvalue)
 
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict)
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'])
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
-    return render_template('menu-index.html', data = database_menu)
+    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'])
 
 @app.route('/<int:product_id>', methods=["POST","GET"])
 def product(product_id):
+    print(request.method)
     product_item = {}
     for product in database_menu:
         if product['id'] == product_id:
             product_item = product
     
-    return render_template("product-index.html", product = product_item)
+    if request.method == "POST":
+        usr = session["currentuser"]
+        userhandler = UsersHandler()
+        msg =userhandler.addtocart(usr,product_item)
+        print(usr)
+        session["currentuser"] = userhandler.updateusr(usr)
+    return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
+
+### Cart PAGE
+@app.route('/cart', methods=["POST",'GET'])
+def cart():
+    if request.method == "POST":
+        usr = session["currentuser"]
+        userhandler = UsersHandler()
+        item = request.form.get("removeitem")
+        print("ITEM PRINTING:",item)
+        msg =userhandler.removefromcart(usr,item)
+        
+        session["currentuser"] = userhandler.updateusr(usr)
+    return render_template('cart.html', currentuser = session["currentuser"])
 
 
 ### REWARDS PAGE OPERANDS
@@ -251,3 +276,5 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
+     #  session['currentuser'] = userhandler.currentuser
+      #          session['loggedin'] = True 
