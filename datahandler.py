@@ -99,7 +99,7 @@ class UsersHandler(Handler):
             values = cleanitem.split(',')
             for value in values:
                 print("VALUE:\n",value)
-            lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3]})
+            lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3], 'price':values[4]})
         counter =0
         for lisitems in lis:
             counter += 1
@@ -109,7 +109,7 @@ class UsersHandler(Handler):
     def compresscart(self, cart): ### this function compresses cart from dict to string format
         compressedstr = ""
         for item in cart:
-            compressedstr = compressedstr + f"{item['title']},{item['size']},{item['quantity']},{item['img_url']}|,"
+            compressedstr = compressedstr + f"{item['title']},{item['size']},{item['quantity']},{item['img_url']},{item['price']}|,"
         print("Compressedcart:\n",compressedstr)
         return compressedstr
             
@@ -125,14 +125,11 @@ class UsersHandler(Handler):
             print(usertemp)
             current_cart = usertemp[0] ### user temp is a tuple for some reason so this is how it is
             if product_id['title'] in current_cart:
-                print("ProductID:\n",product_id['title'])
-                print("current cart:\n",current_cart)
-                print("Returned")
                 return "Already in cart, function to add more needed"
             print("ProductID:\n",product_id['title'])
             print("current cart:\n",current_cart)
-            print("Returned")
-            newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']}|"
+            
+            newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
             print("NEW ITEM\n",newitem)
             current_cart = current_cart + newitem
 

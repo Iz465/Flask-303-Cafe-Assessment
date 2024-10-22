@@ -95,6 +95,7 @@ def login():
                 print(currentuser)
                 print('admin check is : ', admin_check)
                 session['admin_check'] = admin_check
+                currentuser = userhandler.updateusr(currentuser)
                 return render_template('profile.html', currentuser = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
@@ -203,6 +204,7 @@ def product(product_id):
         print(msg)
         print(usr)
         session["currentuser"] = userhandler.updateusr(usr)
+        print("TYPE OF PRICE",session["currentuser"])
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
 
 ### Cart PAGE
