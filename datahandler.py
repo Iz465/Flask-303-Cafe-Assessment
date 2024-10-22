@@ -52,10 +52,7 @@ class UsersHandler(Handler):
             if usertemp is None: # Makes it so no error will happen if email isnt in USER database.
                 print('Invalid login details')
             else:
-                print(self.tablevalues)
-                print(usertemp)
                 userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4]}
-                print(userfromdb)
         except(IOError):
             print("error occurance")
             print(IOError)
@@ -71,18 +68,20 @@ class UsersHandler(Handler):
             return False
     def parcecart(self, cart):
         lis = []
-        print(cart)
+        print("\nUnparced cart:\n",cart)
         if cart == "":
             return lis
-        print("CART:",cart)
-        cleanstr = cart.rstrip('|')
-        cleanstr = cleanstr.rstrip(',')
-        cleanstr = cleanstr.rstrip('|')
+        cleanstr = cart.strip('|')
+        cleanstr = cleanstr.strip(',')
+        cleanstr = cleanstr.strip('|')
         items = cleanstr.split('|')
-        print("ITEMS:",items)
+        print("\nITEMS:")
         for item in items:
-            values = item.split(',')
-            print(values)
+            print(item)
+            cleanitem = item.strip(',')
+            values = cleanitem.split(',')
+            for value in values:
+                print("VALUE:\n",value)
             lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3]})
         counter =0
         for lisitems in lis:
@@ -90,10 +89,11 @@ class UsersHandler(Handler):
             print("listitem:",lisitems)
         return lis
     
-    def compresscart(self, cart):
+    def compresscart(self, cart): ### this function compresses cart from dict to string format
         compressedstr = ""
         for item in cart:
             compressedstr = compressedstr + f"{item['title']},{item['size']},{item['quantity']},{item['img_url']}|,"
+        print("Compressedcart:\n",compressedstr)
         return compressedstr
             
 

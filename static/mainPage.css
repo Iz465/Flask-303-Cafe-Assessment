@@ -97,3 +97,18 @@ a.loginbutton{
 .user-cart:hover .dropdown-content {display: block;}
 
 .user-cart:hover .dropbtn {background-color: #3e8e41;}
+.top-right {
+  display: flex;
+  position: absolute;
+  top: 0px;
+  border-radius: 100%;
+  background-color: aquamarine;
+  align-items: center;
+  right: 0px;
+  width: 2em;
+  height: 2em;
+}
+.num{
+  margin: auto;
+  font-weight: 500;
+}

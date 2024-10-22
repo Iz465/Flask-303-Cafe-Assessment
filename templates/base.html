@@ -42,6 +42,9 @@
     <div class="user-cart">
       <a href="{{url_for('cart')}}">
         <img class="cart-img" src="https://www.svgrepo.com/show/528102/cart-3.svg" alt="">
+        {%if currentuser.cart|length > 0 %}
+          <div class="top-right"><p class="kanit-thin num">{{currentuser.cart|length}}</p></div>
+        {%endif%}
       </a>
       
       <div class="dropdown-content">

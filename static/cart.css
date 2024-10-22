@@ -29,3 +29,6 @@
 button{
     background-color: rgb(219, 1, 1);
 }
+.center-div{
+    margin: auto;
+}
