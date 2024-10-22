@@ -182,7 +182,7 @@ def menu():
         else:
             data_dict = handler.sorteddata(database_menu,sortbyvalue)
 
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'])
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"])
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
