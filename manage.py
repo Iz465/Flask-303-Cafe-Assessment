@@ -36,11 +36,11 @@ def context_processor():
         session['loggedin'] = True
         loggedin = session['loggedin']
     else:
-        print("member is logged out")
         session['loggedin'] = False
         loggedin = session['loggedin']
-    print(loggedin)
-    print(session['currentuser'])
+    if 'admin_check' in session and session['admin_check'] is not None:
+        admin_check = session['admin_check']
+        return dict(loggedin=loggedin, admin_check = admin_check)
     return dict(loggedin=loggedin)
 
 
@@ -69,6 +69,7 @@ def index():
     if request.method == 'POST':
         print("logging out of user")
         session['currentuser'] = None
+        session['admin_check'] = None
         return redirect(url_for('home'))
     print("not using logout post")
     return redirect(url_for('home'))
@@ -95,7 +96,8 @@ def login():
                 print(currentuser)
                 print('admin check is : ', admin_check)
                 session['admin_check'] = admin_check
-                currentuser = userhandler.updateusr(currentuser)
+                if admin_check is False:
+                    currentuser = userhandler.updateusr(currentuser)
                 return render_template('profile.html', currentuser = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
@@ -211,16 +213,19 @@ def product(product_id):
 @app.route('/cart', methods=["POST",'GET'])
 def cart():
     cart_total = 0
-    for item in session["currentuser"]["cart"]:
-        cart_total += item['price']
-    if request.method == "POST":
-        usr = session["currentuser"]
-        userhandler = UsersHandler()
-        item = request.form.get("removeitem")
-        print("ITEM PRINTING:",item)
-        msg =userhandler.removefromcart(usr,item)
-        
-        session["currentuser"] = userhandler.updateusr(usr)
+    if session.get("currentuser"):
+        for item in session["currentuser"]["cart"]:
+            cart_total += item['price']
+        if request.method == "POST":
+            usr = session["currentuser"]
+            userhandler = UsersHandler()
+            item = request.form.get("removeitem")
+            print("ITEM PRINTING:",item)
+            msg =userhandler.removefromcart(usr,item)
+            
+            session["currentuser"] = userhandler.updateusr(usr)
+    else:
+        print('Log in to view your cart')
     return render_template('cart.html', currentuser = session["currentuser"],cart_total = cart_total)
 
 

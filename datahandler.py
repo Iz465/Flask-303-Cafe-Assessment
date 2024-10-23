@@ -63,7 +63,7 @@ class UsersHandler(Handler):
                 cur.execute(f"Select * From ADMINS WHERE email ='{user['email']}'")
                 usertemp = cur.fetchone()
                 if usertemp is not None:
-                    userfromdb = {self.adminvalues[0]: usertemp[0], self.adminvalues[1] : usertemp[1], self.adminvalues[2] : usertemp[2], self.adminvalues[3] : usertemp[3], self.adminvalues[4] : usertemp[4]}
+                    userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4], self.tablevalues[5] : usertemp[5]}
                     print(userfromdb)
                     admin_check = True
                 else:
@@ -86,6 +86,9 @@ class UsersHandler(Handler):
     def parcecart(self, cart):
         lis = []
         print("\nUnparced cart:\n",cart)
+         
+        if cart is None: # Stops error incase there is empty cart
+            return lis  
         if cart == "":
             return lis
         cleanstr = cart.strip('|')
@@ -123,7 +126,8 @@ class UsersHandler(Handler):
             cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
             usertemp = cur.fetchone()
             print(usertemp)
-            current_cart = usertemp[0] ### user temp is a tuple for some reason so this is how it is
+            current_cart = usertemp[0] if usertemp[0] is not None else ""  ### user temp is a tuple for some reason so this is how it is
+
             if product_id['title'] in current_cart:
                 return "Already in cart, function to add more needed"
             print("ProductID:\n",product_id['title'])
@@ -147,7 +151,8 @@ class UsersHandler(Handler):
             cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
             usertemp = cur.fetchone()
 
-            current_cart = usertemp[0] ### user temp is a tuple for some reason so this is how it is, in string form
+            current_cart = usertemp[0] if usertemp[0] is not None else ""  ### user temp is a tuple for some reason so this is how it is, in string form
+        
             if product_id not in current_cart:
                 return "Already not in cart ERROR, function to add more needed"
 
@@ -170,6 +175,9 @@ class UsersHandler(Handler):
         cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
         usertemp = cur.fetchone()
         connect.close()
+        if usertemp is None:
+            print("User not found in database.")
+            return None  
         freshuser = user
         freshuser['cart'] = self.parcecart(usertemp[0])
         return freshuser
