@@ -45,7 +45,7 @@ class Menu(DatabaseManager):
         self.deletetable_execute = "DROP TABLE MENU"
         self.data = ["id","title", "contains", "description", "price", "Img url"]
         self.insertitems_execute = "INSERT INTO MENU VALUES(?, ?, ?, ?, ?, ?)"
-        self.getitems_excecute = "SELECT title, description, price FROM MENU"
+        self.getitems_excecute = "SELECT * FROM MENU"
     
     def importjson(self,jsondict):
         connect.execute(self.deletetable_execute) 
@@ -67,7 +67,11 @@ class User(DatabaseManager):
         self.deletetable_execute = "DROP TABLE USERS"
         self.data = ["cart","name", "email", "gender", "password"]
         self.insertitems_execute = "INSERT INTO USERS VALUES(?, ?, ?, ?, ?)"
-        self.getitems_excecute = "SELECT name, email FROM USERS"
+        self.getitems_excecute = "SELECT * FROM USERS"
+    def reset(self):
+        cur.execute(self.deletetable_execute)
+        cur.execute("CREATE TABLE IF NOT EXISTS USERS(cart TEXT, name TEXT, email TEXT, gender TEXT, password TEXT)")
+        connect.commit()
 
 def managedatabases(obj):
     count = 0
@@ -83,6 +87,8 @@ def managedatabases(obj):
         obj.newitem()
     if ans == "4":
         obj.importjson(parcejson())
+    if ans == "5":
+        obj.reset()
     
     
 

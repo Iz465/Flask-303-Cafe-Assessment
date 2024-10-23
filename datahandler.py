@@ -37,8 +37,11 @@ class UsersHandler(Handler):
     def signup(self,user):
         connect = sqlite3.connect('database.db') 
         cur = connect.cursor()
-        data = [ user["name"], user["email"], user["gender"], user["password"]]
-        cur.execute("INSERT INTO USERS (name, email, gender, password) VALUES (?, ?, ?, ?)", data)
+        cur.execute(f"SELECT * FROM USERS")
+        totalusers = len(cur.fetchall())
+
+        data = [ totalusers + 1,"",user["name"], user["email"], user["gender"], user["password"]]
+        cur.execute("INSERT INTO USERS (id, cart, name, email, gender, password) VALUES (?, ?, ?, ?, ?, ?)", data)
         connect.commit() 
         connect.close()
         return 0
@@ -80,4 +83,95 @@ class UsersHandler(Handler):
         else:
             print("Login Fail")
             return False, admin_check
+    def parcecart(self, cart):
+        lis = []
+        print("\nUnparced cart:\n",cart)
+        if cart == "":
+            return lis
+        cleanstr = cart.strip('|')
+        cleanstr = cleanstr.strip(',')
+        cleanstr = cleanstr.strip('|')
+        items = cleanstr.split('|')
+        print("\nITEMS:")
+        for item in items:
+            print(item)
+            cleanitem = item.strip(',')
+            values = cleanitem.split(',')
+            for value in values:
+                print("VALUE:\n",value)
+            lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3], 'price':float(values[4])})
+        counter =0
+        for lisitems in lis:
+            counter += 1
+            print("listitem:",lisitems)
+        return lis
+    
+    def compresscart(self, cart): ### this function compresses cart from dict to string format
+        compressedstr = ""
+        for item in cart:
+            compressedstr = compressedstr + f"{item['title']},{item['size']},{item['quantity']},{item['img_url']},{item['price']}|,"
+        print("Compressedcart:\n",compressedstr)
+        return compressedstr
+            
+
+    def addtocart(self, user, product_id): # make this append data to user database
+        if self.login(user)[0] == True:
+            quantity_placeholder = 1
+            size_placeholder = "s"
+            connect = sqlite3.connect('database.db') 
+            cur = connect.cursor()
+            cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
+            usertemp = cur.fetchone()
+            print(usertemp)
+            current_cart = usertemp[0] ### user temp is a tuple for some reason so this is how it is
+            if product_id['title'] in current_cart:
+                return "Already in cart, function to add more needed"
+            print("ProductID:\n",product_id['title'])
+            print("current cart:\n",current_cart)
+            
+            newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
+            print("NEW ITEM\n",newitem)
+            current_cart = current_cart + newitem
+
+            
+            val = (str(current_cart),user["email"])
+            command = (f"UPDATE USERS SET cart = '{val[0]}' WHERE email = '{val[1]}'")
+            cur.execute(command)
+            connect.commit()
+            connect.close()
+            return 0
+    def removefromcart(self,user,product_id):
+        if self.login(user)[0] == True:
+            connect = sqlite3.connect('database.db') 
+            cur = connect.cursor()
+            cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
+            usertemp = cur.fetchone()
+
+            current_cart = usertemp[0] ### user temp is a tuple for some reason so this is how it is, in string form
+            if product_id not in current_cart:
+                return "Already not in cart ERROR, function to add more needed"
+
+            for item in user['cart']:
+                if product_id == item["title"]:
+                    print("REMOVING ITEM:", item)
+                    user["cart"].remove(item)
+            
+            compressedcart = self.compresscart(user["cart"])
+            
+            val = (str(compressedcart),user["email"])
+            command = (f"UPDATE USERS SET cart = '{val[0]}' WHERE email = '{val[1]}'")
+            cur.execute(command)
+            connect.commit()
+            connect.close()
+            return 0
+    def updateusr(self,user):
+        connect = sqlite3.connect('database.db') 
+        cur = connect.cursor()
+        cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
+        usertemp = cur.fetchone()
+        connect.close()
+        freshuser = user
+        freshuser['cart'] = self.parcecart(usertemp[0])
+        return freshuser
+
     

@@ -7,7 +7,13 @@ from datetime import datetime, timedelta
 import sqlite_functions
 
 from datahandler import MenuHandler, UsersHandler
+
+
+
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' # Using SQLite as the database 
+
+
 app.secret_key = "Dev Key"
 connect = sqlite3.connect('database.db')
 
@@ -21,24 +27,21 @@ def before_request():
     global num
     if num <1:
         session['currentuser'] = None
-        session['admin_check'] = None
     num += 1
 
 @app.context_processor
 def context_processor():
     if 'currentuser' in session and session['currentuser'] is not None:
+        print("member is logged in")
         session['loggedin'] = True
         loggedin = session['loggedin']
     else:
+        print("member is logged out")
         session['loggedin'] = False
         loggedin = session['loggedin']
-    if 'admin_check' in session and session['admin_check'] is not None:
-        admin_check = session['admin_check']
-        return dict(loggedin=loggedin, admin_check = admin_check)
-    else:
-        return dict(loggedin=loggedin)
-
-
+    print(loggedin)
+    print(session['currentuser'])
+    return dict(loggedin=loggedin)
 
 
 def getmenu_dict():
@@ -59,14 +62,13 @@ def getusers_dict():
         return list_accumulator
 
 database_menu = getmenu_dict()
-currentuser = {"":""}
+
 ### ROUTE TO HOME PAGE ###
 @app.route('/', methods = ['POST', 'GET'])
 def index():
     if request.method == 'POST':
         print("logging out of user")
         session['currentuser'] = None
-        session['admin_check'] = None
         return redirect(url_for('home'))
     print("not using logout post")
     return redirect(url_for('home'))
@@ -93,7 +95,8 @@ def login():
                 print(currentuser)
                 print('admin check is : ', admin_check)
                 session['admin_check'] = admin_check
-                return render_template('profile.html', name = currentuser)
+                currentuser = userhandler.updateusr(currentuser)
+                return render_template('profile.html', currentuser = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
         return render_template('login.html', form = form)
@@ -161,7 +164,7 @@ def home():
     connect.close()
     if timeleft is not None:
         timeleft_converted = int(timeleft.total_seconds()) 
-    return render_template('welcome-index.html', rows = rows, timeleft_converted = timeleft_converted)
+    return render_template('welcome-index.html', currentuser = session['currentuser'], rows = rows, timeleft_converted = timeleft_converted)
 
 
 
@@ -180,20 +183,45 @@ def menu():
         else:
             data_dict = handler.sorteddata(database_menu,sortbyvalue)
 
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict)
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"])
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
-    return render_template('menu-index.html', data = database_menu)
+    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'])
 
 @app.route('/<int:product_id>', methods=["POST","GET"])
 def product(product_id):
+    print(request.method)
     product_item = {}
     for product in database_menu:
         if product['id'] == product_id:
             product_item = product
     
-    return render_template("product-index.html", product = product_item)
+    if request.method == "POST":
+        usr = session["currentuser"]
+        userhandler = UsersHandler()
+        msg =userhandler.addtocart(usr,product_item)
+        print(msg)
+        print(usr)
+        session["currentuser"] = userhandler.updateusr(usr)
+        print("TYPE OF PRICE",session["currentuser"])
+    return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
+
+### Cart PAGE
+@app.route('/cart', methods=["POST",'GET'])
+def cart():
+    cart_total = 0
+    for item in session["currentuser"]["cart"]:
+        cart_total += item['price']
+    if request.method == "POST":
+        usr = session["currentuser"]
+        userhandler = UsersHandler()
+        item = request.form.get("removeitem")
+        print("ITEM PRINTING:",item)
+        msg =userhandler.removefromcart(usr,item)
+        
+        session["currentuser"] = userhandler.updateusr(usr)
+    return render_template('cart.html', currentuser = session["currentuser"],cart_total = cart_total)
 
 
 ### REWARDS PAGE OPERANDS
@@ -204,7 +232,7 @@ def rewards():
 
     rows = sqlite_functions.get_table('Rewards')
     print('logged in is: ',session['loggedin'])
-    return render_template('rewards-index.html', rows = rows)
+    return render_template('rewards-index.html', rows = rows, currentuser = session["currentuser"])
 
 ### EMPLOY PAGE OPERANDS ###
 @app.route('/employ')
@@ -213,7 +241,7 @@ def employ():
         return redirect(url_for('welcome-index'))
     
     rows = sqlite_functions.get_table('EmployJobs') # Make images 3000 height and 2000 width
-    return render_template('employ-index.html', rows = rows)
+    return render_template('employ-index.html', rows = rows, currentuser = session["currentuser"])
 
 
 @app.route('/employ_application', methods= ['POST', 'GET'])
@@ -237,23 +265,25 @@ def employ_application():
                     (session['currentuser']['id'],session['currentuser']['name'],session['currentuser']['gender'], request.form['job_reason'])) 
                     connect.commit()
                     connect.close() 
-                    return render_template('employ_application.html', form = form, check_form = False, form_done = True)
+                    return render_template('employ_application.html', form = form, check_form = False, form_done = True, currentuser = session["currentuser"])
                 else:
-                    return render_template('employ_application.html', already_applied = True)
+                    return render_template('employ_application.html', already_applied = True, currentuser = session["currentuser"])
         else:
-            return render_template('employ_application.html', form = form, check_form = True)
+            return render_template('employ_application.html', form = form, check_form = True, currentuser = session["currentuser"])
     else:
-        return render_template('employ_application.html', notloggedin = True)
+        return render_template('employ_application.html', notloggedin = True, currentuser = session["currentuser"])
 
 
 
 @app.route('/application_review', methods = ['POST', 'GET'])
 def application_review():
     rows = sqlite_functions.get_table('Employ_Application')
-    return render_template('review_application.html', rows = rows)
+    return render_template('review_application.html', rows = rows, currentuser = session["currentuser"])
         
 
 if __name__ == '__main__':
     app.run(debug=True)
 
 
+     #  session['currentuser'] = userhandler.currentuser
+      #          session['loggedin'] = True 
