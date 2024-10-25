@@ -1,10 +1,13 @@
 .employ_table tr,td {
     padding: 8px;
+    
 }
 
 .employ_table {
     background-color: rgba(184,216,190,.4);
     max-width: 100%;
+
+    
 }
 
 .employ_table tr:hover {

@@ -282,13 +282,38 @@ def employ_application():
 
 @app.route('/application_review', methods = ['POST', 'GET'])
 def application_review():
-    rows = sqlite_functions.get_table('Employ_Application')
-    return render_template('review_application.html', rows = rows, currentuser = session["currentuser"])
+    if request.method == 'POST':
+        connect = sqlite3.connect('database.db')
+        cursor = connect.cursor()
+        if 'Approve' in request.form:
+            id = request.form.get('Approve')
+            print("Approved Review")
+            cursor.execute("SELECT id FROM Employ_Application")
+            employ_ids = cursor.fetchall()
+            cursor.execute("SELECT * From Employ_Application WHERE ID = ?", (id,))
+            approved_user = cursor.fetchone()
+            check_users = [row[0] for row in employ_ids]
+            if id not in check_users:
+                 cursor.execute("INSERT INTO Employees (ID, cart, name, email, gender, password) VALUES (?, ?, ?, ?, ?, ?)",
+                 (approved_user[0], approved_user[1], approved_user[2], approved_user[3], approved_user[4], approved_user[5]))
+                 connect.commit()  
+        elif 'Deny' in request.form:
+            id = request.form.get('Deny')
+            print("Denied Review")
+            cursor.execute("DELETE From Employ_Application WHERE ID = ?", (id,))
+            connect.commit()
+        else:
+            print("Not working")
+    job_review_rows = sqlite_functions.get_table('Employ_Application')
+    rewards_rows = sqlite_functions.get_table('Rewards')
+    products_rows = sqlite_functions.get_table('MENU')
+    job_rows = sqlite_functions.get_table('EmployJobs')
+    employee_rows = sqlite_functions.get_table('EmployJobs')
+    return render_template('review_application.html', employee_rows = employee_rows, job_review_rows = job_review_rows, rewards_rows = rewards_rows, products_rows = products_rows, job_rows = job_rows, currentuser = session["currentuser"])
         
 
 if __name__ == '__main__':
     app.run(debug=True)
 
 
-     #  session['currentuser'] = userhandler.currentuser
-      #          session['loggedin'] = True 
+      
