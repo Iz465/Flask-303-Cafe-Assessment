@@ -35,7 +35,8 @@ class DatabaseManager:
         res = cur.execute(self.getitems_excecute)
         itemlist = res.fetchall()
         for item in itemlist:
-            print(item)
+            for i in item:
+                print(i)
     
 
 class Menu(DatabaseManager):
@@ -110,9 +111,10 @@ def adminmenu():
 
 
 def main():
-    print("select option \n1: Menu manager\n2: USERS manager\n3: Read Json ")
-    adminmenu()
-    connect.close()
+    while True:
+        print("select option \n1: Menu manager\n2: USERS manager\n3: Read Json ")
+        adminmenu()
+        connect.close()
 
 def parcejson():
     try:
