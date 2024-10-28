@@ -4,15 +4,18 @@
 <div style="height: 10%; text-align: center;">
     <h1>Admin Page</h1>
 </div>
-
+<h2 class="table_header" onclick="tablePopup('review_table')">Applicant Reviews</h2>
+<h2 class="table_header" onclick="tablePopup('products_table')">Products</h2>
+<h2 class="table_header" onclick="tablePopup('rewards_table')">Rewards</h2>
+<h2 class="table_header" onclick="tablePopup('jobs_table')">Jobs</h2>
+<h2 class="table_header" onclick="tablePopup('employees_table')">Employees</h2>
  
 
 
-<div class="inconsolata" style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+<div class="inconsolata" > 
 
-    <div>
-        <h2>Applicant Reviews</h2>
-        <table class="employ_table" border="2">
+  
+        <table class="admin_table" id="review_table" border="2">
             <thead>
                 <tr>
                     <td>Name</td>
@@ -37,11 +40,10 @@
             {% endfor %}
             </form>
         </table>
-    </div>
+ 
 
-    <div>
-        <h2>Products</h2>
-        <table class="employ_table" border="2">
+ 
+        <table class="admin_table" id="products_table" border="2">
             <thead>
                 <tr>
                     <td>Name</td>
@@ -58,12 +60,11 @@
                 <td><button type="submit">Remove</button></td>
             </tr>
             {% endfor %}
+       
         </table>
-    </div>
-
-    <div>
-        <h2>Rewards</h2>
-        <table class="employ_table" border="2">
+ 
+  
+        <table class="admin_table" id="rewards_table" border="2">
             <thead>
                 <tr>
                     <td>Name</td>
@@ -79,16 +80,15 @@
             </tr>
             {% endfor %}
         </table>
-    </div>
+ 
 
-    <div>
-        <h2>Jobs</h2>
-        <table class="employ_table" border="2">
+    
+        <table class="admin_table" id="jobs_table" border="2">
             <thead>
                 <tr>
                     <td>Job</td>
                     <td>Salary</td>
-                    <Td>Remove</Td>
+                    <td>Remove</td>
                 </tr>
             </thead>
             {% for row in job_rows %}
@@ -99,15 +99,14 @@
             </tr>
             {% endfor %}
         </table>
-    </div>
+  
 
-   {# <div>
-        <h2>Employees</h2>
-        <table class="employ_table" border="2">
+        <table class="admin_table" id="employees_table" border="2">
             <thead>
                 <tr>
                     <td>Name</td>
                     <td>Job</td>
+                    <td>Remove</td>
                 </tr>
             </thead>
             {% for row in employee_rows %}
@@ -118,7 +117,7 @@
             </tr>
             {% endfor %}
         </table>
-    </div> #}
+ 
 
 </div>
 {% endblock %}

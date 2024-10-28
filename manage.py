@@ -27,6 +27,8 @@ def before_request():
     global num
     if num <1:
         session['currentuser'] = None
+        session['currentuser'] = None
+        session['admin_check'] = None
     num += 1
 
 @app.context_processor
@@ -265,7 +267,10 @@ def employ_application():
                 cursor.execute("Select id FROM Employ_Application")
                 employ_ids = cursor.fetchall()
                 check_users = [row[0] for row in employ_ids] # This adds the ids into the check users from the employ ids tuple, so they can be accessed individually.
-                if session['currentuser']['id'] not in check_users:
+                cursor.execute("Select id FROM Employees")
+                employee_ids = cursor.fetchall()
+                check_employees = [row[0] for row in employee_ids]
+                if session['currentuser']['id'] not in check_users and session['currentuser']['id'] not in check_employees:
                     cursor.execute("Insert INTO Employ_Application (id, name, gender, job_reason) VALUES (?,?,?,?)", 
                     (session['currentuser']['id'],session['currentuser']['name'],session['currentuser']['gender'], request.form['job_reason'])) 
                     connect.commit()
@@ -288,14 +293,15 @@ def application_review():
         if 'Approve' in request.form:
             id = request.form.get('Approve')
             print("Approved Review")
-            cursor.execute("SELECT id FROM Employ_Application")
+            cursor.execute("SELECT id FROM USERS")
             employ_ids = cursor.fetchall()
-            cursor.execute("SELECT * From Employ_Application WHERE ID = ?", (id,))
+            cursor.execute("SELECT * From USERS WHERE ID = ?", (id,))
             approved_user = cursor.fetchone()
             check_users = [row[0] for row in employ_ids]
             if id not in check_users:
                  cursor.execute("INSERT INTO Employees (ID, cart, name, email, gender, password) VALUES (?, ?, ?, ?, ?, ?)",
                  (approved_user[0], approved_user[1], approved_user[2], approved_user[3], approved_user[4], approved_user[5]))
+                 cursor.execute("DELETE From Employ_Application WHERE ID = ?", (id,))
                  connect.commit()  
         elif 'Deny' in request.form:
             id = request.form.get('Deny')
@@ -308,7 +314,7 @@ def application_review():
     rewards_rows = sqlite_functions.get_table('Rewards')
     products_rows = sqlite_functions.get_table('MENU')
     job_rows = sqlite_functions.get_table('EmployJobs')
-    employee_rows = sqlite_functions.get_table('EmployJobs')
+    employee_rows = sqlite_functions.get_table('Employees')
     return render_template('review_application.html', employee_rows = employee_rows, job_review_rows = job_review_rows, rewards_rows = rewards_rows, products_rows = products_rows, job_rows = job_rows, currentuser = session["currentuser"])
         
 
