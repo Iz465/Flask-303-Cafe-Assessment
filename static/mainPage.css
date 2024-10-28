@@ -6,10 +6,23 @@ html, body {
   padding: 0;
 }
 
-p {
-  margin: 0;
+
+a {
+  font-size: 3vh;
 }
 
+p {
+  margin: 0;
+  font-size: 2vh;
+}
+
+h1 {
+  font-size: 6vh;
+}
+
+h2{
+  font-size: 3vh;
+}
 
 
 .page-container {

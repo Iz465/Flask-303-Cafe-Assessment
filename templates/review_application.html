@@ -1,33 +1,123 @@
 {% extends 'base.html' %}
 {% block content %}
+<div style="height: 10%;"></div>
+<div style="height: 10%; text-align: center;">
+    <h1>Admin Page</h1>
+</div>
+<h2 class="table_header" onclick="tablePopup('review_table')">Applicant Reviews</h2>
+<h2 class="table_header" onclick="tablePopup('products_table')">Products</h2>
+<h2 class="table_header" onclick="tablePopup('rewards_table')">Rewards</h2>
+<h2 class="table_header" onclick="tablePopup('jobs_table')">Jobs</h2>
+<h2 class="table_header" onclick="tablePopup('employees_table')">Employees</h2>
+ 
 
-<div style="display: flex; justify-content: space-around; min-height: 50%; width: 100%;">
-<div class="inconsolata" style="display: flex; flex-direction: column; justify-content: space-around;">
 
-<H1>Applicant Reviews</H1>
-<div>
+<div class="inconsolata" > 
 
+  
+        <table class="admin_table" id="review_table" border="2">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Gender</td>
+                    <td>Job</td>
+                    <td>Reason for Job</td>
+                    <td>Approve</td>
+                    <td>Deny</td>
+                </tr>
+            </thead>
+            <form action="http://127.0.0.1:5000/application_review" method="POST">
+            {% for row in job_review_rows %}
+            <tr>
+                <td>{{row.name}}</td>
+                <td>{{row.gender}}</td>
+                <td>Baker</td>
+                <td>{{row.job_reason}}</td>
+                <td><button type="submit" name="Approve" value="{{row.id}}">Approve</button></td>
+                <td><button type="submit" name="Deny" value="{{row.id}}">Deny</button></td>
+                
+            </tr>
+            {% endfor %}
+            </form>
+        </table>
+ 
 
-<table class="employ_table" border="2">
-<thead>
-<td>Name</td>
-<td>Gender</td>
-<td>Job</td>
-<td>Reason for Job</td>
-</thead>
-{% for row in rows %}
-<tr>
-<td>{{row.name}}</td>
-<td>{{row.gender}}</td>
-<td>{{row.job}}</td>
-<td>{{row.job_reason}}</td>
-</tr>
-{% endfor %}
-</table>
+ 
+        <table class="admin_table" id="products_table" border="2">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Ingredients</td>
+                    <td>Price</td>
+                    <Td>Remove</Td>
+                </tr>
+            </thead>
+            {% for row in products_rows %}
+            <tr>
+                <td>{{row.title}}</td>
+                <td>{{row.contains}}</td>
+                <td>{{row.price}}</td>
+                <td><button type="submit">Remove</button></td>
+            </tr>
+            {% endfor %}
+       
+        </table>
+ 
+  
+        <table class="admin_table" id="rewards_table" border="2">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Points</td>
+                    <Td>Remove</Td>
+                </tr>
+            </thead>
+            {% for row in rewards_rows %}
+            <tr>
+                <td>{{row.Name}}</td>
+                <td>{{row.Points}}</td>
+                <td><button type="submit">Remove</button></td>
+            </tr>
+            {% endfor %}
+        </table>
+ 
+
+    
+        <table class="admin_table" id="jobs_table" border="2">
+            <thead>
+                <tr>
+                    <td>Job</td>
+                    <td>Salary</td>
+                    <td>Remove</td>
+                </tr>
+            </thead>
+            {% for row in job_rows %}
+            <tr>
+                <td>{{row.Job_Name}}</td>
+                <td>{{row.Salary}}</td>
+                <td><button type="submit">Remove</button></td>
+            </tr>
+            {% endfor %}
+        </table>
+  
+
+        <table class="admin_table" id="employees_table" border="2">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Job</td>
+                    <td>Remove</td>
+                </tr>
+            </thead>
+            {% for row in employee_rows %}
+            <tr>
+                <td>{{row.name}}</td>
+                <td>Baker</td>
+                <td><button type="submit">Remove</button></td>
+            </tr>
+            {% endfor %}
+        </table>
+ 
 
 </div>
-
-</div>
-</div>
-
 {% endblock %}

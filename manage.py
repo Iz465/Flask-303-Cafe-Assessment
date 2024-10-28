@@ -27,6 +27,8 @@ def before_request():
     global num
     if num <1:
         session['currentuser'] = None
+        session['currentuser'] = None
+        session['admin_check'] = None
     num += 1
 
 @app.context_processor
@@ -36,11 +38,11 @@ def context_processor():
         session['loggedin'] = True
         loggedin = session['loggedin']
     else:
-        print("member is logged out")
         session['loggedin'] = False
         loggedin = session['loggedin']
-    print(loggedin)
-    print(session['currentuser'])
+    if 'admin_check' in session and session['admin_check'] is not None:
+        admin_check = session['admin_check']
+        return dict(loggedin=loggedin, admin_check = admin_check)
     return dict(loggedin=loggedin)
 
 
@@ -69,6 +71,7 @@ def index():
     if request.method == 'POST':
         print("logging out of user")
         session['currentuser'] = None
+        session['admin_check'] = None
         return redirect(url_for('home'))
     print("not using logout post")
     return redirect(url_for('home'))
@@ -95,7 +98,8 @@ def login():
                 print(currentuser)
                 print('admin check is : ', admin_check)
                 session['admin_check'] = admin_check
-                currentuser = userhandler.updateusr(currentuser)
+                if admin_check is False:
+                    currentuser = userhandler.updateusr(currentuser)
                 return render_template('profile.html', currentuser = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
@@ -211,16 +215,19 @@ def product(product_id):
 @app.route('/cart', methods=["POST",'GET'])
 def cart():
     cart_total = 0
-    for item in session["currentuser"]["cart"]:
-        cart_total += item['price']
-    if request.method == "POST":
-        usr = session["currentuser"]
-        userhandler = UsersHandler()
-        item = request.form.get("removeitem")
-        print("ITEM PRINTING:",item)
-        msg =userhandler.removefromcart(usr,item)
-        
-        session["currentuser"] = userhandler.updateusr(usr)
+    if session.get("currentuser"):
+        for item in session["currentuser"]["cart"]:
+            cart_total += item['price']
+        if request.method == "POST":
+            usr = session["currentuser"]
+            userhandler = UsersHandler()
+            item = request.form.get("removeitem")
+            print("ITEM PRINTING:",item)
+            msg =userhandler.removefromcart(usr,item)
+            
+            session["currentuser"] = userhandler.updateusr(usr)
+    else:
+        print('Log in to view your cart')
     return render_template('cart.html', currentuser = session["currentuser"],cart_total = cart_total)
 
 
@@ -260,7 +267,10 @@ def employ_application():
                 cursor.execute("Select id FROM Employ_Application")
                 employ_ids = cursor.fetchall()
                 check_users = [row[0] for row in employ_ids] # This adds the ids into the check users from the employ ids tuple, so they can be accessed individually.
-                if session['currentuser']['id'] not in check_users:
+                cursor.execute("Select id FROM Employees")
+                employee_ids = cursor.fetchall()
+                check_employees = [row[0] for row in employee_ids]
+                if session['currentuser']['id'] not in check_users and session['currentuser']['id'] not in check_employees:
                     cursor.execute("Insert INTO Employ_Application (id, name, gender, job_reason) VALUES (?,?,?,?)", 
                     (session['currentuser']['id'],session['currentuser']['name'],session['currentuser']['gender'], request.form['job_reason'])) 
                     connect.commit()
@@ -277,13 +287,39 @@ def employ_application():
 
 @app.route('/application_review', methods = ['POST', 'GET'])
 def application_review():
-    rows = sqlite_functions.get_table('Employ_Application')
-    return render_template('review_application.html', rows = rows, currentuser = session["currentuser"])
+    if request.method == 'POST':
+        connect = sqlite3.connect('database.db')
+        cursor = connect.cursor()
+        if 'Approve' in request.form:
+            id = request.form.get('Approve')
+            print("Approved Review")
+            cursor.execute("SELECT id FROM USERS")
+            employ_ids = cursor.fetchall()
+            cursor.execute("SELECT * From USERS WHERE ID = ?", (id,))
+            approved_user = cursor.fetchone()
+            check_users = [row[0] for row in employ_ids]
+            if id not in check_users:
+                 cursor.execute("INSERT INTO Employees (ID, cart, name, email, gender, password) VALUES (?, ?, ?, ?, ?, ?)",
+                 (approved_user[0], approved_user[1], approved_user[2], approved_user[3], approved_user[4], approved_user[5]))
+                 cursor.execute("DELETE From Employ_Application WHERE ID = ?", (id,))
+                 connect.commit()  
+        elif 'Deny' in request.form:
+            id = request.form.get('Deny')
+            print("Denied Review")
+            cursor.execute("DELETE From Employ_Application WHERE ID = ?", (id,))
+            connect.commit()
+        else:
+            print("Not working")
+    job_review_rows = sqlite_functions.get_table('Employ_Application')
+    rewards_rows = sqlite_functions.get_table('Rewards')
+    products_rows = sqlite_functions.get_table('MENU')
+    job_rows = sqlite_functions.get_table('EmployJobs')
+    employee_rows = sqlite_functions.get_table('Employees')
+    return render_template('review_application.html', employee_rows = employee_rows, job_review_rows = job_review_rows, rewards_rows = rewards_rows, products_rows = products_rows, job_rows = job_rows, currentuser = session["currentuser"])
         
 
 if __name__ == '__main__':
     app.run(debug=True)
 
 
-     #  session['currentuser'] = userhandler.currentuser
-      #          session['loggedin'] = True 
+      

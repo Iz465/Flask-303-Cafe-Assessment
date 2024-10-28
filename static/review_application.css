@@ -1,12 +1,34 @@
-.employ_table tr,td {
+.admin_table tr,td {
     padding: 8px;
+
+    
 }
 
-.employ_table {
+.admin_table {
     background-color: rgba(184,216,190,.4);
-    max-width: 100%;
+    display: none;
+    max-width: 20vw;
+    margin: 0 auto;
+   
+    
 }
 
-.employ_table tr:hover {
+.admin_table tr:hover {
     background-color: #4d6666;
 }
+
+@media (max-width: 600px) { /*  This will activate when the page size is 600px or smaller */
+    .admin_table {
+        max-width: 80vw;        
+    }
+    .admin_table td {
+        font-size: 0.7em;            
+    }
+}
+
+.table_header {
+    width: fit-content; 
+    padding-left: 10%; 
+    cursor: pointer;
+}
+
