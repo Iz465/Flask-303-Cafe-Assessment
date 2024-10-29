@@ -7,7 +7,7 @@
 .admin_table {
     background-color: rgba(184,216,190,.4);
     display: none;
-    max-width: 20vw;
+    max-width: 22vw;
     margin: 0 auto;
    
     
@@ -32,3 +32,6 @@
     cursor: pointer;
 }
 
+.changing_item input {
+    margin-bottom: 1.5%;
+}

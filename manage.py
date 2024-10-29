@@ -1,8 +1,7 @@
 from flask import Flask, redirect, url_for, request, render_template, flash, session
-from forms import SignUpForm, Login
+from forms import SignUpForm, Login, EmployForm, AddProductForm
 import sqlite3
 import random
-from forms import EmployForm
 from datetime import datetime, timedelta
 import sqlite_functions
 
@@ -287,6 +286,8 @@ def employ_application():
 
 @app.route('/application_review', methods = ['POST', 'GET'])
 def application_review():
+    add_product = False
+    form = AddProductForm()
     if request.method == 'POST':
         connect = sqlite3.connect('database.db')
         cursor = connect.cursor()
@@ -308,18 +309,30 @@ def application_review():
             print("Denied Review")
             cursor.execute("DELETE From Employ_Application WHERE ID = ?", (id,))
             connect.commit()
+        elif 'add_product' in request.form:
+            add_product = True
+        elif 'remove_product' in request.form:
+            print('Deleting product from cafe')
         else:
             print("Not working")
+        if form.validate() == False:
+            print('Product not valid')
+        else:
+            print("added product values:",form.product.data)
+            cursor.execute("INSERT INTO testing_table (product, price, ingredients, image, description) VALUES (?,?,?,?,?)",
+                           (form.product.data, form.price.data, form.ingredients.data, form.image.data, form.description.data))
+            connect.commit()
+            connect.close()
     job_review_rows = sqlite_functions.get_table('Employ_Application')
     rewards_rows = sqlite_functions.get_table('Rewards')
     products_rows = sqlite_functions.get_table('MENU')
     job_rows = sqlite_functions.get_table('EmployJobs')
     employee_rows = sqlite_functions.get_table('Employees')
-    return render_template('review_application.html', employee_rows = employee_rows, job_review_rows = job_review_rows, rewards_rows = rewards_rows, products_rows = products_rows, job_rows = job_rows, currentuser = session["currentuser"])
+    return render_template('review_application.html',  form = form, add_product = add_product, employee_rows = employee_rows, job_review_rows = job_review_rows, rewards_rows = rewards_rows, products_rows = products_rows, job_rows = job_rows, currentuser = session["currentuser"])
         
 
 if __name__ == '__main__':
     app.run(debug=True)
 
 
-      
+    #  <input id="product" name="product" required type="text" value="banana">

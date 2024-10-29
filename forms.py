@@ -20,3 +20,11 @@ class Login(FlaskForm):
     email = StringField('email',[InputRequired("Please enter an email address"), Email("wrong format")])
     password = PasswordField('password',[InputRequired("Password Required")])
     submit = SubmitField('Send')
+
+class AddProductForm(FlaskForm):
+   product = StringField("Product:", [InputRequired("Please enter product")])
+   price = IntegerField("Price: ", [NumberRange(1,100)])
+   ingredients = StringField("Ingredients:", [InputRequired("Please enter in the ingredients")])
+   image = StringField("Image:", [InputRequired("Image required")])
+   description = StringField("Description", [InputRequired('Description required')])
+   submit = SubmitField('Submit')
