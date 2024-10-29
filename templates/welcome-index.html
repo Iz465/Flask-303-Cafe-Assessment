@@ -1,7 +1,15 @@
 
 {% extends 'base.html' %}
 {% block content %}
- 
+ <head>
+  <link rel="stylesheet" href="static/map.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+   crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+   crossorigin=""></script>
+ </head>
 {% for row in rows %}
 
 <img class = "showing carousel-images" src = "{{ row.Image_Url }}" style="max-height: 20%; margin-left: 5%; margin-top: 5%;">
@@ -19,6 +27,10 @@
   <img class = "carousel-images" src = "{{ url_for('static', filename='images/churro.jpg') }}">
   <img class = "carousel-images" src = "{{ url_for('static', filename='images/coffee-beans.jpg') }}">
 </div>
+
+<div id="map"></div>
+
+    
 
 <script>
   var timeleft = {{ timeleft_converted }}
@@ -46,7 +58,13 @@
   setInterval(update_time, 1000);
 
 </script>
-
+<script>
+  var auckland = {lat:-36.848461, long:174.763336}
+  var map = L.map('map').setView([auckland.lat,auckland.long], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'}).addTo(map);
+  var cafe = L.marker([-36.857105, 174.764745]).addTo(map);
+  cafe.bindPopup("<b>This is our cafe!</b>").openPopup();
+</script>
 
 <script src="{{ url_for('static', filename='scripts/carousel.js') }}"></script> 
 

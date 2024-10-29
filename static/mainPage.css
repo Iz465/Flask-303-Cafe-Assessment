@@ -125,3 +125,9 @@ a.loginbutton{
   margin: auto;
   font-weight: 500;
 }
+#map{
+  margin: auto;
+  width: 50%;
+  height: auto;
+  min-height: 50dvh;
+}

@@ -230,7 +230,16 @@ def cart():
         print('Log in to view your cart')
     return render_template('cart.html', currentuser = session["currentuser"],cart_total = cart_total)
 
-
+### Experimental Map stuff
+@app.route('/map', methods=["GET", "POST"])
+def map():
+    if request.method == "POST":
+        post = True
+      # The code here determines what happens after sumbitting the form
+    else:
+        # Render the input form
+        post = False
+        return render_template('map.html')
 ### REWARDS PAGE OPERANDS
 @app.route('/rewards')
 def rewards():
