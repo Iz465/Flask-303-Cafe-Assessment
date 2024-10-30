@@ -3,7 +3,7 @@ from forms import SignUpForm, Login, EmployForm, AddProductForm
 import sqlite3
 import random
 from datetime import datetime, timedelta
-import sqlite_functions
+import sqlite_functions, more_functions
 
 from datahandler import MenuHandler, UsersHandler
 
@@ -135,22 +135,19 @@ def home():
 
     cursor.execute("Select * FROM MENU WHERE id = ?", (random.randrange(min_id,max_id + 1),))
     product = cursor.fetchone()
+    #    product = sqlite_functions.select_from_table('MENU', category='id', value=(random.randrange(min_id,max_id + 1),))
     timeleft = None
     timeleft_converted = 0
     if product is not None: # checks whether there is a product with that id.
-        cursor.execute("Select * From Discounts")
-        empty_check = cursor.fetchall()
+        empty_check = sqlite_functions.select_from_table('Discounts')
         if len(empty_check) < 1: # using this so only one product can be put in discount table
-            cursor.execute("SELECT * FROM Discounts WHERE ID = ?", (product[0],))
-            discount_product = cursor.fetchone()
+            discount_product = sqlite_functions.select_from_table('Discounts', category='ID', value=product[0])
             if discount_product is None: # checks whether that specific menu product is in the discount table.
-                add_product = "Insert INTO Discounts (ID, Name, Contains, Description, Price, Image_Url, Time_Added) Values (?,?,?,?,?,?,?)"
-                cursor.execute(add_product, (product[0], product[1], product[2], product[3], product[4], product[5], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-                connect.commit()
-                print("Product is added to discount table")
+                sqlite_functions.insert_into_table('Discounts', ['ID', 'Name', 'Contains', 'Description', 'Price', 'Image_Url', 'Time_Added'],
+                                                   (product[0], product[1], product[2], product[3], product[4], product[5], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
             else:
                 print("Product is already in discount table")
-        else:
+        else: 
             cursor.execute("SELECT * FROM Discounts")
             discount_product = cursor.fetchone()
             product_start_time = datetime.strptime(discount_product[6], '%Y-%m-%d %H:%M:%S')
@@ -162,12 +159,12 @@ def home():
                 timeleft = timedelta(days=1) - (now -  product_start_time) 
                 print(f"Product still has {timeleft} time left")
             
-    cursor.execute("SELECT * FROM Discounts") 
-    rows = cursor.fetchall()
+    rows = sqlite_functions.get_table('Discounts')
     connect.close()
     if timeleft is not None:
         timeleft_converted = int(timeleft.total_seconds()) 
     return render_template('welcome-index.html', currentuser = session['currentuser'], rows = rows, timeleft_converted = timeleft_converted)
+
 
 
 
@@ -256,7 +253,7 @@ def employ_application():
    # if request.method == 'POST':
       #  job_name = request.form['job_name']
        # print(job_name)
-    if 'loggedin' in session and session['loggedin']:  # This if statement will check first, whether session has loggedin and then if the loggedin value is set to true. So only logged in users can access this.  
+    if 'loggedin' in session and session['loggedin']:  # This if statement will check first, whether session has loggedin and then if the loggedin value is set to true. Only logged in users can access this.  
         if request.method == 'POST':
             if form.validate() == False:
                 return render_template('employ_application.html', form = form, check_form = True)
@@ -283,56 +280,41 @@ def employ_application():
         return render_template('employ_application.html', notloggedin = True, currentuser = session["currentuser"])
 
 
-
 @app.route('/application_review', methods = ['POST', 'GET'])
 def application_review():
     add_product = False
     form = AddProductForm()
+    form_values = request.form.keys()
+    form_values = { 'Approve': more_functions.approve, 'Deny': more_functions.deny, 'add_product': more_functions.add_product, 'remove_product': more_functions.remove_product } # Holding the request names in dictionary so i can make the code cleaner
     if request.method == 'POST':
-        connect = sqlite3.connect('database.db')
-        cursor = connect.cursor()
-        if 'Approve' in request.form:
-            id = request.form.get('Approve')
-            print("Approved Review")
-            cursor.execute("SELECT id FROM USERS")
-            employ_ids = cursor.fetchall()
-            cursor.execute("SELECT * From USERS WHERE ID = ?", (id,))
-            approved_user = cursor.fetchone()
-            check_users = [row[0] for row in employ_ids]
-            if id not in check_users:
-                 cursor.execute("INSERT INTO Employees (ID, cart, name, email, gender, password) VALUES (?, ?, ?, ?, ?, ?)",
-                 (approved_user[0], approved_user[1], approved_user[2], approved_user[3], approved_user[4], approved_user[5]))
-                 cursor.execute("DELETE From Employ_Application WHERE ID = ?", (id,))
-                 connect.commit()  
-        elif 'Deny' in request.form:
-            id = request.form.get('Deny')
-            print("Denied Review")
-            cursor.execute("DELETE From Employ_Application WHERE ID = ?", (id,))
-            connect.commit()
-        elif 'add_product' in request.form:
-            add_product = True
-        elif 'remove_product' in request.form:
-            print('Deleting product from cafe')
-        else:
-            print("Not working")
-        if form.validate() == False:
-            print('Product not valid')
-        else:
-            print("added product values:",form.product.data)
-            cursor.execute("INSERT INTO testing_table (product, price, ingredients, image, description) VALUES (?,?,?,?,?)",
-                           (form.product.data, form.price.data, form.ingredients.data, form.image.data, form.description.data))
-            connect.commit()
-            connect.close()
-    job_review_rows = sqlite_functions.get_table('Employ_Application')
-    rewards_rows = sqlite_functions.get_table('Rewards')
-    products_rows = sqlite_functions.get_table('MENU')
-    job_rows = sqlite_functions.get_table('EmployJobs')
-    employee_rows = sqlite_functions.get_table('Employees')
-    return render_template('review_application.html',  form = form, add_product = add_product, employee_rows = employee_rows, job_review_rows = job_review_rows, rewards_rows = rewards_rows, products_rows = products_rows, job_rows = job_rows, currentuser = session["currentuser"])
+       for form_action, function in form_values.items():
+         if form_action in request.form:
+                if form_action in ['Approve', 'Deny']:
+                    id = request.form.get(form_action) 
+                    function(id) # activates the function from the form values dictionary
+                elif form_action in ['add_product']:
+                    add_product = function()
+                else:
+                    function()
+                break  # will stop loop once the action value being used in form is found
+         
+       if form.validate():
+        print("added product values:",form.product.data)
+        sqlite_functions.insert_into_table('testing_table', ['product', 'price', 'ingredients', 'image', 'description'],
+                                           (form.product.data, form.price.data, form.ingredients.data, form.image.data, form.description.data))
+       else:
+        print('Product not valid')
+
+    db_tables = ['Employ_Application', 'Rewards', 'MENU', 'EmployJobs', 'Employees']
+    rows = {table: sqlite_functions.get_table(table) for table in db_tables}
+    return render_template('review_application.html',  form = form, add_product = add_product, employee_rows = rows['Employees'], job_review_rows = rows['Employ_Application'], rewards_rows = rows['Rewards'], products_rows = rows['MENU'], job_rows = rows['EmployJobs'], currentuser = session["currentuser"])
         
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
 
 
-    #  <input id="product" name="product" required type="text" value="banana">
+   
+
