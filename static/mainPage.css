@@ -125,3 +125,17 @@ a.loginbutton{
   margin: auto;
   font-weight: 500;
 }
+.map-container{
+  margin: auto;
+  width: 50%;
+}
+#map{
+  
+  height: auto;
+  min-height: 50dvh;
+}
+
+/* Chat this might be illegal*/
+.leaflet-control-attribution{
+  display: none;
+}

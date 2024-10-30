@@ -2,11 +2,12 @@
 
 
 .carousel-container {
-  height: 130%;
-  
+  width: 80%;
+  height: 70%;
+  margin: auto;
 }
 
- .carousel-container img {
+.carousel-container img {
 
   height: 80%;
   max-width: 90%;
