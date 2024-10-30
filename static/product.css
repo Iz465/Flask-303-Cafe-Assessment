@@ -81,37 +81,51 @@
     gap: 1%;
     margin: auto;
 }
-.div1{
-    width: 70%;
-    margin: auto;
-}
 .grid1{
-    display: flex;
-    width: 70%;
+    display: grid;
+    width: 100%;
     grid-column-start: 1;
     grid-column-end: 2;
-    height: 80%;
     border-style: solid;
     margin: auto;
+    height: 200px;
 }
 .grid2{
-    width: 70%;
+    display: grid;
+    width: 100%;
     grid-column-start: 2;
     grid-column-end: 3;
     border-style: solid;
     margin: auto;
+    height: 200px;
 }
 .grid3{
-    width: 70%;
+    display: grid;
+    width: 100%;
     grid-column-start: 3;
     grid-column-end: 4;
     border-style: solid;
+    margin: auto;
+    height: 200px;
+}
+.div1 img{
+    width: 70%;
+}
+.div2 img{
+    width: 85%;
+}
+.cup-svg{
+    width: 100%;
     margin: auto;
 }
 .bev-size{
     display: flex;
     flex-direction: column;
-    
+    align-self: flex-end;
+}
+.bev-size p{
+    margin: auto;
+    font-size: large;
 }
 .add-to-cart{
     padding: 5%;
@@ -121,4 +135,22 @@
 .cart-button{
     margin-top: 1rem;
     background-color: cadetblue;
-  }
+}
+.radiocontainer {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+input[type=radio]{
+    display: none;
+}
+.radiocontainer:hover{
+    background-color: rgb(241, 240, 240);
+}
+.radiocontainer input:checked ~ .cont{
+    background-color: rgb(241, 240, 240);
+}
