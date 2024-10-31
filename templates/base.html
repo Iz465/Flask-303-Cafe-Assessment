@@ -67,6 +67,15 @@
       
     </div>
   </div>
+  {% if employee_check %}
+  
+  <p>Flat 50% discount for all employees!</p>
+
+  {% endif %}
+
+
+
+
   
   <div class = "navigation kanit-thin">
       <a href="{{ url_for('home') }}">Cafe</a>
@@ -78,13 +87,6 @@
       {% endif %}
   </div>
   
-  {% if employee_check %}
-
-  <p>testing employee test</p>
-  {% endif %}
-
-  <p>testing test test test</p>
-
 
 
    

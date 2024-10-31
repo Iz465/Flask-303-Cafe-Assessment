@@ -19,7 +19,12 @@
               <div class="text-container">
                 <h3>{{items.title}} ({{items.size}})</h3>
                 <p>Quantity: {{items.quantity}}</p>
+                {% if employee_check %}
+                <p>Price: {{ (50 * (items.price / 100) )|round(2) }}$</p>
+                {% else %}
                 <p>Price: {{items.price}}$</p>
+                {% endif %}
+               
               </div>
               <form action="http://127.0.0.1:5000/cart" class="remove_item_button" method="post">
                 
@@ -31,7 +36,12 @@
         
           {% endfor %}
           <div class="total-div">
+            {% if employee_check %}
+            <h1 class="total-text">Total: {{ ( 50 * (cart_total / 100 )) | round(2) }}$</h1>
+            {% else %}
             <h1 class="total-text">Total: {{cart_total}}$</h1>
+            {% endif %}
+        
 
           </div>
           <div>
@@ -52,3 +62,4 @@
   
 </body>
 {% endblock %}
+

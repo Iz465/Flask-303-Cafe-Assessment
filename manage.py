@@ -26,28 +26,20 @@ def before_request():
     global num
     if num <1:
         session['currentuser'] = None
-        session['currentuser'] = None
+        session['loggedin'] = None
         session['admin_check'] = None
         session['employee_check'] = None
     num += 1
+    print('employee right now is:',session['employee_check'])
 
-@app.context_processor
+@app.context_processor 
 def context_processor():
-    if 'currentuser' in session and session['currentuser'] is not None:
-        print("member is logged in")
-        session['loggedin'] = True
-        loggedin = session['loggedin']
-    else:
-        session['loggedin'] = False
-        loggedin = session['loggedin']
-    if 'admin_check' in session and session['admin_check'] is not None:
-        admin_check = session['admin_check']
-        return dict(loggedin=loggedin, admin_check = admin_check)
-    if 'employee_check' in session and session['employee_check'] is not None:
-        employee_check = session['employee_check']
-        print('yada yada yada')
-        return dict(loggedin=loggedin, employee_check = employee_check)
-    return dict(loggedin=loggedin)
+    loggedin = session['loggedin']
+    admin_check = session['admin_check']
+    employee_check = session['employee_check']
+    
+    print("Context processor values:", dict(loggedin=loggedin, admin_check=admin_check, employee_check=employee_check))
+    return dict(loggedin=loggedin, employee_check = employee_check, admin_check = admin_check)
 
 
 def getmenu_dict():
@@ -77,6 +69,7 @@ def index():
         session['currentuser'] = None
         session['admin_check'] = None
         session['employee_check'] = None
+        session['loggedin'] = False
         return redirect(url_for('home'))
     print("not using logout post")
     return redirect(url_for('home'))
@@ -107,6 +100,9 @@ def login():
                     currentuser = userhandler.updateusr(currentuser)
                 if employee_check is True:
                     session['employee_check'] = True
+                else:
+                    session['employee_check'] = False
+                session['loggedin'] = True
                 return render_template('profile.html', currentuser = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
@@ -149,12 +145,8 @@ def home():
     if product is not None: # checks whether there is a product with that id.
         empty_check = sqlite_functions.select_from_table('Discounts')
         if len(empty_check) < 1: # using this so only one product can be put in discount table
-            discount_product = sqlite_functions.select_from_table('Discounts', category='ID', value=product[0])
-            if discount_product is None: # checks whether that specific menu product is in the discount table.
-                sqlite_functions.insert_into_table('Discounts', ['ID', 'Name', 'Contains', 'Description', 'Price', 'Image_Url', 'Time_Added'],
-                                                   (product[0], product[1], product[2], product[3], product[4], product[5], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-            else:
-                print("Product is already in discount table")
+            sqlite_functions.insert_into_table('Discounts', ['ID', 'Name', 'Contains', 'Description', 'Price', 'Image_Url', 'Time_Added'],
+                                               (product[0], product[1], product[2], product[3], product[4], product[5], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
         else: 
             cursor.execute("SELECT * FROM Discounts")
             discount_product = cursor.fetchone()
@@ -299,9 +291,7 @@ def employ_application():
 
 @app.route('/application_review', methods = ['POST', 'GET'])
 def application_review():
-    add_product = False
-    add_reward = False
-    add_job = False
+    add_product = add_reward = add_job = False
     product_form = AddProductForm()
     reward_form = AddRewardForm()
     job_form = AddJobForm()
@@ -316,26 +306,22 @@ def application_review():
                 id = request.form.get(form_action) 
                 if form_action in ['Approve', 'Deny']:
                     function(id) # activates the function from the form values dictionary
-                elif form_action in ['add_product']:
-                    add_product = function()
-                elif form_action in ['add_reward']:
-                    add_reward = function()
-                elif form_action in ['add_job']:
-                    add_job = function()
-                elif form_action in ['remove_product']:
-                    function('MENU', id)
-                elif form_action in ['remove_reward']:
-                    function('Rewards', id)
-                elif form_action in ['remove_job']:
-                    function('EmployJobs', id)
-                elif form_action in ['remove_employee']:
-                    function('Employees', id)
+                elif 'add' in form_action:
+                   if 'product' in form_action:
+                       add_product = function() 
+                   elif 'reward' in form_action:
+                       add_reward = function() 
+                   elif 'job' in form_action:
+                       add_job = function()  
+
+                elif 'remove_' in form_action:
+                    function('MENU' if 'product' in form_action else 'Rewards' if 'reward' in form_action else 'EmployJobs' if 'job' in form_action else 'Employees', id)
                 else:
                     function()
-                break  # will stop loop once the action value being used in form is found
+                break   # will stop loop once the action value being used in form is found
          
        if product_form.validate():
-           print("Added product values:",product_form.product.data)
+           print("Product added")
            sqlite_functions.insert_into_table('testing_table', ['product', 'price', 'ingredients', 'image', 'description'],
                                               (product_form.product.data, product_form.price.data, product_form.ingredients.data, product_form.image.data, product_form.description.data))
        if reward_form.validate():
