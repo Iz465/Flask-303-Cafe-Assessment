@@ -48,7 +48,7 @@
         {%endif%}
       </a>
       
-      <div class="dropdown-content">
+      <div class="dropdown-content-cart">
         {% for item in currentuser.cart %}
         <a href="#">{{item.title}}</a>
         {%endfor%}
@@ -56,14 +56,17 @@
 
     </div>
     <div class="login-container">
+      
       <a class="loginbutton" href="{{ url_for('login') }}">
         <div class="img-container">
           <img class="login-img" src="https://www.svgrepo.com/show/532363/user-alt-1.svg" alt="">
-          {% if loggedin %}
-          <form action="http://127.0.0.1:5000/" method="POST"><input style="font-size: 1.5vw;" type="submit" value="logout"></form>
-          {% endif %}
+          
         </div>
       </a>
+      
+      <div class="dropdown-content-user">
+        <a href="#">this is a link</a>
+      </div>
       
     </div>
   </div>

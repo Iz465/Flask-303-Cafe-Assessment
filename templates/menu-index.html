@@ -9,7 +9,7 @@
           <ul>
             <h2>Welcome {{currentuser.name}}</h2>
             <form action="http://127.0.0.1:5000/menu" class="SortSelection" method="POST">
-              <label for="name">Sort by: </label>
+              <label for="sortdropdownselector">Sort by: </label>
               <select class="sortForm" id="sortdropdownselector" type="text" name="sortdropdown" onchange="this.form.submit()">
                 <option id="op0" value="">{{sortbyvalue}}</option>
                 <option id="op1" value="name">name (A - Z)</option>
@@ -24,7 +24,6 @@
           </ul>
       </div>
       <ul id="data">
-        {#This here section needs rework once database has been implemented#}
         {% for items in data %}
         <div class = "item-cont">
           <a href="http://127.0.0.1:5000/{{items.id}}" method="POST">

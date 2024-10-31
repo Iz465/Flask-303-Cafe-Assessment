@@ -204,7 +204,9 @@ def product(product_id):
     if request.method == "POST":
         usr = session["currentuser"]
         userhandler = UsersHandler()
-        msg =userhandler.addtocart(usr,product_item)
+        size = request.form.get('pick-size')
+        print("SIZE OF DRINK:\n",size)
+        msg =userhandler.addtocart(usr,product_item, size)
         print(msg)
         print(usr)
         session["currentuser"] = userhandler.updateusr(usr)
@@ -214,10 +216,7 @@ def product(product_id):
 ### Cart PAGE
 @app.route('/cart', methods=["POST",'GET'])
 def cart():
-    cart_total = 0
     if session.get("currentuser"):
-        for item in session["currentuser"]["cart"]:
-            cart_total += item['price']
         if request.method == "POST":
             usr = session["currentuser"]
             userhandler = UsersHandler()
@@ -228,8 +227,14 @@ def cart():
             session["currentuser"] = userhandler.updateusr(usr)
     else:
         print('Log in to view your cart')
-    return render_template('cart.html', currentuser = session["currentuser"],cart_total = cart_total)
+    return render_template('cart.html', currentuser = session["currentuser"])
 
+### Checkout page
+@app.route('/checkout', methods=["POST","GET"])
+def checkout():
+    if session.get("currentuser"):
+        usr = session["currentuser"]
+    return 0
 ### Experimental Map stuff
 @app.route('/map', methods=["GET", "POST"])
 def map():
@@ -240,6 +245,7 @@ def map():
         # Render the input form
         post = False
         return render_template('map.html')
+
 ### REWARDS PAGE OPERANDS
 @app.route('/rewards')
 def rewards():
