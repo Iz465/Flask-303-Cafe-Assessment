@@ -50,6 +50,7 @@ class UsersHandler(Handler):
         cur = connect.cursor()
         userfromdb = {}
         print("Logging in...")
+        employee_check = False
         try:
             cur.execute(f"SELECT * FROM USERS WHERE email ='{user['email']}'")
             usertemp = cur.fetchone()
@@ -57,6 +58,13 @@ class UsersHandler(Handler):
                 userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4], self.tablevalues[5] : usertemp[5]}
                 print(userfromdb)
                 admin_check = False
+                cur.execute(f"Select * From Employees WHERE email = '{user['email']}'")
+                usertemp = cur.fetchone()
+                if usertemp is not None:
+                    print('THIS USER IS AN EMPLOYEE')
+                    employee_check = True
+                else:
+                    print("THIS USER IS NOT AN EMPLOYEE")
 
             if usertemp is None: # Makes it so no error will happen if email isnt in USER database.
                 print('Invalid login details')
@@ -66,6 +74,7 @@ class UsersHandler(Handler):
                     userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4], self.tablevalues[5] : usertemp[5]}
                     print(userfromdb)
                     admin_check = True
+
                 else:
                     print('Invalid Admin and user login')
                     admin_check = False
@@ -79,10 +88,10 @@ class UsersHandler(Handler):
         if 'password' in userfromdb and userfromdb['password'] == user['password']: # This makes it so no error if wrong password is input.
             print("Login Success")
             self.currentuser = userfromdb
-            return True, admin_check
+            return True, admin_check, employee_check
         else:
             print("Login Fail")
-            return False, admin_check
+            return False, admin_check, employee_check
     def parcecart(self, cart):
         lis = []
         print("\nUnparced cart:\n",cart)

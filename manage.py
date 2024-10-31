@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request, render_template, flash, session
-from forms import SignUpForm, Login, EmployForm, AddProductForm
+from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm
 import sqlite3
 import random
 from datetime import datetime, timedelta
@@ -28,6 +28,7 @@ def before_request():
         session['currentuser'] = None
         session['currentuser'] = None
         session['admin_check'] = None
+        session['employee_check'] = None
     num += 1
 
 @app.context_processor
@@ -42,6 +43,10 @@ def context_processor():
     if 'admin_check' in session and session['admin_check'] is not None:
         admin_check = session['admin_check']
         return dict(loggedin=loggedin, admin_check = admin_check)
+    if 'employee_check' in session and session['employee_check'] is not None:
+        employee_check = session['employee_check']
+        print('yada yada yada')
+        return dict(loggedin=loggedin, employee_check = employee_check)
     return dict(loggedin=loggedin)
 
 
@@ -71,6 +76,7 @@ def index():
         print("logging out of user")
         session['currentuser'] = None
         session['admin_check'] = None
+        session['employee_check'] = None
         return redirect(url_for('home'))
     print("not using logout post")
     return redirect(url_for('home'))
@@ -90,7 +96,7 @@ def login():
             flash('All Fields Required')
             return render_template('login.html', form = form)
         else:
-            login_check, admin_check = userhandler.login(form.data)
+            login_check, admin_check, employee_check = userhandler.login(form.data)
             if login_check: 
                 session['currentuser'] = userhandler.currentuser # Storing user info in here so it can be accessed in other pages.
                 currentuser = session['currentuser']
@@ -99,6 +105,8 @@ def login():
                 session['admin_check'] = admin_check
                 if admin_check is False:
                     currentuser = userhandler.updateusr(currentuser)
+                if employee_check is True:
+                    session['employee_check'] = True
                 return render_template('profile.html', currentuser = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
@@ -292,31 +300,58 @@ def employ_application():
 @app.route('/application_review', methods = ['POST', 'GET'])
 def application_review():
     add_product = False
-    form = AddProductForm()
+    add_reward = False
+    add_job = False
+    product_form = AddProductForm()
+    reward_form = AddRewardForm()
+    job_form = AddJobForm()
+    
     form_values = request.form.keys()
-    form_values = { 'Approve': more_functions.approve, 'Deny': more_functions.deny, 'add_product': more_functions.add_product, 'remove_product': more_functions.remove_product } # Holding the request names in dictionary so i can make the code cleaner
+    form_values = { 'Approve': more_functions.approve, 'Deny': more_functions.deny, 'add_product': more_functions.add_item, 'remove_product': more_functions.remove_item,
+                   'add_reward': more_functions.add_item, 'remove_reward': more_functions.remove_item, 'add_job': more_functions.add_item, 
+                   'remove_job': more_functions.remove_item, 'remove_employee': more_functions.remove_item } # Holding the request names in dictionary so i can make the code cleaner
     if request.method == 'POST':
        for form_action, function in form_values.items():
          if form_action in request.form:
+                id = request.form.get(form_action) 
                 if form_action in ['Approve', 'Deny']:
-                    id = request.form.get(form_action) 
                     function(id) # activates the function from the form values dictionary
                 elif form_action in ['add_product']:
                     add_product = function()
+                elif form_action in ['add_reward']:
+                    add_reward = function()
+                elif form_action in ['add_job']:
+                    add_job = function()
+                elif form_action in ['remove_product']:
+                    function('MENU', id)
+                elif form_action in ['remove_reward']:
+                    function('Rewards', id)
+                elif form_action in ['remove_job']:
+                    function('EmployJobs', id)
+                elif form_action in ['remove_employee']:
+                    function('Employees', id)
                 else:
                     function()
                 break  # will stop loop once the action value being used in form is found
          
-       if form.validate():
-        print("added product values:",form.product.data)
-        sqlite_functions.insert_into_table('testing_table', ['product', 'price', 'ingredients', 'image', 'description'],
-                                           (form.product.data, form.price.data, form.ingredients.data, form.image.data, form.description.data))
-       else:
-        print('Product not valid')
-
+       if product_form.validate():
+           print("Added product values:",product_form.product.data)
+           sqlite_functions.insert_into_table('testing_table', ['product', 'price', 'ingredients', 'image', 'description'],
+                                              (product_form.product.data, product_form.price.data, product_form.ingredients.data, product_form.image.data, product_form.description.data))
+       if reward_form.validate():
+           print("Reward added")
+           sqlite_functions.insert_into_table('Rewards', ['Name', 'Points', 'Image_Url'],
+                                              (reward_form.reward.data, reward_form.points.data, reward_form.image.data))
+       if job_form.validate():
+           print('Job added')
+           sqlite_functions.insert_into_table('EmployJobs', ['Job_Name', 'Salary', 'Description', 'Image_Url'],
+                                              (job_form.job.data, job_form.salary.data, job_form.description.data, job_form.image.data))
+           
     db_tables = ['Employ_Application', 'Rewards', 'MENU', 'EmployJobs', 'Employees']
     rows = {table: sqlite_functions.get_table(table) for table in db_tables}
-    return render_template('review_application.html',  form = form, add_product = add_product, employee_rows = rows['Employees'], job_review_rows = rows['Employ_Application'], rewards_rows = rows['Rewards'], products_rows = rows['MENU'], job_rows = rows['EmployJobs'], currentuser = session["currentuser"])
+    return render_template('review_application.html',  product_form = product_form, reward_form = reward_form, job_form = job_form, add_job = add_job, add_reward = add_reward, 
+                           add_product = add_product, employee_rows = rows['Employees'], job_review_rows = rows['Employ_Application'], rewards_rows = rows['Rewards'], 
+                           products_rows = rows['MENU'], job_rows = rows['EmployJobs'], currentuser = session["currentuser"])
         
 
 

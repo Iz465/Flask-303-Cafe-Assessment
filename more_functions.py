@@ -17,13 +17,18 @@ def deny(id):
    sqlite_functions.delete_from_Table('Employ_Application', 'ID', (id,))
 
 
-def add_product():
-  product_added = True
-  return product_added
+def add_item():
+  item_added = True
+  return item_added
 
 
-def remove_product():
-  print('Deleting product from cafe')
+def remove_item(table, id):
+  print('table:', table, 'id:', id)
+  sqlite_functions.delete_from_Table(table, 'ID', (id,))
+
+
+
+
 
 
 

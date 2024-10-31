@@ -28,3 +28,16 @@ class AddProductForm(FlaskForm):
    image = StringField("Image:", [InputRequired("Image required")])
    description = StringField("Description", [InputRequired('Description required')])
    submit = SubmitField('Submit')
+
+class AddRewardForm(FlaskForm):
+   reward = StringField("Reward: ", [InputRequired("Reward required")])
+   points = IntegerField("Points:", [NumberRange(50,1000)])
+   image = StringField("Image:", [InputRequired("Image required")])
+   submit = SubmitField("Submit")
+
+class AddJobForm(FlaskForm):
+   job = StringField("Job:", [InputRequired("Job required")])
+   salary = IntegerField("Salary:", [NumberRange(50000,500000)])
+   image = StringField("Image:", [InputRequired("Image required")])
+   description = StringField("Description", [InputRequired('Description required')])
+   submit = SubmitField("Submit")

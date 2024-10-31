@@ -60,7 +60,7 @@
                 <td>{{row.title}}</td>
                 <td>{{row.contains}}</td>
                 <td>{{row.price}}</td>
-                <td><button type="submit" name="add_product" value="{{row.id}}">Add</button></td>
+                <td><button type="submit" name="add_product">Add</button></td>
                 <td><button type="submit" name="remove_product" value="{{row.id}}">Remove</button></td>
             </tr>
             {% endfor %}
@@ -77,14 +77,16 @@
                     <Td>Remove</Td>
                 </tr>
             </thead>
+            <form action="http://127.0.0.1:5000/application_review" method="POST">
             {% for row in rewards_rows %}
             <tr>
                 <td>{{row.Name}}</td>
                 <td>{{row.Points}}</td>
-                <td><button type="submit">Add</button></td>
-                <td><button type="submit">Remove</button></td>
+                <td><button type="submit" name="add_reward">Add</button></td>
+                <td><button type="submit" name="remove_reward" value="{{row.id}}">Remove</button></td>
             </tr>
             {% endfor %}
+            </form>
         </table>
  
 
@@ -98,14 +100,16 @@
                     <td>Remove</td>
                 </tr>
             </thead>
+            <form action="http://127.0.0.1:5000/application_review" method="POST">
             {% for row in job_rows %}
             <tr>
                 <td>{{row.Job_Name}}</td>
                 <td>{{row.Salary}}</td>
-                <td><button type="submit">Add</button></td>
-                <td><button type="submit">Remove</button></td>
+                <td><button type="submit" name="add_job">Add</button></td>
+                <td><button type="submit" name="remove_job" value="{{row.id}}">Remove</button></td>
             </tr>
             {% endfor %}
+            </form>
         </table>
   
 
@@ -117,46 +121,107 @@
                     <td>Remove</td>
                 </tr>
             </thead>
+            <form action="http://127.0.0.1:5000/application_review" method="POST">
             {% for row in employee_rows %}
             <tr>
                 <td>{{row.name}}</td>
                 <td>Baker</td>
-                <td><button type="submit">Remove</button></td>
+                <td><button type="submit" name="remove_employee" value="{{row.id}}">Remove</button></td>
             </tr>
             {% endfor %}
+            </form>
         </table>
        
+
        {% if add_product %}
        <form action="http://127.0.0.1:5000/application_review" method="POST">
           <div class="changing_item" style="width: 100%; text-align: center;">
             <h2 style="margin-top: 2%;">Add Product</h2>
-            {{ form.hidden_tag() }}
+            {{ product_form.hidden_tag() }}
 
-            {{ form.product.label }} <br>
-            {{ form.product }}
+            {{ product_form.product.label }} <br>
+            {{ product_form.product }}
             <br>
 
-            {{ form.price.label }} <br>
-            {{ form.price }}
+            {{ product_form.price.label }} <br>
+            {{ product_form.price }}
             <br>
             
-            {{ form.ingredients.label }} <br>
-            {{ form.ingredients }}
+            {{ product_form.ingredients.label }} <br>
+            {{ product_form.ingredients }}
             <br>
 
-            {{ form.image.label }} <br>
-            {{ form.image }}
+            {{ product_form.image.label }} <br>
+            {{ product_form.image }}
             <br>
 
-            {{ form.description.label }} <br>
-            {{ form.description }}
+            {{ product_form.description.label }} <br>
+            {{ product_form.description }}
             <br>
             
-            {{ form.submit }}
+            {{ product_form.submit }}
             <br>
             
           </div>
         <form action="http://127.0.0.1:5000/application_review" method="POST">
+       {% endif %}
+
+
+       {% if add_reward %}
+       <form action="http://127.0.0.1:5000/application_review" method="POST">
+       <div class="changing_item" style="width: 100%; text-align: center;">
+       <h2 style="margin-top: 2%;">Add Reward</h2>
+       {{ reward_form.hidden_tag() }}
+
+       {{ reward_form.reward.label }} <br>
+       {{ reward_form.reward }}
+       <br>
+
+       {{ reward_form.points.label }} <br>
+       {{ reward_form.points }}
+       <br>
+       
+       {{ reward_form.image.label }} <br>
+       {{ reward_form.image }}
+       <br>
+
+       {{ reward_form.submit }}
+       <br>
+
+
+       
+       </div>
+       </form>
+       {% endif %}
+      
+
+       {% if add_job %}
+       <form action="http://127.0.0.1:5000/application_review" method="POST">
+       <div class="changing_item" style="width: 100%; text-align: center;">
+       <h2 style="margin-top: 2%;">Add Reward</h2>
+       {{ job_form.hidden_tag() }}
+
+       {{ job_form.job.label }} <br>
+       {{ job_form.job }}
+       <br>
+
+       {{ job_form.salary.label }} <br>
+       {{ job_form.salary }}
+       <br>
+       
+       {{ job_form.image.label }} <br>
+       {{ job_form.image }}
+       <br>
+
+       {{ job_form.description.label }} <br>
+       {{ job_form.description }}
+       <br>
+
+       {{ job_form.submit }}
+       <br>
+
+       </div>
+       </form>
        {% endif %}
        
           
