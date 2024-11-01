@@ -235,6 +235,11 @@ def checkout():
     if session.get("currentuser"):
         usr = session["currentuser"]
     return 0
+
+### experiment minesweeper minigame
+@app.route("/minesweeper",methods=['GET'])
+def minesweeper():
+    return render_template('minesweeper.html')
 ### Experimental Map stuff
 @app.route('/map', methods=["GET", "POST"])
 def map():

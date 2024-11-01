@@ -1,0 +1,21 @@
+.game-container{
+    width: 500px;
+    height: 500px;
+    margin: auto;
+}
+.minefield-grid{
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(10,10%);
+    grid-template-rows: repeat(10,10%);
+    border-style: outset;
+}
+.grid-square{
+    background-color: lightcyan;
+    text-align: center;
+    border-style:inset;
+    border-color: lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

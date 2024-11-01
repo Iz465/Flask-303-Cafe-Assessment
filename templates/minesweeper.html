@@ -1,0 +1,115 @@
+
+{% block content %}
+<head>
+    <link href="{{ url_for('static', filename='minesweeper.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <div class="minefield-grid" id="grid-cont">
+            
+
+
+
+        </div>
+    </div>
+    <script>
+        let minefield = [];
+        function isbomb(){
+            let rand = Math.random();
+            if(rand < 0.1){
+                return true;
+            }
+            return false;
+        }
+        function buildgridsquares(){
+            const gridcontainer = document.getElementById("grid-cont");
+            const grid_width = 10;
+            const grid_height = 10;
+            for(let y = 1; y <= grid_width; y++){
+                for(let x = 1 ; x <= grid_height; x++){
+                    let cord = {X: x,Y:y}
+                    cord.bomb = isbomb()
+                    minefield.push(cord)
+                    const gridsquare = document.createElement('div');
+                    gridsquare.className = `grid-square`;
+                    gridsquare.id = `(${cord.X},${cord.Y})`
+                    gridcontainer.appendChild(gridsquare);
+                }
+            }
+        }
+        function addbombs(){
+            for(let i = 0; i < minefield.length; i++){
+                if (minefield[i].bomb == true){
+                    idName = `(${minefield[i].X},${minefield[i].Y})`;
+                    square = document.getElementById(idName);
+                    square.textContent = "X";
+                }
+            }
+        }
+        function addguides(){
+            listofguides =[]
+            for (let i = 0 ; i < minefield.length; i++){
+                guide = countadjacent(minefield[i]);
+                if(guide > 0){
+                    idName = `(${minefield[i].X},${minefield[i].Y})`;
+                    square = document.getElementById(idName);
+                    square.textContent = guide
+                }
+            }
+            for (let i = 0 ; i < listofguides.length; i++){
+                console.log(listofguides[i])
+            }
+
+        }
+
+        function countadjacent(cord){
+            if(cord.bomb == true){
+                return 0
+            }
+            let n = [cord.X,cord.Y - 1];
+            let s = [cord.X,cord.Y + 1];
+            let e = [cord.X + 1,cord.Y];
+            let w = [cord.X - 1,cord.Y];
+
+            let ne = [cord.X +1,cord.Y - 1];
+            let nw = [cord.X -1,cord.Y - 1];
+            let se = [cord.X + 1,cord.Y + 1];
+            let sw = [cord.X - 1,cord.Y + 1];
+
+            weather = [n,s,e,w,ne,nw,se,sw];
+            let counter = 0;
+            for(let i = 0; i < weather.length; i++){
+                if (finder(weather[i])){
+                    counter = counter +1
+                }
+            }
+            return counter
+
+        }
+        function finder(cord){
+            console.log("checking cord:", cord)
+            let adjacent = minefield.find(o => o.X === cord[0] && o.Y === cord[1])
+            if(adjacent == undefined){
+                console.log("adjacent is undefined")
+                return false
+            }
+            console.log("adjacent defined")
+            console.log(adjacent);
+            if(adjacent.bomb == true){
+                console.log("BOMB FOUND")
+                return true
+            }
+            return false
+
+        }
+        function printfield(){
+            for (let i = 0; i < minefield.length; i++){
+                console.log(minefield[i]);
+            }
+        }
+        buildgridsquares();
+        addbombs();
+        addguides();
+    </script>
+</body>
+{% endblock %}
