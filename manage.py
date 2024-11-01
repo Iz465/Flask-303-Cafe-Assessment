@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request, render_template, flash, session
-from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm
+from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm, CheckOutForm
 import sqlite3
 import random
 from datetime import datetime, timedelta
@@ -32,14 +32,14 @@ def before_request():
     num += 1
     print('employee right now is:',session['employee_check'])
 
-@app.context_processor 
+@app.context_processor # Add things here that will be used in Jinga. This way you dont have to do it for every render template. This app will do it for every render template instead
 def context_processor():
     loggedin = session['loggedin']
     admin_check = session['admin_check']
     employee_check = session['employee_check']
+    currentuser = session['currentuser'],
     
-    print("Context processor values:", dict(loggedin=loggedin, admin_check=admin_check, employee_check=employee_check))
-    return dict(loggedin=loggedin, employee_check = employee_check, admin_check = admin_check)
+    return dict(loggedin=loggedin, employee_check = employee_check, admin_check = admin_check, currentuser = currentuser)
 
 
 def getmenu_dict():
@@ -244,7 +244,7 @@ def rewards():
 
     rows = sqlite_functions.get_table('Rewards')
     print('logged in is: ',session['loggedin'])
-    return render_template('rewards-index.html', rows = rows, currentuser = session["currentuser"])
+    return render_template('rewards-index.html', rows = rows)
 
 ### EMPLOY PAGE OPERANDS ###
 @app.route('/employ')
@@ -253,7 +253,7 @@ def employ():
         return redirect(url_for('welcome-index'))
     
     rows = sqlite_functions.get_table('EmployJobs') # Make images 3000 height and 2000 width
-    return render_template('employ-index.html', rows = rows, currentuser = session["currentuser"])
+    return render_template('employ-index.html', rows = rows)
 
 
 @app.route('/employ_application', methods= ['POST', 'GET'])
@@ -280,13 +280,13 @@ def employ_application():
                     (session['currentuser']['id'],session['currentuser']['name'],session['currentuser']['gender'], request.form['job_reason'])) 
                     connect.commit()
                     connect.close() 
-                    return render_template('employ_application.html', form = form, check_form = False, form_done = True, currentuser = session["currentuser"])
+                    return render_template('employ_application.html', form = form, check_form = False, form_done = True)
                 else:
-                    return render_template('employ_application.html', already_applied = True, currentuser = session["currentuser"])
+                    return render_template('employ_application.html', already_applied = True)
         else:
-            return render_template('employ_application.html', form = form, check_form = True, currentuser = session["currentuser"])
+            return render_template('employ_application.html', form = form, check_form = True)
     else:
-        return render_template('employ_application.html', notloggedin = True, currentuser = session["currentuser"])
+        return render_template('employ_application.html', notloggedin = True)
 
 
 @app.route('/application_review', methods = ['POST', 'GET'])
@@ -337,7 +337,18 @@ def application_review():
     rows = {table: sqlite_functions.get_table(table) for table in db_tables}
     return render_template('review_application.html',  product_form = product_form, reward_form = reward_form, job_form = job_form, add_job = add_job, add_reward = add_reward, 
                            add_product = add_product, employee_rows = rows['Employees'], job_review_rows = rows['Employ_Application'], rewards_rows = rows['Rewards'], 
-                           products_rows = rows['MENU'], job_rows = rows['EmployJobs'], currentuser = session["currentuser"])
+                           products_rows = rows['MENU'], job_rows = rows['EmployJobs'])
+
+
+@app.route('/checkout', methods = ['GET', 'POST'])
+def checkout():
+    form = CheckOutForm()
+    if request.method == 'POST':
+        cart_sum = request.form['cart_sum']
+        cart_length = request.form['cart_length']
+        return render_template('checkout.html', form = form, cart_sum = cart_sum, cart_length = cart_length)
+    return render_template('checkout.html', form = form)
+
         
 
 

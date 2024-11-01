@@ -41,3 +41,10 @@ class AddJobForm(FlaskForm):
    image = StringField("Image:", [InputRequired("Image required")])
    description = StringField("Description", [InputRequired('Description required')])
    submit = SubmitField("Submit")
+
+
+class CheckOutForm(FlaskForm):
+   card_number = IntegerField("Card Number:", [NumberRange(16,16)])
+   expiry_date = StringField("Expiry Date:")
+   cvc = IntegerField('CVC Code:', [NumberRange(3, 4)])
+   submit = SubmitField("Checkout")

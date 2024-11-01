@@ -1,6 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<div style="height: 10%;"></div>
+<div style="display: flex; width: 100%;">
+
+<div style="width: 50%; text-align: center;">
+{{ form.hidden_tag() }}
+
+<h1 class="kanit-regular checkout-form">Checkout</h1><br><br>
+<h1 class="kanit-regular checkout-form">Payment</h1>
+<img src="{{ url_for('static', filename='images/visa.svg') }}">
+<img src="{{ url_for('static', filename='images/mastercard.svg') }}">
+<img src="{{ url_for('static', filename='images/paypal.svg') }}"><br><br>
+{{ form.card_number.label }} <br>
+{{ form.card_number }}<br><br><br>
+        
+{{ form.expiry_date.label }} <br>
+{{ form.expiry_date }} <br><br><br>
+
+{{ form.cvc.label }} <br>
+{{ form.cvc }} <br><br><br>
+
+
+{{ form.submit }}
+<br>
+</div>
+
+
+<div class="kanit-regular checkout-details">
+<h1 class="kanit-regular">Total price: ${{ cart_sum }}</h1>
+<h1 class="kanit-regular">Amount of items in cart: {{cart_length}}</h1>
+</div>
+
+
+
+</div>
 
 
 
