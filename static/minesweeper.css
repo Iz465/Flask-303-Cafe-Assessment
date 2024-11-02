@@ -13,9 +13,24 @@
 .grid-square{
     background-color: lightcyan;
     text-align: center;
-    border-style:inset;
-    border-color: lightgray;
+    
     display: flex;
     justify-content: center;
     align-items: center;
+
+    font-family: "Press Start 2P", system-ui;
+}
+.uncovered{
+    border-style:inset;
+    border-color: lightgray;
+    background-color: lightcyan;
+}
+.covered {
+    border-style:outset;
+    border-color: lightgray;
+    background-color: lightgray;
+    cursor: pointer;
+}
+.covered:hover{
+    background-color: rgb(233, 233, 233);
 }
