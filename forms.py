@@ -44,7 +44,7 @@ class AddJobForm(FlaskForm):
 
 
 class CheckOutForm(FlaskForm):
-   card_number = IntegerField("Card Number:", [NumberRange(16,16)])
-   expiry_date = StringField("Expiry Date:")
-   cvc = IntegerField('CVC Code:', [NumberRange(3, 4)])
+   card_number = IntegerField("Card Number:", render_kw={"placeholder": "16 digits", "maxlength": 16}, validators=[DataRequired(), NumberRange(min=1000000000000000, max=9999999999999999)])
+   expiry_date = StringField("Expiry Date:", render_kw={"placeholder": "mm/yyyy", "maxlength": 7}, validators=[DataRequired(), Length(max=7)])
+   cvc = IntegerField('CVC Code:', render_kw={"placeholder": "3 digits", "maxlength": 3}, validators=[DataRequired(), NumberRange(min=100, max=999)])
    submit = SubmitField("Checkout")

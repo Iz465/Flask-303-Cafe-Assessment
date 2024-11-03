@@ -5,40 +5,63 @@
 <div style="display: flex; width: 100%;">
 
 <div style="width: 50%; text-align: center;">
-{{ form.hidden_tag() }}
-
-<h1 class="kanit-regular checkout-form">Checkout</h1><br><br>
-<h1 class="kanit-regular checkout-form">Payment</h1>
-<img src="{{ url_for('static', filename='images/visa.svg') }}">
-<img src="{{ url_for('static', filename='images/mastercard.svg') }}">
-<img src="{{ url_for('static', filename='images/paypal.svg') }}"><br><br>
-{{ form.card_number.label }} <br>
-{{ form.card_number }}<br><br><br>
-        
-{{ form.expiry_date.label }} <br>
-{{ form.expiry_date }} <br><br><br>
-
-{{ form.cvc.label }} <br>
-{{ form.cvc }} <br><br><br>
 
 
-{{ form.submit }}
-<br>
+
+  {% if checkout_complete %}
+  <div style="width: 200%;">
+    <h1 class="kanit-regular">Checkout complete!</h1>
+    <br>
+    <h3 class="kanit-regular"> Here is your receipt</h3>
+  </div>
+
+  {% else %}
+  <h1 class="kanit-regular checkout-form">Checkout</h1><br><br>
+  <h1 class="kanit-regular checkout-form">Payment</h1>
+  <img src="{{ url_for('static', filename='images/visa.svg') }}">
+  <img src="{{ url_for('static', filename='images/mastercard.svg') }}">
+  <img src="{{ url_for('static', filename='images/paypal.svg') }}"><br><br>
+
+  <form action="http://127.0.0.1:5000/checkout" method="post">
+    {{ form.hidden_tag() }}
+  
+    {{ form.card_number.label }} <br>
+    {{ form.card_number(id='card_number', checkout_input_length='16') }}<span id="card_number_validation"></span><br><br><br>
+  
+    {{ form.expiry_date.label }} <br>
+    {{ form.expiry_date(id = 'card_expiry', checkout_input_length = '7') }} <br><br><br>
+    
+    {{ form.cvc.label }} <br>
+    {{ form.cvc(id='cvc', checkout_input_length='3') }}<span id="cvc_validation"></span> <br><br><br>
+    
+    {{ form.submit }}
+    <br>
+  </form>
+ 
+
 </div>
 
 
-<div class="kanit-regular checkout-details">
+<div class="kanit-regular">
 <h1 class="kanit-regular">Total price: ${{ cart_sum }}</h1>
 <h1 class="kanit-regular">Amount of items in cart: {{cart_length}}</h1>
+<br><br>
+<div class="checkout_item_list">
+{% for item in cart_items %}
+<p>Item: {{item.title}}. Size: {{item.size}}. Quantity: {{item.quantity}}. Price: ${{item.price}}</p>
+{% endfor %}
 </div>
 
 
 
+{% endif %}
+</div>
+
 </div>
 
 
 
-
+<script src="{{ url_for('static', filename='scripts/checkout.js') }}"></script>
 
 
 {% endblock %}

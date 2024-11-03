@@ -30,7 +30,7 @@ def before_request():
         session['admin_check'] = None
         session['employee_check'] = None
     num += 1
-    print('employee right now is:',session['employee_check'])
+
 
 @app.context_processor # Add things here that will be used in Jinga. This way you dont have to do it for every render template. This app will do it for every render template instead
 def context_processor():
@@ -343,13 +343,26 @@ def application_review():
 @app.route('/checkout', methods = ['GET', 'POST'])
 def checkout():
     form = CheckOutForm()
+    checkout_complete = False
     if request.method == 'POST':
-        cart_sum = request.form['cart_sum']
-        cart_length = request.form['cart_length']
-        return render_template('checkout.html', form = form, cart_sum = cart_sum, cart_length = cart_length)
-    return render_template('checkout.html', form = form)
+         if form.validate():
+            checkout_complete = True
+            connect = sqlite_functions.sqlite_connection()
+            cursor = connect.cursor()
+            cursor.execute("UPDATE USERS SET cart = ?, points = ? WHERE ID = ?", ("", 50, session['currentuser']['id']))
+            connect.commit()
+            connect.close()
+            print("id value is:",session['currentuser']['id'])
+            return render_template("checkout.html", checkout_complete = checkout_complete)
+         if form.validate() == False:
+            return render_template("checkout.html")
+    cart_items = session.get('currentuser', {}).get('cart', [])
+    cart_sum = request.args.get('cart_sum', '0') 
+    cart_length = request.args.get('cart_length', '0')
+    return render_template('checkout.html', form = form, cart_sum = cart_sum, cart_length = cart_length, cart_items = cart_items)
+   
+  
 
-        
 
 
 
