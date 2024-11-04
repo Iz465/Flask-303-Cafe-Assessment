@@ -23,7 +23,7 @@
 .uncovered{
     border-style:inset;
     border-color: lightgray;
-    background-color: lightcyan;
+    background-color: rgb(238, 238, 238);
 }
 .covered {
     border-style:outset;

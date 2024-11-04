@@ -17,6 +17,9 @@
     </div>
     <script>
         let minefield = [];
+        let checkedsquares =[];
+        let totalflags = 10;
+        let gamestate = true
 
         
 
@@ -33,49 +36,75 @@
             const grid_height = 10;
             for(let y = 1; y <= grid_width; y++){
                 for(let x = 1 ; x <= grid_height; x++){
-                    let cord = {X: x,Y:y}
-                    cord.bomb = isbomb()
-                    cord.guide = 0
-                    minefield.push(cord)
+                    let cord = {X: x,Y:y};
+                    cord.bomb = isbomb();
+                    cord.guide = 0;
+                    cord.uncovered = false;
+                    cord.flagged = false;
+                    minefield.push(cord);
                     const gridsquare = document.createElement('div');
                     gridsquare.className = `grid-square covered`;
-                    gridsquare.addEventListener('click',function(){uncoversquare(cord)})
+                    gridsquare.addEventListener('click',function(){uncoversquare(cord)});
+
+                    gridsquare.addEventListener('contextmenu', function(ev) {
+                        ev.preventDefault();
+                        flag(cord);
+                        return false;
+                    }, false);
+
 
                     gridsquare.id = `(${cord.X},${cord.Y})`
                     gridcontainer.appendChild(gridsquare);
                 }
             }
         }
-        function addbombs(){
+        function showbombs(){
             for(let i = 0; i < minefield.length; i++){
                 if (minefield[i].bomb == true){
-                    idName = `(${minefield[i].X},${minefield[i].Y})`;
-                    square = document.getElementById(idName);
-                    const content = document.createElement('p');
-                    content.textContent = "X";
-                    square.appendChild(content)
+                    showbomb(minefield[i]);
+                    
                 }
             }
         }
-        function addguides(){
+        function setguides(){
             listofguides =[]
             for (let i = 0 ; i < minefield.length; i++){
                 guide = countadjacent(minefield[i]);
                 if(guide > 0){
-                    idName = `(${minefield[i].X},${minefield[i].Y})`;
-                    square = document.getElementById(idName);
-                    square.textContent = guide;
-                    
                     minefield[i].guide = guide;
-
-                    let guidecolors = ['blue','green','red','darkblue','darkred','cyan','black','darkgray'];
-                    square.style.color = guidecolors[guide-1];
                 }
             }
             for (let i = 0 ; i < listofguides.length; i++){
                 console.log(listofguides[i]);
             }
 
+        }
+        function showguides(){
+            listofguides =[]
+            for (let i = 0 ; i < minefield.length; i++){
+                if(minefield[i].guide > 0){
+                    showguide(minefield[i])
+                }
+            }
+            for (let i = 0 ; i < listofguides.length; i++){
+                console.log(listofguides[i]);
+            }
+
+        }
+        function showguide(c){
+            idName = `(${c.X},${c.Y})`;
+            square = document.getElementById(idName);
+            square.textContent = c.guide;
+
+            let guidecolors = ['blue','green','red','darkblue','darkred','cyan','black','darkgray'];
+            square.style.color = guidecolors[c.guide-1];
+        }
+        function showbomb(c){
+            idName = `(${c.X},${c.Y})`;
+            square = document.getElementById(idName);
+            const content = document.createElement('p');
+            content.textContent = "X";
+            square.appendChild(content)
         }
 
         function countadjacent(cord){
@@ -95,10 +124,8 @@
 
         }
         function finder(cord){
-            console.log("checking cord:", cord);
             let adjacent = minefield.find(o => o.X === cord[0] && o.Y === cord[1]);
             if(adjacent == undefined){
-                console.log("adjacent is undefined");
                 return false;
             }
             return adjacent
@@ -112,16 +139,46 @@
 
 
         function uncoversquare(cord){
-            console.log(cord)
+            if(gamestate == false){
+                console.log('game already ended')
+                return 0
+            }
             idName = `(${cord.X},${cord.Y})`;
+            cord.uncovered = true
 
             square = document.getElementById(idName);
             square.className = `grid-square uncovered`;
-            if(cord.guide == 0){
+            
+            
+            if(cord.guide == 0 && cord.bomb == false){
                 console.log("clearempty", cord)
                 clearempty(cord);
             }
+            else if(cord.guide > 0){
+                showguide(cord);
 
+            }
+            else if(cord.bomb == true){
+                showbomb(cord)
+                endgame();
+            }
+            console.log(minefield)
+
+        }
+        function flag(cord){
+            idName = `(${cord.X},${cord.Y})`;
+            square = document.getElementById(idName);
+
+            if(cord.flagged){
+                //remove flag
+                square.textContent = "";
+                cord.flagged = false
+            }
+            else{
+                //add flag
+                square.textContent = "🚩";
+                cord.flagged = true
+            }
         }
 
         function getsurounding(cord){
@@ -139,51 +196,93 @@
             return weather;
         }
         
-        uncheckedsquares =[];
-        checkedsquares =[];
+        
+        
         function clearempty(cord){
             console.clear()
             //check 8 surounding cords
-            weather = getsurounding(cord);
+            uncheckedsquares =[];
 
-            foundsurounding= [];
-            
+            uncheckedsquares.push(cord);
+            checkedsquares.push(cord)
 
-            checkedsquares.push(cord);
+            while(uncheckedsquares.length > 0){
+                temp = getuncheckedempty(uncheckedsquares);
+                uncheckedsquares = temp;
 
-            for(let i = 0; i < weather.length; i++){
-                foundsurounding.push(finder(weather[i]));
-            }
-            for(let i = 0; i < foundsurounding.length; i++){
-                let foundcord = foundsurounding[i];
-                idName = `(${foundcord.X},${foundcord.Y})`;
+                for(let j =0; j< uncheckedsquares.length; j++){
+                    
 
-                if(foundcord.guide == 0){
-                    uncheckedsquares.push(foundcord)
+                    let foundcord = uncheckedsquares[j];
+                    checkedsquares.push(foundcord);
+                    idName = `(${foundcord.X},${foundcord.Y})`;
                     square = document.getElementById(idName);
                     square.className = `grid-square uncovered`;
+                    foundcord.uncovered = true
+
+                }
+            }
+
+        }
+        function getuncheckedempty(uncheckedsquares){
+            filter = []
+            
+            
+
+            for(let i = 0; i < uncheckedsquares.length; i++){
+                temp = []
+                
+                uncheckcord = uncheckedsquares[i]
+                weather = getsurounding(uncheckcord);
+
+                for(let j = 0; j < weather.length; j++){
+                    f = finder(weather[j])
+                    if(f == false){} else{ temp.push(f)}
+                    
+                }
+
+                for(let j = 0; j < temp.length; j++){
+                    if(checkedsquares.includes(temp[j]) == true){
+
+                    } else{
+                        if(filter.includes(temp[j]) == false && temp[j].guide == 0){
+                            filter.push(temp[j])
+                        }else if(temp[j].guide > 0){
+                            uncoversquare(temp[j]);
+
+                        }
+                        
+                    }
                 }
 
                 
-            }
-
-
-            for(let i = 0; i < uncheckedsquares.length; i++){
-                console.log(uncheckedsquares[i]);
                 
 
             }
-            
-
-            console.log(uncheckedsquares)
-            console.log(checkedsquares)
+            return filter
 
         }
-        
+        function endgame(){
+            console.log("GAME ENDED")
+            gamestate = false
+        }
 
-        buildgridsquares();
-        addbombs();
-        addguides();
+        
+        
+        function startgame(){
+            let adminmode = false
+            buildgridsquares();
+            setguides();
+
+            if(adminmode == true){
+                showguides();
+                showbombs();    
+            }
+            
+        }
+        startgame()
+
+        
     </script>
 </body>
 {% endblock %}
