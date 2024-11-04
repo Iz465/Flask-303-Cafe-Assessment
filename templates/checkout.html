@@ -12,7 +12,7 @@
   <div style="width: 200%;">
     <h1 class="kanit-regular">Checkout complete!</h1>
     <br>
-    <h3 class="kanit-regular"> Here is your receipt</h3>
+    <h3 class="kanit-regular">Here is your receipt</h3>
   </div>
 
   {% else %}
@@ -24,7 +24,9 @@
 
   <form action="http://127.0.0.1:5000/checkout" method="post">
     {{ form.hidden_tag() }}
-  
+    {% if incorrect_details %}
+    <h3 style="color: red;">Incorrect card details entered</h3>
+    {% endif %}
     {{ form.card_number.label }} <br>
     {{ form.card_number(id='card_number', checkout_input_length='16') }}<span id="card_number_validation"></span><br><br><br>
   
@@ -42,15 +44,26 @@
 </div>
 
 
-<div class="kanit-regular">
+<div class="kanit-regular"> 
 <h1 class="kanit-regular">Total price: ${{ cart_sum }}</h1>
 <h1 class="kanit-regular">Amount of items in cart: {{cart_length}}</h1>
 <br><br>
-<div class="checkout_item_list">
+
 {% for item in cart_items %}
-<p>Item: {{item.title}}. Size: {{item.size}}. Quantity: {{item.quantity}}. Price: ${{item.price}}</p>
-{% endfor %}
+<div style="background-color: plum; height: 20%; width: 100%; display: flex; flex-direction: column; justify-content: space-around; text-align: center;">
+{% if employee_check %}
+<p>Item: {{item.title}}</p> 
+<br>Size: {{item.size}}. Quantity: {{item.quantity}}. Price: ${{ ( 50 * (item.price / 100 )) | round(2) }}
+{% else %}
+<p>{{item.title}} ({{item.size}})</p>
+<img src="{{item.img_url}}" style="object-fit: contain;">
+<p style="text-align: right; padding: 20px;">{{item.quantity}} </p>
+<p>${{item.price}}</p>
+{% endif %}
 </div>
+<br><br>
+{% endfor %}
+
 
 
 

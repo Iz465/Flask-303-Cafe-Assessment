@@ -241,10 +241,13 @@ def map():
 def rewards():
     if request.method == 'POST':
         return redirect(url_for('welcome-index'))
+    if session['currentuser'] is not None:
+        points = session.get('currentuser', {}).get('points', [])
 
+    else:
+        points = None
     rows = sqlite_functions.get_table('Rewards')
-    print('logged in is: ',session['loggedin'])
-    return render_template('rewards-index.html', rows = rows)
+    return render_template('rewards-index.html', rows = rows, points = points)
 
 ### EMPLOY PAGE OPERANDS ###
 @app.route('/employ')
@@ -344,25 +347,38 @@ def application_review():
 def checkout():
     form = CheckOutForm()
     checkout_complete = False
+    incorrect_details = False
     if request.method == 'POST':
          if form.validate():
             checkout_complete = True
             connect = sqlite_functions.sqlite_connection()
             cursor = connect.cursor()
-            cursor.execute("UPDATE USERS SET cart = ?, points = ? WHERE ID = ?", ("", 50, session['currentuser']['id']))
+            cursor.execute("Select points FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
+            user_points = cursor.fetchone()
+            if user_points[0] is not None:
+                cursor.execute("UPDATE USERS SET cart = ?, points = ? WHERE ID = ?", ("", user_points[0] + 50, session['currentuser']['id']))
+            else:
+                cursor.execute("UPDATE USERS SET cart = ?, points = ? WHERE ID = ?", ("", 50, session['currentuser']['id']))
             connect.commit()
             connect.close()
-            print("id value is:",session['currentuser']['id'])
+            userhandler = UsersHandler()
+            session["currentuser"] = userhandler.updateusr(session["currentuser"])
+            session["currentuser"]['points'] += 50 
             return render_template("checkout.html", checkout_complete = checkout_complete)
          if form.validate() == False:
-            return render_template("checkout.html")
+            incorrect_details = True
+            cart_items = session['cart_items']
+            cart_sum = session['cart_sum']
+            cart_length = session['cart_length']
+            return render_template("checkout.html", form = form, incorrect_details = incorrect_details, cart_sum = cart_sum, cart_length = cart_length, cart_items = cart_items)
     cart_items = session.get('currentuser', {}).get('cart', [])
+    session['cart_items'] = cart_items
     cart_sum = request.args.get('cart_sum', '0') 
+    session['cart_sum'] = cart_sum
     cart_length = request.args.get('cart_length', '0')
+    session['cart_length'] = cart_length
     return render_template('checkout.html', form = form, cart_sum = cart_sum, cart_length = cart_length, cart_items = cart_items)
    
-  
-
 
 
 
