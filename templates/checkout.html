@@ -4,8 +4,10 @@
 <div style="height: 10%;"></div>
 <div style="display: flex; width: 100%;">
 
-<div style="width: 50%; text-align: center;">
+<div style="width: 50%; text-align: center; display: flex;">
 
+<div style="width: 50%;"></div>
+<div style="background-color: RGBA(184,216,190,.35); width: 50%; text-align: center; border: 2px; border-style: solid; border-color: rgb (224, 224, 224); padding: 20px;">
 
 
   {% if checkout_complete %}
@@ -16,7 +18,7 @@
   </div>
 
   {% else %}
-  <h1 class="kanit-regular checkout-form">Checkout</h1><br><br>
+  <h1 class="kanit-regular checkout-form">Checkout</h1>
   <h1 class="kanit-regular checkout-form">Payment</h1>
   <img src="{{ url_for('static', filename='images/visa.svg') }}">
   <img src="{{ url_for('static', filename='images/mastercard.svg') }}">
@@ -28,7 +30,7 @@
     <h3 style="color: red;">Incorrect card details entered</h3>
     {% endif %}
     {{ form.card_number.label }} <br>
-    {{ form.card_number(id='card_number', checkout_input_length='16') }}<span id="card_number_validation"></span><br><br><br>
+    {{ form.card_number(id='card_number', checkout_input_length='19') }}<span id="card_number_validation"></span><br><br><br>
   
     {{ form.expiry_date.label }} <br>
     {{ form.expiry_date(id = 'card_expiry', checkout_input_length = '7') }} <br><br><br>
@@ -40,36 +42,57 @@
     <br>
   </form>
  
-
+</div>
 </div>
 
 
 <div class="kanit-regular"> 
-<h1 class="kanit-regular">Total price: ${{ cart_sum }}</h1>
-<h1 class="kanit-regular">Amount of items in cart: {{cart_length}}</h1>
+
+
+<div style="background-color: RGBA(184,216,190,.35); border: 2px; border-style: solid ; margin-left: 20px; padding: 20px;">
+  <h1 class="kanit-regular total_price_class" style="padding-right: 20px; padding-left: 20px;">Total Price: ${{ cart_sum }}</h1>
+  <h1 class="kanit-regular total_amount_class" style="padding-right: 20px; padding-left: 20px;">Amount of items in cart: {{cart_length}}</h1>
+</div>
+
 <br><br>
 
+
+
+<div style="background-color: RGBA(184,216,190,.35); border: 2px; border-style: solid ; margin-left: 20px; padding: 20px;">
+
+
 {% for item in cart_items %}
-<div style="background-color: plum; height: 20%; width: 100%; display: flex; flex-direction: column; justify-content: space-around; text-align: center;">
-{% if employee_check %}
-<p>Item: {{item.title}}</p> 
-<br>Size: {{item.size}}. Quantity: {{item.quantity}}. Price: ${{ ( 50 * (item.price / 100 )) | round(2) }}
-{% else %}
-<p>{{item.title}} ({{item.size}})</p>
-<img src="{{item.img_url}}" style="object-fit: contain;">
-<p style="text-align: right; padding: 20px;">{{item.quantity}} </p>
-<p>${{item.price}}</p>
-{% endif %}
+<br>
+
+
+
+
+<div class="specific_item_div" style="background-color: rgb(240, 238, 255); height: 16vh; width: 20vw; display: flex; flex-direction: column;  justify-content: space-around; text-align: center; box-sizing: border-box; border-style: solid; border-width: 2px; border-radius: 15px; margin-left: 25%;">
+  <img src="{{item.img_url}}" style="height: 7vh; width: auto; position: absolute; transform: translate(30%, 5%); border-radius: 10px;">
+    {% if employee_check %}
+        <p style="margin: 0;">Item: {{item.title}}</p> 
+        <p style="margin: 0;">Size: {{item.size}}. Quantity: {{item.quantity}}. Price: ${{ ( 50 * (item.price / 100 )) | round(2) }}</p>
+    {% else %}
+        <p onclick="delete_item(this.parentElement.parentElement)" style="margin: 0; display: flex; justify-content: space-around; cursor: pointer; "><span style="font-weight: bold; color: RGBA(184,216,190,.35);">x</span>{{item.title}} ({{item.size}}) <span style="font-weight: bold;"><img src="{{ url_for('static', filename='images/trash.svg') }}"></span></p>
+        <div style="text-align: right; margin-right: 10%;">
+          <img src="{{ url_for('static', filename='images/plus_1.svg') }}" id="item_plus" onclick="product_quantity(this.parentElement, 1)" style="cursor: pointer; height: 15%;" >
+          <p class="specific_item_quantity" style="margin-right: 0.5%;">{{item.quantity}}</p>
+          <img src="{{ url_for('static', filename='images/minus.svg') }}" id="item_minus"  onclick="product_quantity(this.parentElement, -1)"  style="cursor: pointer; height: 15%; margin-right: -0.5%;">
+        <p class="specific_item_price" style="margin: 0; padding: 0; text-align: center;">${{item.price}}</p> <p class="original_price" style="display: none;">{{item.price}}</p>
+    {% endif %}
+</div>
 </div>
 <br><br>
+
 {% endfor %}
 
 
 
 
+
 {% endif %}
 </div>
-
+</div>
 </div>
 
 
