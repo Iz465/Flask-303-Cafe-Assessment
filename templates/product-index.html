@@ -5,23 +5,26 @@
         <link href="{{ url_for('static', filename='product.css') }}" rel="stylesheet">
     </head>
     <div class="product-container">
-        <div class="Header">
-            <div class="product-display">
-                <div class="image-container">
-                    <img class="product-img" src="{{product.img_url}}" alt="">
-                </div>
-                <div class="title-container">
-                    <h1 class="product-title">{{product.title}}</h1>
-                </div>
-            </div>
-        </div>
+        
         
         <div class="product-info">
             <div class="center-container">
                 <div class="info-col1">
+                    <div class="Header">
+                        <div class="product-display">
+                            <div class="image-container">
+                                <img class="product-img" src="{{product.img_url}}" alt="">
+                            </div>
+                            
+                        </div>
+                    </div>
                     <div class="product-description inconsolata">{{product.description}}</div>
+                    <p class="disclamer product-description inconsolata">Please note, This product contains: <br> {{product.contains}}</p>
                 </div>
                 <div class="info-col2">
+                    <div class="title-container">
+                        <h1 class="product-title">{{product.title}}</h1>
+                    </div>
                     <form action="http://127.0.0.1:5000/{{product.id}}" method="post">
                         <div class="product-something">
                             <h3 class="kanit-regular">Size options</h3>
@@ -62,7 +65,7 @@
                                 
                             </div>
                             <div class="add-to-cart">
-                                <p class="disclamer">Please note, This product contains: <br> {{product.contains}}</p>
+                                
                                 
                                 <button class="cart-button" name="add-to-cart" type="submit">Add to cart</button>
                                 

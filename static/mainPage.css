@@ -4,6 +4,7 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
+  background-color: #beefff;
 }
 
 
@@ -42,11 +43,13 @@ h2{
   display: flex;
   justify-content: space-around;
   font-size: 25px;
+  background-color: rgb(85, 151, 153);
   /*background-color: rgba(184,216,190,1); */
 }
 
 .navigation, a {
-  color: black;
+  color: #beefff;
+  font-weight: 300;
 }
 
 
@@ -55,6 +58,7 @@ h2{
   flex-direction: row;
   width: 100%;
   align-items: center;
+  background-color: rgb(79, 131, 133);
 }
 .login-container{
   display: flex;
@@ -64,8 +68,19 @@ h2{
 .login-img{
   width: 100%;
 }
+.color-filter{
+  filter: invert(97%) sepia(81%) saturate(6782%) hue-rotate(170deg) brightness(103%) contrast(80%);
+}
 .title{
+  position: absolute;
   margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+
+  font-weight: 300;
+  color: #beefff;
 }
 
 a.loginbutton{
