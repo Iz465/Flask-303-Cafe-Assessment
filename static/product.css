@@ -4,7 +4,7 @@
     flex-direction: column;
     width: 80%;
     margin: auto;
-    margin-top: 5%;
+    margin-top: 1rem;
 }
 
 .product-display{
@@ -67,16 +67,16 @@
 
 .product-something{
     display: flex;
+    margin-top: 1rem;
     flex: 0 0 50%;
     flex-direction: column;
-    width: 50%;
+    width: 70%;
 }
 .size-options{
     
     display: grid;
     grid-template-columns: 33% 33% 33%;
     width: 100%;
-    height: 200px;
     gap: 1%;
     margin: auto;
 }
@@ -87,7 +87,7 @@
     grid-column-end: 2;
     border-style: solid;
     margin: auto;
-    height: 200px;
+    height: 150px;
 }
 .grid2{
     display: grid;
@@ -96,7 +96,7 @@
     grid-column-end: 3;
     border-style: solid;
     margin: auto;
-    height: 200px;
+    height: 150px;
 }
 .grid3{
     display: grid;
@@ -105,12 +105,15 @@
     grid-column-end: 4;
     border-style: solid;
     margin: auto;
-    height: 200px;
+    height: 150px;
 }
 .div1 img{
-    width: 70%;
+    width: 60%;
 }
 .div2 img{
+    width: 75%;
+}
+.div3 img{
     width: 85%;
 }
 .cup-svg{
@@ -127,13 +130,13 @@
     font-size: large;
 }
 .add-to-cart{
-    padding: 5%;
-    background-color: whitesmoke;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 .cart-button{
-    margin-top: 1rem;
+    padding: 1rem;
     background-color: cadetblue;
+    font-size: large;
+    border-radius: 10%;
 }
 .radiocontainer {
     display: block;
