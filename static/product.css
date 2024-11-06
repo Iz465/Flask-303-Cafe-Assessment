@@ -17,9 +17,13 @@
 .product-img{
     display: block;
     max-width: 100%;
+    border-radius: 10%;
 }
 .product-title{
     margin-left: 0%;
+}
+#product-price{
+    font-size: 40px;
 }
 .title-container{
     flex: 0 0 45%;
@@ -67,7 +71,7 @@
 
 .product-something{
     display: flex;
-    margin-top: 1rem;
+    margin-top: 2rem;
     flex: 0 0 50%;
     flex-direction: column;
     width: 70%;
@@ -77,44 +81,37 @@
     display: grid;
     grid-template-columns: 33% 33% 33%;
     width: 100%;
-    gap: 1%;
+    gap: 5%;
     margin: auto;
 }
-.grid1{
+.grid{
     display: grid;
-    width: 100%;
+    width: 80%;
+    border-style: solid;
+    border-radius: 10%;
+    margin: auto;
+    height: 150px;
+}
+.grid-first{
     grid-column-start: 1;
     grid-column-end: 2;
-    border-style: solid;
-    margin: auto;
-    height: 150px;
 }
-.grid2{
-    display: grid;
-    width: 100%;
+.grid-second{
     grid-column-start: 2;
     grid-column-end: 3;
-    border-style: solid;
-    margin: auto;
-    height: 150px;
 }
-.grid3{
-    display: grid;
-    width: 100%;
+.grid-third{
     grid-column-start: 3;
     grid-column-end: 4;
-    border-style: solid;
-    margin: auto;
-    height: 150px;
 }
 .div1 img{
-    width: 60%;
+    width: 55%;
 }
 .div2 img{
     width: 75%;
 }
 .div3 img{
-    width: 85%;
+    width: 90%;
 }
 .cup-svg{
     width: 100%;

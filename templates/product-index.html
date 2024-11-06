@@ -18,12 +18,13 @@
                             
                         </div>
                     </div>
-                    <div class="product-description inconsolata">{{product.description}}</div>
+                    <div class="product-description inconsolata"><b>Description</b><br>{{product.description}}</div>
                     <p class="disclamer product-description inconsolata">Please note, This product contains: <br> {{product.contains}}</p>
                 </div>
                 <div class="info-col2">
                     <div class="title-container">
                         <h1 class="product-title">{{product.title}}</h1>
+                        <p id="product-price" class="inconsolata">{{product.price}}$</p>
                     </div>
                     <form action="http://127.0.0.1:5000/{{product.id}}" method="post">
                         <div class="product-something">
@@ -32,7 +33,7 @@
                                 
                                 <label class="radiocontainer">
                                     <input type="radio" name="pick-size" value="SMALL">
-                                    <div class="grid1 cont">
+                                    <div class="grid grid-first cont">
                                         <div class="bev-size div1">
                                             <img class="cup-svg" src="https://www.svgrepo.com/show/490658/coffee-to-go.svg" alt="">
                                             <p>150 ml</p>
@@ -43,7 +44,7 @@
                                 
                                 <label class="radiocontainer">
                                     <input type="radio" name="pick-size" value="MEDIUM">
-                                    <div class="grid2 cont">
+                                    <div class="grid grid-second cont">
                                         <div class="bev-size div2">
                                             <img class="cup-svg" src="https://www.svgrepo.com/show/490658/coffee-to-go.svg" alt="">
                                             <p>200 ml</p>
@@ -54,7 +55,7 @@
                                 
                                 <label class="radiocontainer">
                                     <input type="radio" name="pick-size" value="LARGE">
-                                    <div class="grid3 cont">
+                                    <div class="grid grid-third cont">
                                         <div class="bev-size div3">
                                             <img class="cup-svg" src="https://www.svgrepo.com/show/490658/coffee-to-go.svg" alt="">
                                             <p>250 ml</p>
