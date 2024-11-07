@@ -1,15 +1,17 @@
 function openPopup(button) {
   document.getElementById("popup").style.display = "block";
   const rewardName = button.getAttribute("data-reward-name");
- // const reward_types = document.querySelectorAll("#popup h3");
-  //reward_types.forEach(reward => {
-   // reward.textContent = rewardName;
-  //})
+  const points = button.getAttribute("data-points");
+  const id = button.getAttribute("data-id");
+
+  document.getElementById("reward_points_input").value = points;
+  document.getElementById("reward_id_input").value = id;  
   document.querySelector("#popup h3").textContent = rewardName;
-  document.querySelector("#popup input").value = rewardName;
+  document.getElementById("rewardTypeInput").value = rewardName;
+ // document.querySelectorAll("#popup input").values = rewardName;
   
 }
-
+//<input type="submit" name="reward_points" id="reward_points_input" value="asdgag">
 function closePopup() {
   document.getElementById("popup").style.display = "none";
 }
@@ -41,3 +43,10 @@ const h3Elements = document.querySelectorAll("#popup h3");
 h3Elements.forEach(h3 => {
     h3.textContent = rewardName;
 });
+
+
+
+//  const reward_types = document.querySelectorAll("#popup input");
+ // reward_types.forEach(reward => {
+  //  reward.value = rewardName;
+ //   })

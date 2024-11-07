@@ -239,16 +239,40 @@ def map():
 ### REWARDS PAGE OPERANDS
 @app.route('/rewards', methods = ['POST', 'GET'])
 def rewards():
+    if session['currentuser'] is not None: # doing this atm because of strange problem where session isnt updating properly
+        connect = sqlite_functions.sqlite_connection()
+        cursor = connect.cursor()
+        cursor.execute("SELECT points FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
+        updated_points = cursor.fetchone()[0]
+        connect.close()
+        session['currentuser']['points'] = updated_points
+        points = updated_points
+    else:
+        points = None
+
     if request.method == 'POST':
         print('you have spent a lot of points!')
         reward_type = request.form['reward_type']
-        print('reward is:', reward_type)
-        return redirect(url_for('rewards'))
-    if session['currentuser'] is not None:
+        reward_points = request.form['reward_points']
+        reward_id = request.form['reward_id']
+        print('reward id is:', reward_id)
+      #  print("quick check", reward_points)
+        points_int = int(reward_points)
+        print("points_int type is: ",type(points_int))
+     #   print("Reward_points type is: ",type(reward_points))
         points = session.get('currentuser', {}).get('points', 0)
-
-    else:
-        points = None
+        new_points = points - points_int
+     #   print("points type is: ",type(points))
+        print('reward is:', reward_type, "points cost is:", reward_points, 'your total points are:', points,)
+        print('points left after claiming this reward:', new_points)
+        connect = sqlite_functions.sqlite_connection()
+        cursor = connect.cursor()
+        cursor.execute("UPDATE USERS SET points = ? WHERE ID = ?", (new_points, session['currentuser']['id']))
+        connect.commit()
+        connect.close()
+        session['currentuser']['points'] = new_points
+        print('currentuser points are: ', session['currentuser']['points'])
+        return redirect(url_for('rewards'))
     rows = sqlite_functions.get_table('Rewards')
     return render_template('rewards-index.html', rows = rows, points = points)
 

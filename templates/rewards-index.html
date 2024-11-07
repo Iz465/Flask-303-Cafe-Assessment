@@ -10,7 +10,7 @@
 <div class = "reward-container">
     {% for row in rows %}
     {% if points > row.points %}
-     <div class = "reward-items" onclick="openPopup(this)" data-reward-name = "{{row.Name}}">
+     <div class = "reward-items" onclick="openPopup(this)" data-reward-name = "{{row.Name}}" data-points="{{row.points}}" data-id="{{row.ID}}">
     {% else %}
     <div class = "reward-items" data-reward-name = "{{row.Name}}">
     {% endif %}
@@ -29,11 +29,11 @@
   <div id="popup" class="popup">
     <button class = "closeBtn" onclick="closePopup()">&times;</button>
     <form action="http://127.0.0.1:5000/rewards" method="POST">
-
-   
-  
-    <p>Your reward has been claimed</p>
-    <input type="submit" value="claim" name="reward_type">
+    <input type="hidden" name="reward_id" id="reward_id_input">
+    <input type="hidden" name="reward_points" id="reward_points_input">
+    <input type="hidden" name="reward_type" id="rewardTypeInput">
+    <h3>Your reward has been claimed</h3>
+    <input type="submit" value="claim">
  
     </form>
   </div>
