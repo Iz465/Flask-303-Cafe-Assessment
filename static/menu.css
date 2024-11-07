@@ -1,12 +1,19 @@
+.Menu{
+    width: 80%;
+    margin: auto;
+}
 #data{
-    padding: 5%;
-    margin:auto;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    max-width: 80%;
-    gap: 5%;
-    background-color: lightslategray;
+    padding: 0%;
+    display: grid;
+    list-style: none;
+    gap: 8px;
+    grid-template-columns: repeat(5, minmax(1px, 1fr));
+    width: 100%;
+}
+.menu-header{
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 60px;
 }
 a.clickable-div{
     position: absolute;
@@ -18,46 +25,38 @@ a.clickable-div{
 }
 .item-cont {
     position: relative;
-    width: 20%;
+    width: 100%;
+    list-style: none;
+}
+a {
+    text-decoration: none;
 }
   
 .item-image {
     height: 400px;
     display: block;
     width: 100%;
-    padding-bottom: 15%;
     object-fit: cover;
 }
 
 .item-content {
     white-space: nowrap;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
     background-color: #008CBA;
     overflow: hidden;
     width: 100%;
-    height: 15%;
-    transition: .5s ease;
+    text-decoration: none;
 }
 
-.item-cont:hover .item-content {
-    height: 50%;
-}
+
 
 .item-text {
     width: 100%;
     color: white;
     font-size: 20px;
-    position: absolute;
     overflow: hidden;
+    text-overflow: ellipsis;
     text-align: left;
-    padding-left: 30%;
-    left: 30%;
-    top: 4rem;
-    transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
+    padding-left: 10%;
 }
 .item-title{
     font-size: 27px;
@@ -66,6 +65,16 @@ a.clickable-div{
     font-size:medium;
 }
 .menucontroler{
-    width: 80%;
-    margin: auto;
+    margin-bottom: 1rem;
+}
+.sortForm{
+    margin: 0%;
+    height: 40px;
+}
+#search{
+    height: 40px;
+    margin-left: auto;
+}
+select{
+    margin: 0%;
 }

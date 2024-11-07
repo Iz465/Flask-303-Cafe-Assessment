@@ -48,7 +48,7 @@ h2{
 }
 
 .navigation, a {
-  color: #beefff;
+  color: white;
   font-weight: 300;
 }
 
@@ -80,13 +80,16 @@ h2{
   text-align: center;
 
   font-weight: 300;
-  color: #beefff;
+  color: white;
 }
 
 a.loginbutton{
   display: block;
   width: 100%;
   height: 100%;
+  text-decoration: none;
+}
+a:hover {
   text-decoration: none;
 }
 .user-cart{
