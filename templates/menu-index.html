@@ -27,8 +27,13 @@
             <div class = "item-content">
               <div class="item-text inconsolata">
                 <p class="item-title">{{items.title}}</p>
-                <p class="item-price">${{items.price}}</p>
-                <p class="item-desc">{{items.contains}}</p>
+                 {% if employee_check %}
+                 <p class="item-price">50% off! <s>${{items.price}}</s></p>
+                 <p class="item-price">${{ (50 * (items.price / 100) )|round(2) }}</p>
+                 {% else %}
+                 <p class="item-price">${{items.price}}</p>
+                 {% endif %}
+                <p class="item-desc">Ingredients: <br>{{items.contains}}</p>
             
               </div>
             </div>

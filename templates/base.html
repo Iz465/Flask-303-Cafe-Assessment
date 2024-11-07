@@ -18,9 +18,11 @@
     <link href="{{ url_for('static', filename='carousel.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='reward-page.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='menu.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='checkout.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='review_application.css')}}" rel="stylesheet">
     <script src="{{ url_for('static', filename='scripts/popup.js') }}"></script> 
     <script src="{{ url_for('static', filename='scripts/jquery.js') }}"></script> 
+    
 
  
    
@@ -69,6 +71,15 @@
       
     </div>
   </div>
+  {% if employee_check %}
+  
+  <p>Flat 50% discount for all employees!</p>
+
+  {% endif %}
+
+
+
+
   
   <div class = "navigation kanit-thin">
       <a href="{{ url_for('home') }}">Cafe</a>
@@ -80,7 +91,6 @@
       {% endif %}
   </div>
   
-
 
 
    

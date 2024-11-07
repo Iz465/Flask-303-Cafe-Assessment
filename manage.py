@@ -1,10 +1,9 @@
 from flask import Flask, redirect, url_for, request, render_template, flash, session
-from forms import SignUpForm, Login
+from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm, CheckOutForm
 import sqlite3
 import random
-from forms import EmployForm
 from datetime import datetime, timedelta
-import sqlite_functions
+import sqlite_functions, more_functions
 
 from datahandler import MenuHandler, UsersHandler
 
@@ -27,23 +26,20 @@ def before_request():
     global num
     if num <1:
         session['currentuser'] = None
-        session['currentuser'] = None
+        session['loggedin'] = None
         session['admin_check'] = None
+        session['employee_check'] = None
     num += 1
 
-@app.context_processor
+
+@app.context_processor # Add things here that will be used in Jinga. This way you dont have to do it for every render template. This app will do it for every render template instead
 def context_processor():
-    if 'currentuser' in session and session['currentuser'] is not None:
-        print("member is logged in")
-        session['loggedin'] = True
-        loggedin = session['loggedin']
-    else:
-        session['loggedin'] = False
-        loggedin = session['loggedin']
-    if 'admin_check' in session and session['admin_check'] is not None:
-        admin_check = session['admin_check']
-        return dict(loggedin=loggedin, admin_check = admin_check)
-    return dict(loggedin=loggedin)
+    loggedin = session['loggedin']
+    admin_check = session['admin_check']
+    employee_check = session['employee_check']
+    currentuser = session['currentuser'],
+    
+    return dict(loggedin=loggedin, employee_check = employee_check, admin_check = admin_check, currentuser = currentuser)
 
 
 def getmenu_dict():
@@ -72,6 +68,8 @@ def index():
         print("logging out of user")
         session['currentuser'] = None
         session['admin_check'] = None
+        session['employee_check'] = None
+        session['loggedin'] = False
         return redirect(url_for('home'))
     print("not using logout post")
     return redirect(url_for('home'))
@@ -91,7 +89,7 @@ def login():
             flash('All Fields Required')
             return render_template('login.html', form = form)
         else:
-            login_check, admin_check = userhandler.login(form.data)
+            login_check, admin_check, employee_check = userhandler.login(form.data)
             if login_check: 
                 session['currentuser'] = userhandler.currentuser # Storing user info in here so it can be accessed in other pages.
                 currentuser = session['currentuser']
@@ -100,6 +98,11 @@ def login():
                 session['admin_check'] = admin_check
                 if admin_check is False:
                     currentuser = userhandler.updateusr(currentuser)
+                if employee_check is True:
+                    session['employee_check'] = True
+                else:
+                    session['employee_check'] = False
+                session['loggedin'] = True
                 return render_template('profile.html', currentuser = currentuser)
             return render_template('login.html', form = form)
     if request.method == 'GET':
@@ -136,22 +139,15 @@ def home():
 
     cursor.execute("Select * FROM MENU WHERE id = ?", (random.randrange(min_id,max_id + 1),))
     product = cursor.fetchone()
+    #    product = sqlite_functions.select_from_table('MENU', category='id', value=(random.randrange(min_id,max_id + 1),))
     timeleft = None
     timeleft_converted = 0
     if product is not None: # checks whether there is a product with that id.
-        cursor.execute("Select * From Discounts")
-        empty_check = cursor.fetchall()
+        empty_check = sqlite_functions.select_from_table('Discounts')
         if len(empty_check) < 1: # using this so only one product can be put in discount table
-            cursor.execute("SELECT * FROM Discounts WHERE ID = ?", (product[0],))
-            discount_product = cursor.fetchone()
-            if discount_product is None: # checks whether that specific menu product is in the discount table.
-                add_product = "Insert INTO Discounts (ID, Name, Contains, Description, Price, Image_Url, Time_Added) Values (?,?,?,?,?,?,?)"
-                cursor.execute(add_product, (product[0], product[1], product[2], product[3], product[4], product[5], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
-                connect.commit()
-                print("Product is added to discount table")
-            else:
-                print("Product is already in discount table")
-        else:
+            sqlite_functions.insert_into_table('Discounts', ['ID', 'Name', 'Contains', 'Description', 'Price', 'Image_Url', 'Time_Added'],
+                                               (product[0], product[1], product[2], product[3], product[4], product[5], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+        else: 
             cursor.execute("SELECT * FROM Discounts")
             discount_product = cursor.fetchone()
             product_start_time = datetime.strptime(discount_product[6], '%Y-%m-%d %H:%M:%S')
@@ -163,12 +159,12 @@ def home():
                 timeleft = timedelta(days=1) - (now -  product_start_time) 
                 print(f"Product still has {timeleft} time left")
             
-    cursor.execute("SELECT * FROM Discounts") 
-    rows = cursor.fetchall()
+    rows = sqlite_functions.get_table('Discounts')
     connect.close()
     if timeleft is not None:
         timeleft_converted = int(timeleft.total_seconds()) 
     return render_template('welcome-index.html', currentuser = session['currentuser'], rows = rows, timeleft_converted = timeleft_converted)
+
 
 
 
@@ -229,12 +225,6 @@ def cart():
         print('Log in to view your cart')
     return render_template('cart.html', currentuser = session["currentuser"])
 
-### Checkout page
-@app.route('/checkout', methods=["POST","GET"])
-def checkout():
-    if session.get("currentuser"):
-        usr = session["currentuser"]
-    return 0
 
 ### experiment minesweeper minigame
 @app.route("/minesweeper",methods=['GET'])
@@ -256,10 +246,13 @@ def map():
 def rewards():
     if request.method == 'POST':
         return redirect(url_for('welcome-index'))
+    if session['currentuser'] is not None:
+        points = session.get('currentuser', {}).get('points', [])
 
+    else:
+        points = None
     rows = sqlite_functions.get_table('Rewards')
-    print('logged in is: ',session['loggedin'])
-    return render_template('rewards-index.html', rows = rows, currentuser = session["currentuser"])
+    return render_template('rewards-index.html', rows = rows, points = points)
 
 ### EMPLOY PAGE OPERANDS ###
 @app.route('/employ')
@@ -268,7 +261,7 @@ def employ():
         return redirect(url_for('welcome-index'))
     
     rows = sqlite_functions.get_table('EmployJobs') # Make images 3000 height and 2000 width
-    return render_template('employ-index.html', rows = rows, currentuser = session["currentuser"])
+    return render_template('employ-index.html', rows = rows)
 
 
 @app.route('/employ_application', methods= ['POST', 'GET'])
@@ -277,7 +270,7 @@ def employ_application():
    # if request.method == 'POST':
       #  job_name = request.form['job_name']
        # print(job_name)
-    if 'loggedin' in session and session['loggedin']:  # This if statement will check first, whether session has loggedin and then if the loggedin value is set to true. So only logged in users can access this.  
+    if 'loggedin' in session and session['loggedin']:  # This if statement will check first, whether session has loggedin and then if the loggedin value is set to true. Only logged in users can access this.  
         if request.method == 'POST':
             if form.validate() == False:
                 return render_template('employ_application.html', form = form, check_form = True)
@@ -295,51 +288,108 @@ def employ_application():
                     (session['currentuser']['id'],session['currentuser']['name'],session['currentuser']['gender'], request.form['job_reason'])) 
                     connect.commit()
                     connect.close() 
-                    return render_template('employ_application.html', form = form, check_form = False, form_done = True, currentuser = session["currentuser"])
+                    return render_template('employ_application.html', form = form, check_form = False, form_done = True)
                 else:
-                    return render_template('employ_application.html', already_applied = True, currentuser = session["currentuser"])
+                    return render_template('employ_application.html', already_applied = True)
         else:
-            return render_template('employ_application.html', form = form, check_form = True, currentuser = session["currentuser"])
+            return render_template('employ_application.html', form = form, check_form = True)
     else:
-        return render_template('employ_application.html', notloggedin = True, currentuser = session["currentuser"])
-
+        return render_template('employ_application.html', notloggedin = True)
 
 
 @app.route('/application_review', methods = ['POST', 'GET'])
 def application_review():
+    add_product = add_reward = add_job = False
+    product_form = AddProductForm()
+    reward_form = AddRewardForm()
+    job_form = AddJobForm()
+    
+    form_values = request.form.keys()
+    form_values = { 'Approve': more_functions.approve, 'Deny': more_functions.deny, 'add_product': more_functions.add_item, 'remove_product': more_functions.remove_item,
+                   'add_reward': more_functions.add_item, 'remove_reward': more_functions.remove_item, 'add_job': more_functions.add_item, 
+                   'remove_job': more_functions.remove_item, 'remove_employee': more_functions.remove_item } # Holding the request names in dictionary so i can make the code cleaner
     if request.method == 'POST':
-        connect = sqlite3.connect('database.db')
-        cursor = connect.cursor()
-        if 'Approve' in request.form:
-            id = request.form.get('Approve')
-            print("Approved Review")
-            cursor.execute("SELECT id FROM USERS")
-            employ_ids = cursor.fetchall()
-            cursor.execute("SELECT * From USERS WHERE ID = ?", (id,))
-            approved_user = cursor.fetchone()
-            check_users = [row[0] for row in employ_ids]
-            if id not in check_users:
-                 cursor.execute("INSERT INTO Employees (ID, cart, name, email, gender, password) VALUES (?, ?, ?, ?, ?, ?)",
-                 (approved_user[0], approved_user[1], approved_user[2], approved_user[3], approved_user[4], approved_user[5]))
-                 cursor.execute("DELETE From Employ_Application WHERE ID = ?", (id,))
-                 connect.commit()  
-        elif 'Deny' in request.form:
-            id = request.form.get('Deny')
-            print("Denied Review")
-            cursor.execute("DELETE From Employ_Application WHERE ID = ?", (id,))
+       for form_action, function in form_values.items():
+         if form_action in request.form:
+                id = request.form.get(form_action) 
+                if form_action in ['Approve', 'Deny']:
+                    function(id) # activates the function from the form values dictionary
+                elif 'add' in form_action:
+                   if 'product' in form_action:
+                       add_product = function() 
+                   elif 'reward' in form_action:
+                       add_reward = function() 
+                   elif 'job' in form_action:
+                       add_job = function()  
+
+                elif 'remove_' in form_action:
+                    function('MENU' if 'product' in form_action else 'Rewards' if 'reward' in form_action else 'EmployJobs' if 'job' in form_action else 'Employees', id)
+                else:
+                    function()
+                break   # will stop loop once the action value being used in form is found
+         
+       if product_form.validate():
+           print("Product added")
+           sqlite_functions.insert_into_table('testing_table', ['product', 'price', 'ingredients', 'image', 'description'],
+                                              (product_form.product.data, product_form.price.data, product_form.ingredients.data, product_form.image.data, product_form.description.data))
+       if reward_form.validate():
+           print("Reward added")
+           sqlite_functions.insert_into_table('Rewards', ['Name', 'Points', 'Image_Url'],
+                                              (reward_form.reward.data, reward_form.points.data, reward_form.image.data))
+       if job_form.validate():
+           print('Job added')
+           sqlite_functions.insert_into_table('EmployJobs', ['Job_Name', 'Salary', 'Description', 'Image_Url'],
+                                              (job_form.job.data, job_form.salary.data, job_form.description.data, job_form.image.data))
+           
+    db_tables = ['Employ_Application', 'Rewards', 'MENU', 'EmployJobs', 'Employees']
+    rows = {table: sqlite_functions.get_table(table) for table in db_tables}
+    return render_template('review_application.html',  product_form = product_form, reward_form = reward_form, job_form = job_form, add_job = add_job, add_reward = add_reward, 
+                           add_product = add_product, employee_rows = rows['Employees'], job_review_rows = rows['Employ_Application'], rewards_rows = rows['Rewards'], 
+                           products_rows = rows['MENU'], job_rows = rows['EmployJobs'])
+
+
+@app.route('/checkout', methods = ['GET', 'POST'])
+def checkout():
+    form = CheckOutForm()
+    checkout_complete = False
+    incorrect_details = False
+    if request.method == 'POST':
+         if form.validate():
+            checkout_complete = True
+            connect = sqlite_functions.sqlite_connection()
+            cursor = connect.cursor()
+            cursor.execute("Select points FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
+            user_points = cursor.fetchone()
+            if user_points[0] is not None:
+                cursor.execute("UPDATE USERS SET cart = ?, points = ? WHERE ID = ?", ("", user_points[0] + 50, session['currentuser']['id']))
+            else:
+                cursor.execute("UPDATE USERS SET cart = ?, points = ? WHERE ID = ?", ("", 50, session['currentuser']['id']))
             connect.commit()
-        else:
-            print("Not working")
-    job_review_rows = sqlite_functions.get_table('Employ_Application')
-    rewards_rows = sqlite_functions.get_table('Rewards')
-    products_rows = sqlite_functions.get_table('MENU')
-    job_rows = sqlite_functions.get_table('EmployJobs')
-    employee_rows = sqlite_functions.get_table('Employees')
-    return render_template('review_application.html', employee_rows = employee_rows, job_review_rows = job_review_rows, rewards_rows = rewards_rows, products_rows = products_rows, job_rows = job_rows, currentuser = session["currentuser"])
-        
+            connect.close()
+            userhandler = UsersHandler()
+            session["currentuser"] = userhandler.updateusr(session["currentuser"])
+            session["currentuser"]['points'] += 50 
+            return render_template("checkout.html", checkout_complete = checkout_complete)
+         if form.validate() == False:
+            incorrect_details = True
+            cart_items = session['cart_items']
+            cart_sum = session['cart_sum']
+            cart_length = session['cart_length']
+            return render_template("checkout.html", form = form, incorrect_details = incorrect_details, cart_sum = cart_sum, cart_length = cart_length, cart_items = cart_items)
+    cart_items = session.get('currentuser', {}).get('cart', [])
+    session['cart_items'] = cart_items
+    cart_sum = request.args.get('cart_sum', '0') 
+    session['cart_sum'] = cart_sum
+    cart_length = request.args.get('cart_length', '0')
+    session['cart_length'] = cart_length
+    return render_template('checkout.html', form = form, cart_sum = cart_sum, cart_length = cart_length, cart_items = cart_items)
+   
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
 
 
-      
+   
+
