@@ -1,7 +1,12 @@
 function openPopup(button) {
   document.getElementById("popup").style.display = "block";
   const rewardName = button.getAttribute("data-reward-name");
+ // const reward_types = document.querySelectorAll("#popup h3");
+  //reward_types.forEach(reward => {
+   // reward.textContent = rewardName;
+  //})
   document.querySelector("#popup h3").textContent = rewardName;
+  document.querySelector("#popup input").value = rewardName;
   
 }
 
@@ -31,3 +36,8 @@ function tablePopup(table_div) {
     }
 
 }
+
+const h3Elements = document.querySelectorAll("#popup h3");
+h3Elements.forEach(h3 => {
+    h3.textContent = rewardName;
+});

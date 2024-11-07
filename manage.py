@@ -237,12 +237,15 @@ def map():
         post = False
         return render_template('map.html')
 ### REWARDS PAGE OPERANDS
-@app.route('/rewards')
+@app.route('/rewards', methods = ['POST', 'GET'])
 def rewards():
     if request.method == 'POST':
-        return redirect(url_for('welcome-index'))
+        print('you have spent a lot of points!')
+        reward_type = request.form['reward_type']
+        print('reward is:', reward_type)
+        return redirect(url_for('rewards'))
     if session['currentuser'] is not None:
-        points = session.get('currentuser', {}).get('points', [])
+        points = session.get('currentuser', {}).get('points', 0)
 
     else:
         points = None
@@ -371,7 +374,7 @@ def checkout():
             cart_sum = session['cart_sum']
             cart_length = session['cart_length']
             return render_template("checkout.html", form = form, incorrect_details = incorrect_details, cart_sum = cart_sum, cart_length = cart_length, cart_items = cart_items)
-    cart_items = session.get('currentuser', {}).get('cart', [])
+    cart_items = session.get('currentuser', {}).get('cart', "")
     session['cart_items'] = cart_items
     cart_sum = request.args.get('cart_sum', '0') 
     session['cart_sum'] = cart_sum
