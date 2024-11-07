@@ -38,7 +38,16 @@ h2{
   padding-bottom: 100px;
 }
 
-
+.dailyreward-container{
+  position: relative;
+  left: 10%;
+  top: 10%;
+  width: 10%;
+}
+.dailyreward-img{
+  position: relative;
+  width: 100%;
+}
 .navigation {
   display: flex;
   justify-content: space-around;

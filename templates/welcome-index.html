@@ -11,14 +11,16 @@
    crossorigin=""></script>
  </head>
 {% for row in rows %}
+<div class="dailyreward-container">
+  <img class = "showing carousel-images dailyreward-img" src = "{{ row.Image_Url }}">
+  <form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="inconsolata" >
+    <p>Special Item of the Day</p>
+    <p>{{row.Name}} 50% off</p>
+    <p>Time left: <span id="display_time"></span></p>
+    <button type="submit">Order</button>
+  </form>
+</div>
 
-<img class = "showing carousel-images" src = "{{ row.Image_Url }}" style="max-height: 20%; margin-left: 5%; margin-top: 5%;">
-<form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="inconsolata" style="margin-left: 5%;">
-<p>Special Item of the Day</p>
-<p>{{row.Name}} 50% off</p>
-<p>Time left: <span id="display_time"></span></p>
-<button type="submit">Order</button>
-</form>
 
 {% endfor %}
 
@@ -27,7 +29,7 @@
   <img class = "carousel-images" src = "{{ url_for('static', filename='images/churro.jpg') }}">
   <img class = "carousel-images" src = "{{ url_for('static', filename='images/coffee-beans.jpg') }}">
 </div>
-<div style="height: 40vh;"></div>
+
 <div class="map-container">
   <h1 class="kanit-thin">Where to find us</h1>
   <div id="map"></div>
