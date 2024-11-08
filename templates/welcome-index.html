@@ -10,30 +10,54 @@
    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
    crossorigin=""></script>
  </head>
-{% for row in rows %}
-<div class="dailyreward-container">
-  <img class = "showing carousel-images dailyreward-img" src = "{{ row.Image_Url }}">
-  <form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="inconsolata" >
-    <p>Special Item of the Day</p>
-    <p>{{row.Name}} 50% off</p>
-    <p>Time left: <span id="display_time"></span></p>
-    <button type="submit">Order</button>
-  </form>
+
+
+ <div class="paralax-cont">
+  <img class="layer1" src="{{ url_for('static', filename='images/layer1.png') }}">
+  <img class="layer2" src="{{ url_for('static', filename='images/layer2.png') }}">
+  <img class="layer3" src="{{ url_for('static', filename='images/layer3.png') }}">
+  <h1 class="title-banner">The Great Cafe</h1>
 </div>
 
 
-{% endfor %}
+<div class="buffer">
+  <div class="about-banner">
+    <h2 class="inconsolata">serving fuel for greatness</h1>
+    <p><b>blablabla</b></p>
+    <p>blablabla</p>
+    <p><b>blablabla</b></p>
+    <p>blablabla</p>
+  </div>
+  <div class="map-container">
+    <h1 class="kanit-thin">Where to find us</h1>
+    <div id="map"></div>
+  </div>
+  {% for row in rows %}
+  
+  <div class="dailyreward-container">
+    <img class = "showing carousel-images dailyreward-img" src = "{{ row.Image_Url }}">
+    <form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="inconsolata" >
+      <p>Special Item of the Day</p>
+      <p>{{row.Name}} 50% off</p>
+      <p>Time left: <span id="display_time"></span></p>
+      <button type="submit">Order</button>
+    </form>
+  </div>
+  
+  
+  {% endfor %}
+  
+  <div class="carousel-container">
+    <! -- <img class = "showing carousel-images" src = "{{ url_for('static', filename='images/holding-coffee.webp') }}">-->
+    <! -- <img class = "carousel-images" src = "{{ url_for('static', filename='images/churro.jpg') }}">-->
+    <! -- <img class = "carousel-images" src = "{{ url_for('static', filename='images/coffee-beans.jpg') }}">-->
+  </div>
+  
 
-<div class="carousel-container">
-  <img class = "showing carousel-images" src = "{{ url_for('static', filename='images/holding-coffee.webp') }}">
-  <img class = "carousel-images" src = "{{ url_for('static', filename='images/churro.jpg') }}">
-  <img class = "carousel-images" src = "{{ url_for('static', filename='images/coffee-beans.jpg') }}">
 </div>
+  
 
-<div class="map-container">
-  <h1 class="kanit-thin">Where to find us</h1>
-  <div id="map"></div>
-</div>
+
 
 
     
@@ -72,7 +96,8 @@
   cafe.bindPopup("<b>This is our cafe!</b>").openPopup();
 </script>
 
-<script src="{{ url_for('static', filename='scripts/carousel.js') }}"></script> 
+ 
+<! -- <script src="{{ url_for('static', filename='scripts/carousel.js') }}"></script>-->
 
    
 {% endblock %}
