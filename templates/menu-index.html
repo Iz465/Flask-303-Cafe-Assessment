@@ -32,12 +32,24 @@
             <div class = "item-content">
               <div class="item-text">
                 <p class="item-title">{{items.title}}</p>
-                 {% if employee_check %}
-                 <p class="item-price">50% off! <s>${{items.price}}</s></p>
-                 <p class="item-price">${{ (50 * (items.price / 100) )|round(2) }}</p>
-                 {% else %}
-                 <p class="item-price">${{items.price}}</p>
-                 {% endif %}
+                {% if reward == 1 %}
+                <p class = "item-price">Free! $0</p>
+                {% elif reward == 2%}
+                <p class = "item-price">Monthly coffee!</p>
+                <p class="item-price">$0</p>
+                {% elif reward == 3 %}
+                <p class="item-price">10% off! <s>${{items.price}}</s></p>
+                <p class="item-price">${{ (90 * (items.price / 100) )|round(2) }}</p>
+                {% elif reward == 6 %}
+                <p class = "item-price">Free! $0</p>
+                {% else %}
+                {% if employee_check %}
+                <p class="item-price">50% off! <s>${{items.price}}</s></p>
+                <p class="item-price">${{ (50 * (items.price / 100) )|round(2) }}</p>
+                {% else %}
+                <p class="item-price">${{items.price}}</p>
+                {% endif %}
+                {% endif %}
                 <p class="item-desc">Ingredients: <br>{{items.contains}}</p>
             
               </div>

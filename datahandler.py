@@ -31,7 +31,7 @@ class UsersHandler(Handler):
     def __init__(self) -> None:
         super().__init__()
         self.sortingmethods = ["name","email"]
-        self.tablevalues = ['id',"cart","name", "email", "gender", "password", 'points']
+        self.tablevalues = ['id',"cart","name", "email", "gender", "password", 'points', 'reward']
         self.adminvalues = ['id',"name", "email", "gender", "password"]
         self.currentuser = {}
     def signup(self,user):
@@ -55,7 +55,7 @@ class UsersHandler(Handler):
             cur.execute(f"SELECT * FROM USERS WHERE email ='{user['email']}'")
             usertemp = cur.fetchone()
             if usertemp is not None:
-                userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4], self.tablevalues[5] : usertemp[5], self.tablevalues[6] : usertemp[6]}
+                userfromdb = {self.tablevalues[0]: usertemp[0], self.tablevalues[1] : usertemp[1], self.tablevalues[2] : usertemp[2], self.tablevalues[3] : usertemp[3], self.tablevalues[4] : usertemp[4], self.tablevalues[5] : usertemp[5], self.tablevalues[6] : usertemp[6], self.tablevalues[7] : usertemp[7]}
                 print(userfromdb)
                 admin_check = False
                 cur.execute(f"Select * From Employees WHERE email = '{user['email']}'")

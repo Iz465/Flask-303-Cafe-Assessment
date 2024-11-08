@@ -1,5 +1,5 @@
 function openPopup(button) {
-  document.getElementById("popup").style.display = "block";
+  document.getElementById("popup").style.visibility = "visible";
   const rewardName = button.getAttribute("data-reward-name");
   const points = button.getAttribute("data-points");
   const id = button.getAttribute("data-id");

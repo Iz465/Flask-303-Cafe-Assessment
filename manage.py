@@ -182,12 +182,19 @@ def menu():
             data_dict = handler.sorteddata(data_dict,sortbyvalue)
         else:
             data_dict = handler.sorteddata(database_menu,sortbyvalue)
-
         return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"])
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
-    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'])
+    connect = sqlite_functions.sqlite_connection()
+    cursor = connect.cursor()
+    cursor.execute("SELECT reward FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
+    updated_reward = cursor.fetchone()[0]
+    connect.close()
+    session['currentuser']['reward'] = updated_reward
+    reward = session['currentuser']['reward']
+  
+    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], reward = reward)
 
 @app.route('/<int:product_id>', methods=["POST","GET"])
 def product(product_id):
@@ -244,8 +251,13 @@ def rewards():
         cursor = connect.cursor()
         cursor.execute("SELECT points FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
         updated_points = cursor.fetchone()[0]
+        cursor.execute("SELECT reward FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
+        updated_reward = cursor.fetchone()[0]
         connect.close()
+        print('updated reward part 1 is : ', session['currentuser']['reward'])
         session['currentuser']['points'] = updated_points
+        session['currentuser']['reward'] = updated_reward
+        print('updated reward part 2 is : ', session['currentuser']['reward'])
         points = updated_points
     else:
         points = None
@@ -258,6 +270,7 @@ def rewards():
         print('reward id is:', reward_id)
       #  print("quick check", reward_points)
         points_int = int(reward_points)
+        id_int = int(reward_id)
         print("points_int type is: ",type(points_int))
      #   print("Reward_points type is: ",type(reward_points))
         points = session.get('currentuser', {}).get('points', 0)
@@ -267,7 +280,7 @@ def rewards():
         print('points left after claiming this reward:', new_points)
         connect = sqlite_functions.sqlite_connection()
         cursor = connect.cursor()
-        cursor.execute("UPDATE USERS SET points = ? WHERE ID = ?", (new_points, session['currentuser']['id']))
+        cursor.execute("UPDATE USERS SET points = ?, reward = ? WHERE ID = ?", (new_points, id_int, session['currentuser']['id']))
         connect.commit()
         connect.close()
         session['currentuser']['points'] = new_points
@@ -281,7 +294,6 @@ def rewards():
 def employ():
     if request.method == 'POST':
         return redirect(url_for('welcome-index'))
-    
     rows = sqlite_functions.get_table('EmployJobs') # Make images 3000 height and 2000 width
     return render_template('employ-index.html', rows = rows)
 
