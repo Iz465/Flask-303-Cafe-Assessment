@@ -37,7 +37,8 @@ def context_processor():
     loggedin = session['loggedin']
     admin_check = session['admin_check']
     employee_check = session['employee_check']
-    currentuser = session['currentuser'],
+    currentuser = session['currentuser']
+
     
     return dict(loggedin=loggedin, employee_check = employee_check, admin_check = admin_check, currentuser = currentuser)
 
@@ -182,19 +183,25 @@ def menu():
             data_dict = handler.sorteddata(data_dict,sortbyvalue)
         else:
             data_dict = handler.sorteddata(database_menu,sortbyvalue)
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"])
+        
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"], rewards_int_list = rewards_int_list)
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
-    connect = sqlite_functions.sqlite_connection()
-    cursor = connect.cursor()
-    cursor.execute("SELECT reward FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
-    updated_reward = cursor.fetchone()[0]
-    connect.close()
-    session['currentuser']['reward'] = updated_reward
-    reward = session['currentuser']['reward']
+    if session['currentuser'] is not None:
+        connect = sqlite_functions.sqlite_connection()
+        cursor = connect.cursor()
+        cursor.execute("SELECT reward FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
+        updated_reward = cursor.fetchone()[0]
+        connect.close()
+        session['currentuser']['reward'] = updated_reward
+        reward = session['currentuser']['reward']
+        rewards_split = reward.split(',')
+        rewards_int_list = [int(number) for number in rewards_split]
+        return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rewards_int_list = rewards_int_list)
+    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'])
   
-    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], reward = reward)
+   
 
 @app.route('/<int:product_id>', methods=["POST","GET"])
 def product(product_id):
@@ -205,6 +212,8 @@ def product(product_id):
             product_item = product
     
     if request.method == "POST":
+      #  reward = request.form['testing_reward']
+      #  print('testing reward is :',reward)
         usr = session["currentuser"]
         userhandler = UsersHandler()
         msg =userhandler.addtocart(usr,product_item)
@@ -259,8 +268,15 @@ def rewards():
         session['currentuser']['reward'] = updated_reward
         print('updated reward part 2 is : ', session['currentuser']['reward'])
         points = updated_points
+        reward = updated_reward
+        rewards_split = reward.split(',')
+        rewards_int_list = [int(number) for number in rewards_split]
+        print(rewards_int_list)                         
     else:
         points = None
+        reward = None
+        rewards_split = None
+        rewards_int_list = None
 
     if request.method == 'POST':
         print('you have spent a lot of points!')
@@ -268,26 +284,30 @@ def rewards():
         reward_points = request.form['reward_points']
         reward_id = request.form['reward_id']
         print('reward id is:', reward_id)
-      #  print("quick check", reward_points)
         points_int = int(reward_points)
         id_int = int(reward_id)
         print("points_int type is: ",type(points_int))
-     #   print("Reward_points type is: ",type(reward_points))
         points = session.get('currentuser', {}).get('points', 0)
+        current_reward_id = session['currentuser']['reward']
+        if current_reward_id == '0':
+            current_reward_id = ''
+            all_rewards = str(current_reward_id) + str(id_int)
+        else:
+            all_rewards = str(current_reward_id) + ',' + str(id_int)
         new_points = points - points_int
-     #   print("points type is: ",type(points))
+        print('all_rewards is:', all_rewards)
         print('reward is:', reward_type, "points cost is:", reward_points, 'your total points are:', points,)
         print('points left after claiming this reward:', new_points)
         connect = sqlite_functions.sqlite_connection()
         cursor = connect.cursor()
-        cursor.execute("UPDATE USERS SET points = ?, reward = ? WHERE ID = ?", (new_points, id_int, session['currentuser']['id']))
+        cursor.execute("UPDATE USERS SET points = ?, reward = ? WHERE ID = ?", (new_points,all_rewards, session['currentuser']['id']))
         connect.commit()
         connect.close()
         session['currentuser']['points'] = new_points
         print('currentuser points are: ', session['currentuser']['points'])
         return redirect(url_for('rewards'))
     rows = sqlite_functions.get_table('Rewards')
-    return render_template('rewards-index.html', rows = rows, points = points)
+    return render_template('rewards-index.html', rows = rows, points = points, rewards_int_list = rewards_int_list)
 
 ### EMPLOY PAGE OPERANDS ###
 @app.route('/employ')
@@ -390,16 +410,42 @@ def checkout():
     if request.method == 'POST':
          if form.validate():
             checkout_complete = True
-            connect = sqlite_functions.sqlite_connection()
-            cursor = connect.cursor()
-            cursor.execute("Select points FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
-            user_points = cursor.fetchone()
-            if user_points[0] is not None:
-                cursor.execute("UPDATE USERS SET cart = ?, points = ? WHERE ID = ?", ("", user_points[0] + 50, session['currentuser']['id']))
+            user_points = sqlite_functions.select_from_table('USERS', 'points', 'ID', session['currentuser']['id'] )
+            reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
+            print('testing how many rewards i havezz:', reward[0]['Reward'])
+            reward_split = reward[0]['Reward'].split(',')
+            rewards_int_list = [int(number) for number in reward_split]  
+            if isinstance(rewards_int_list, list) and all(isinstance(number, int) for number in rewards_int_list):
+                #permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', reward[0]['Reward'])   
+                connect = sqlite_functions.sqlite_connection()
+                cursor = connect.cursor()
+                reward_string = ','.join(['?'] * len(rewards_int_list))                                   
+                select_string = f"Select Permanent FROM Rewards WHERE ID IN ({reward_string})"
+                cursor.execute(select_string, rewards_int_list)
+                reward_check = cursor.fetchall()
+                reward_tuples = [row[0] for row in reward_check] 
+                print('check every permanent:', reward_tuples) #check_users = [row[0] for row in employ_ids]
+                
+                if any(permanent == 'No' for permanent in reward_tuples): 
+                    print('check before error:', rewards_int_list )
+                    for id, yesno in zip(rewards_int_list, reward_tuples):
+                        if yesno == 'No':
+                            print('temporary: ',yesno,id)
+                            if id in rewards_int_list:
+                                rewards_int_list.remove(id)
+                           
+                        else:
+                            print('permanent: ',yesno,id)
+                    
+                    print(rewards_int_list)
+                    updated_rewards = ','.join([str(number) for number in rewards_int_list])   
+                    print(updated_rewards)
+                    sqlite_functions.update_table('USERS', 'reward', 'ID', updated_rewards, session['currentuser']['id'])
+            if isinstance(user_points[0]['points'], int): 
+                sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 50 )    
             else:
-                cursor.execute("UPDATE USERS SET cart = ?, points = ? WHERE ID = ?", ("", 50, session['currentuser']['id']))
-            connect.commit()
-            connect.close()
+                sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', 50 )  
+                session["currentuser"]['points'] = 0
             userhandler = UsersHandler()
             session["currentuser"] = userhandler.updateusr(session["currentuser"])
             session["currentuser"]['points'] += 50 

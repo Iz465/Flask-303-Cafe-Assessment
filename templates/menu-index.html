@@ -26,21 +26,21 @@
       <ul id="data">
         {#This here section needs rework once database has been implemented#}
         {% for items in data %}
-        <div class = "item-cont">
+        <div class = "item-cont">                            
           <a href="http://127.0.0.1:5000/{{items.id}}" method="POST">
             <img title="product-img" class = "item-image" alt="Image-alt" src="{{items.img_url}}"></img>
             <div class = "item-content">
               <div class="item-text">
                 <p class="item-title">{{items.title}}</p>
-                {% if reward == 1 %}
+                {% if 1 in rewards_int_list %}
                 <p class = "item-price">Free! $0</p>
-                {% elif reward == 2%}
+                {% elif 2 in rewards_int_list %}
                 <p class = "item-price">Monthly coffee!</p>
                 <p class="item-price">$0</p>
-                {% elif reward == 3 %}
+                {% elif 3 in rewards_int_list %}
                 <p class="item-price">10% off! <s>${{items.price}}</s></p>
                 <p class="item-price">${{ (90 * (items.price / 100) )|round(2) }}</p>
-                {% elif reward == 6 %}
+                {% elif 6 in rewards_int_list %}
                 <p class = "item-price">Free! $0</p>
                 {% else %}
                 {% if employee_check %}

@@ -13,7 +13,7 @@ function openPopup(button) {
 }
 //<input type="submit" name="reward_points" id="reward_points_input" value="asdgag">
 function closePopup() {
-  document.getElementById("popup").style.display = "none";
+  document.getElementById("popup").style.visibility = "hidden";
 }
 
 function tablePopup(table_div) {

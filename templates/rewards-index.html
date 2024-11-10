@@ -6,16 +6,29 @@
  <h1>Rewards</h1> <h3>Points: {{points}}</h3>
 </div>
 
+{% if points != None %}
+{% for reward in rewards_int_list %}
+<p>Reward is: {{reward}}</p>
+{% endfor %}
+<p>testing {{rewards_int_list[0] + 60}}</p>
+{% endif %}
+
 
 <div class = "reward-container">
+    
     {% for row in rows %}
-    {% if points > row.points %}
+    {% if points != None %}
+    {% if points >= row.points and row.ID not in rewards_int_list %}
      <div class = "reward-items" onclick="openPopup(this)" data-reward-name = "{{row.Name}}" data-points="{{row.points}}" data-id="{{row.ID}}">
     {% else %}
     <div class = "reward-items" data-reward-name = "{{row.Name}}">
     {% endif %}
+    {% endif %}
+    {% if points == None %}
+    <div class = "reward-items" data-reward-name = "{{row.Name}}">
+    {% endif %}
       <img class="reward-image" src="{{row.Image_Url}}">
-        <h6 class="inconsolata">{{row.Name}}</h6> 
+        <h6 class="inconsolata">{{row.Name}}</h6> {{row.id + 54}}
               <p class="inconsolata">Points: {{row.Points}}</p>
      </div>
     

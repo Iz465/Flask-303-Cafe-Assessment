@@ -51,3 +51,16 @@ def select_from_table(table, columns="*", category=None, value=None):
     result = execute_task(select, tuple_values)
     return result if result else [] # Returns the values from the table. If its empty returns an empty list in order to prevent errors.
 
+
+def update_table(table, specific, category, new, value, specific2 = None, new2 = None):
+    if specific2 and new2 is not None:
+        tuple_values = (new, new2, value)
+        update = f"UPDATE {table} SET {specific} = ?, {specific2} = ? WHERE {category} = ?"
+    else:
+        tuple_values = (new, value)
+        update = f"UPDATE {table} SET {specific} = ? WHERE {category} = ?"
+
+    execute_task(update, tuple_values)
+
+
+  
