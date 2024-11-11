@@ -35,13 +35,13 @@
                 {% if 1 in rewards_int_list %}
                 <p class = "item-price">Free! $0</p>
                 {% elif 2 in rewards_int_list %}
+                <p class = "item-price">Free! $0</p>
+                {% elif 3 in rewards_int_list %}
                 <p class = "item-price">Monthly coffee!</p>
                 <p class="item-price">$0</p>
-                {% elif 3 in rewards_int_list %}
+                {% elif 6 in rewards_int_list %}
                 <p class="item-price">10% off! <s>${{items.price}}</s></p>
                 <p class="item-price">${{ (90 * (items.price / 100) )|round(2) }}</p>
-                {% elif 6 in rewards_int_list %}
-                <p class = "item-price">Free! $0</p>
                 {% else %}
                 {% if employee_check %}
                 <p class="item-price">50% off! <s>${{items.price}}</s></p>

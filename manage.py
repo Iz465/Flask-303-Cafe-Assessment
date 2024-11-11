@@ -212,16 +212,44 @@ def product(product_id):
             product_item = product
     
     if request.method == "POST":
-      #  reward = request.form['testing_reward']
-      #  print('testing reward is :',reward)
+     
+        print('testing product id posting')
+        reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
+        print('testing how many rewards i havezz:', reward[0]['Reward'])
+        rewards_split = reward[0]['Reward'].split(',')
+        rewards_int_list = [int(reward) for reward in rewards_split]
+        print("int list:",rewards_int_list)
+        rewards_int_list.sort()
+        print('first index only:', rewards_int_list[0])
+        if rewards_int_list[0] != 0:
+            permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', rewards_int_list[0])
+            print('permanent is: ', permanent[0]['permanent'])
+            if permanent[0]['permanent'] == 'No':
+                rewards_int_list.remove(rewards_int_list[0])
+                rewards_string_list = ','.join([str(reward) for reward in rewards_int_list])
+                if rewards_int_list == []:
+                    print('appending appending appending the list')
+                    rewards_int_list.append(0) 
+                    rewards_string_list = ','.join([str(reward) for reward in rewards_int_list])
+                    print('check rewards:', rewards_string_list)
+                sqlite_functions.update_table('Users', 'reward', 'ID', rewards_string_list, session['currentuser']['id'])
+        print('rewards list again:', rewards_int_list)
         usr = session["currentuser"]
         userhandler = UsersHandler()
         msg =userhandler.addtocart(usr,product_item)
         print(msg)
         print(usr)
+        print('guthix')
         session["currentuser"] = userhandler.updateusr(usr)
-        print("TYPE OF PRICE",session["currentuser"])
+        print('dharok')
+        #print("TYPE OF PRICE",session["currentuser"])
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
+
+    #  updated_rewards = ','.join([str(number) for number in rewards_int_list])   
+          #          print(updated_rewards)
+          #          sqlite_functions.update_table('USERS', 'reward', 'ID', updated_rewards, session['currentuser']['id'])
+
+
 
 ### Cart PAGE
 @app.route('/cart', methods=["POST",'GET'])
@@ -290,8 +318,8 @@ def rewards():
         points = session.get('currentuser', {}).get('points', 0)
         current_reward_id = session['currentuser']['reward']
         if current_reward_id == '0':
-            current_reward_id = ''
-            all_rewards = str(current_reward_id) + str(id_int)
+            #current_reward_id = ''
+            all_rewards = str(id_int)
         else:
             all_rewards = str(current_reward_id) + ',' + str(id_int)
         new_points = points - points_int
@@ -411,36 +439,41 @@ def checkout():
          if form.validate():
             checkout_complete = True
             user_points = sqlite_functions.select_from_table('USERS', 'points', 'ID', session['currentuser']['id'] )
-            reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
-            print('testing how many rewards i havezz:', reward[0]['Reward'])
-            reward_split = reward[0]['Reward'].split(',')
-            rewards_int_list = [int(number) for number in reward_split]  
-            if isinstance(rewards_int_list, list) and all(isinstance(number, int) for number in rewards_int_list):
-                #permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', reward[0]['Reward'])   
-                connect = sqlite_functions.sqlite_connection()
-                cursor = connect.cursor()
-                reward_string = ','.join(['?'] * len(rewards_int_list))                                   
-                select_string = f"Select Permanent FROM Rewards WHERE ID IN ({reward_string})"
-                cursor.execute(select_string, rewards_int_list)
-                reward_check = cursor.fetchall()
-                reward_tuples = [row[0] for row in reward_check] 
-                print('check every permanent:', reward_tuples) #check_users = [row[0] for row in employ_ids]
+           # reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
+          #  print('testing how many rewards i havezz:', reward[0]['Reward'])
+          #  reward_split = reward[0]['Reward'].split(',')
+         #   if reward_split is not None:
+             #   rewards_int_list = [int(number) for number in reward_split]  
+            #    if isinstance(rewards_int_list, list) and all(isinstance(number, int) for number in rewards_int_list):
+                    #permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', reward[0]['Reward'])   
+               #     connect = sqlite_functions.sqlite_connection()
+                 #   cursor = connect.cursor()
+               #     reward_string = ','.join(['?'] * len(rewards_int_list))                                   
+                 #   select_string = f"Select Permanent FROM Rewards WHERE ID IN ({reward_string})"
+                 #   cursor.execute(select_string, rewards_int_list)
+                 #   reward_check = cursor.fetchall()
+               #     reward_tuples = [row[0] for row in reward_check] 
+               #     print('check every permanent:', reward_tuples) #check_users = [row[0] for row in employ_ids]
                 
-                if any(permanent == 'No' for permanent in reward_tuples): 
-                    print('check before error:', rewards_int_list )
-                    for id, yesno in zip(rewards_int_list, reward_tuples):
-                        if yesno == 'No':
-                            print('temporary: ',yesno,id)
-                            if id in rewards_int_list:
-                                rewards_int_list.remove(id)
+                #    if any(permanent == 'No' for permanent in reward_tuples): 
+                   #     print('check before error:', rewards_int_list )
+                   #     print('rewards not sorted:', rewards_int_list)
+                   #     rewards_int_list.sort()
+                  #      print("sorted rewards",rewards_int_list)
+                  #      for id, yesno in zip(rewards_int_list, reward_tuples):
+                   #         if yesno == 'No':
+                     #           print('temporary: ',yesno,id)
+                      #          if id in rewards_int_list:
+                       #             rewards_int_list.remove(id)
                            
-                        else:
-                            print('permanent: ',yesno,id)
-                    
-                    print(rewards_int_list)
-                    updated_rewards = ','.join([str(number) for number in rewards_int_list])   
-                    print(updated_rewards)
-                    sqlite_functions.update_table('USERS', 'reward', 'ID', updated_rewards, session['currentuser']['id'])
+                         #   else:
+                        #        print('permanent: ',yesno,id)
+                    #    print(rewards_int_list)
+                    #    updated_rewards = ','.join([str(number) for number in rewards_int_list])   
+                  #      print(updated_rewards)
+                  #      if updated_rewards == None:
+                  #          updated_rewards = '0'
+                  #      sqlite_functions.update_table('USERS', 'reward', 'ID', updated_rewards, session['currentuser']['id'])
             if isinstance(user_points[0]['points'], int): 
                 sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 50 )    
             else:
