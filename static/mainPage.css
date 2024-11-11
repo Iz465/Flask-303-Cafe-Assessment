@@ -41,16 +41,53 @@ h2{
 .content {
   padding-bottom: 100px;
 }
+.absol-cont{
+  position: absolute;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
 
 .dailyreward-container{
   position: relative;
-  left: 10%;
-  top: 10%;
-  width: 10%;
+  margin: auto;
+  width: 50%;
+  display: flex;
+  background-color: #beefff;
+  border: 5px solid black;
+  padding: 50px;
+  border-radius: 5%;
 }
 .dailyreward-img{
   position: relative;
+  object-fit: cover;
+  width: 20%;
+}
+.dailyreward-form{
+  display: flex;
+  flex-direction: column;
+  background-color: #beefff;
   width: 100%;
+  padding-left: 5%;
+}
+.dailyreward-form button{
+  display: flex;
+  margin-top: auto;
+  align-self: baseline;
+  background-color: rgb(85, 151, 153);
+}
+.form-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.form-container h1{
+  font-size: 2rem;  
+}
+.form-container p{
+  font-size: 1rem;  
 }
 .navigation {
   display: flex;
@@ -256,6 +293,24 @@ body{
   z-index: -1;
 }
 .about-banner{
+  color: white;
   margin: auto;
   text-align: center;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+.about-banner h2 {
+  font-size: 2.2rem;
+}
+.about-banner strong {
+  font-size: 1rem;
+  line-height: 2rem;
+}
+.about-banner p {
+  font-size: 1rem;
+}
+.images-wrapper{
+  position: relative;
+  height: 500px;
+  width: 100%;
 }
