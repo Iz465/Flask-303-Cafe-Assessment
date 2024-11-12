@@ -126,7 +126,7 @@ class UsersHandler(Handler):
         return compressedstr
             
 
-    def addtocart(self, user, product_id): # make this append data to user database
+    def addtocart(self, user, product_id, reward_price = None, normal_price = None): # make this append data to user database
         if self.login(user)[0] == True:
             quantity_placeholder = 1
             size_placeholder = "s"
@@ -134,17 +134,60 @@ class UsersHandler(Handler):
             cur = connect.cursor()
             cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
             usertemp = cur.fetchone()
-            print(usertemp)
+         #   print(usertemp)
             current_cart = usertemp[0] if usertemp[0] is not None else ""  ### user temp is a tuple for some reason so this is how it is
 
-            if product_id['title'] in current_cart:
-                return "Already in cart, function to add more needed"
+         
             print("ProductID:\n",product_id['title'])
             print("current cart:\n",current_cart)
-            
+
+      
+            if reward_price == 1 or reward_price == 2:
+                product_id['price'] = 0
+ 
             newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
+            item_split = newitem.split(',')
+            print('The items quantity is:',item_split[2])
+          #  cart_split = user.split(',')
+            if product_id['title'] in current_cart:
+                         
+                for key, value in user.items():
+                    if key == 'cart':
+                  
+                        for item in value:
+                            
+                            test = (str(item))
+        
+                            test_split = test.split(',')
+                            if product_id['title'] in test_split[4]:
+                           
+                                number = test_split[2][14]
+                             
+                                new_number = (int(number))
+                                new_number = new_number + 1
+                              
+                                number = (str(new_number))
+                                test_split[2] = f"'quantity': '{number}'"
+                                
+                               
+                              
+               
+                                item = test_split
+                                print(item)
+                    
+                        value = item
+                        print(value)
+                        
+                return "Already in cart, function to add more needed"
+        #    print('ffffffffffffffff',current_cart["cart"])
+   
+                    
+
+            
+              
             print("NEW ITEM\n",newitem)
             current_cart = current_cart + newitem
+
 
             
             val = (str(current_cart),user["email"])
@@ -190,5 +233,7 @@ class UsersHandler(Handler):
         freshuser = user
         freshuser['cart'] = self.parcecart(usertemp[0])
         return freshuser
+
+    
 
     

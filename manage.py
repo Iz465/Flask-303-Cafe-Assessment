@@ -207,6 +207,7 @@ def menu():
 def product(product_id):
     print(request.method)
     product_item = {}
+ 
     for product in database_menu:
         if product['id'] == product_id:
             product_item = product
@@ -221,6 +222,16 @@ def product(product_id):
         print("int list:",rewards_int_list)
         rewards_int_list.sort()
         print('first index only:', rewards_int_list[0])
+
+
+        usr = session["currentuser"]
+        userhandler = UsersHandler()
+        msg =userhandler.addtocart(usr,product_item, reward_price= rewards_int_list[0], normal_price=product_item['price'])
+      #  print(msg)
+        print(usr)
+       # session["currentuser"] = userhandler.updateusr(usr)
+
+        
         if rewards_int_list[0] != 0:
             permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', rewards_int_list[0])
             print('permanent is: ', permanent[0]['permanent'])
@@ -234,14 +245,7 @@ def product(product_id):
                     print('check rewards:', rewards_string_list)
                 sqlite_functions.update_table('Users', 'reward', 'ID', rewards_string_list, session['currentuser']['id'])
         print('rewards list again:', rewards_int_list)
-        usr = session["currentuser"]
-        userhandler = UsersHandler()
-        msg =userhandler.addtocart(usr,product_item)
-        print(msg)
-        print(usr)
-        print('guthix')
-        session["currentuser"] = userhandler.updateusr(usr)
-        print('dharok')
+        
         #print("TYPE OF PRICE",session["currentuser"])
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
 
