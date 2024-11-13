@@ -52,7 +52,7 @@
 
 
 <div style="background-color: RGBA(184,216,190,.35); border: 2px; border-style: solid ; margin-left: 20px; padding: 20px;">
-  <h1 class="kanit-regular total_price_class" style="padding-right: 20px; padding-left: 20px;">Total Price: ${{ cart_sum }}</h1>
+  <h1 class="kanit-regular total_price_class" style="padding-right: 20px; padding-left: 20px;">Total Price: ${{ cart_sum | round(2) }}</h1>
   <h1 class="kanit-regular total_amount_class" style="padding-right: 20px; padding-left: 20px;">Amount of items in cart: {{cart_length}}</h1>
 </div>
 
@@ -80,7 +80,7 @@
           <img src="{{ url_for('static', filename='images/plus_1.svg') }}" id="item_plus" onclick="product_quantity(this.parentElement, 1)" style="cursor: pointer; height: 15%;" >
           <p class="specific_item_quantity" style="margin-right: 0.5%;">{{item.quantity}}</p>
           <img src="{{ url_for('static', filename='images/minus.svg') }}" id="item_minus"  onclick="product_quantity(this.parentElement, -1)"  style="cursor: pointer; height: 15%; margin-right: -0.5%;">
-        <p class="specific_item_price" style="margin: 0; padding: 0; text-align: center;">${{item.price}}</p> <p class="original_price" style="display: none;">{{item.price}}</p>
+        <p class="specific_item_price" style="margin: 0; padding: 0; text-align: center;">${{item.price}}</p> {% for coffee in check_coffee %} {% if coffee[1] == item.title %} <p class="original_price" style="display: none;">{{coffee[4]}}</p> {% endif %} {% endfor %}
     {% endif %}
 </div>
 </div>

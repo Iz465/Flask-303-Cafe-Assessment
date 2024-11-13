@@ -109,6 +109,7 @@ class UsersHandler(Handler):
             print(item)
             cleanitem = item.strip(',')
             values = cleanitem.split(',')
+            print('values before error',values)
             for value in values:
                 print("VALUE:\n",value)
             lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3], 'price':float(values[4])})
@@ -136,57 +137,55 @@ class UsersHandler(Handler):
             usertemp = cur.fetchone()
          #   print(usertemp)
             current_cart = usertemp[0] if usertemp[0] is not None else ""  ### user temp is a tuple for some reason so this is how it is
-
-         
-            print("ProductID:\n",product_id['title'])
-            print("current cart:\n",current_cart)
-
-      
-            if reward_price == 1 or reward_price == 2:
-                product_id['price'] = 0
- 
-            newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
-            item_split = newitem.split(',')
-            print('The items quantity is:',item_split[2])
-          #  cart_split = user.split(',')
-            if product_id['title'] in current_cart:
-                         
-                for key, value in user.items():
-                    if key == 'cart':
-                  
-                        for item in value:
-                            
-                            test = (str(item))
-        
-                            test_split = test.split(',')
-                            if product_id['title'] in test_split[4]:
-                           
-                                number = test_split[2][14]
-                             
-                                new_number = (int(number))
-                                new_number = new_number + 1
-                              
-                                number = (str(new_number))
-                                test_split[2] = f"'quantity': '{number}'"
-                                
-                               
-                              
-               
-                                item = test_split
-                                print(item)
-                    
-                        value = item
-                        print(value)
-                        
-                return "Already in cart, function to add more needed"
-        #    print('ffffffffffffffff',current_cart["cart"])
-   
-                    
-
             
-              
-            print("NEW ITEM\n",newitem)
-            current_cart = current_cart + newitem
+            end_strip_cart = current_cart.rstrip('|')
+            strip_cart = end_strip_cart.split('|')
+            cart_list = [item.split(',') for item in strip_cart]
+        
+        
+            if product_id['title'] in current_cart:
+             
+                fixed_cart_list = [[item for item in product if item] for product in cart_list]
+                print('clean list:', fixed_cart_list)
+                for cart in fixed_cart_list:
+                    if product_id['title'] == cart[0]:
+                        old_number = (int(cart[2]))
+                        if reward_price == 2:
+                            new_number = old_number + 2
+                        else: 
+                            new_number = old_number + 1
+                        string_number = (str(new_number))
+                        cart[2] = string_number
+                        print(cart[4])
+                        old_price = (float(cart[4]))
+                        if reward_price == 1:
+                            new_price = old_price
+                        else:
+                            new_price = old_price + product_id['price'] 
+                        string_price = (str(new_price))
+                        cart[4] = string_price
+                        updated_cart = [','.join(item) for item in fixed_cart_list]   
+                        current_cart = '|'.join(updated_cart) + '|'
+                        
+               
+            else:   
+                if reward_price == 1:
+                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{0}|"
+                
+                elif reward_price == 2:
+                    newitem = f"{product_id['title']},{size_placeholder},{2},{product_id['img_url']},{product_id['price']}|"
+ 
+                else:
+                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
+              #  print("NEW ITEM\n",newitem)
+                current_cart = current_cart + newitem
+          #  print("ProductID:\n",product_id['title'])
+        #    print("current cart:\n",current_cart['gender'])
+        
+            
+            
+            
+      
 
 
             
@@ -196,6 +195,8 @@ class UsersHandler(Handler):
             connect.commit()
             connect.close()
             return 0
+        
+
     def removefromcart(self,user,product_id):
         if self.login(user)[0] == True:
             connect = sqlite3.connect('database.db') 
@@ -231,9 +232,12 @@ class UsersHandler(Handler):
             print("User not found in database.")
             return None  
         freshuser = user
+        print('freshuser is:', freshuser)
+        print(usertemp)
         freshuser['cart'] = self.parcecart(usertemp[0])
+        print('check again is:', freshuser)
         return freshuser
 
     
 
-    
+     

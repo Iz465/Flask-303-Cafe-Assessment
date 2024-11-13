@@ -227,10 +227,10 @@ def product(product_id):
         usr = session["currentuser"]
         userhandler = UsersHandler()
         msg =userhandler.addtocart(usr,product_item, reward_price= rewards_int_list[0], normal_price=product_item['price'])
-      #  print(msg)
-        print(usr)
-       # session["currentuser"] = userhandler.updateusr(usr)
-
+        print('the msg is?', msg)
+        print('the user is?', usr)
+        session["currentuser"] = userhandler.updateusr(usr)
+        print('the user part?', usr)
         
         if rewards_int_list[0] != 0:
             permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', rewards_int_list[0])
@@ -248,10 +248,6 @@ def product(product_id):
         
         #print("TYPE OF PRICE",session["currentuser"])
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
-
-    #  updated_rewards = ','.join([str(number) for number in rewards_int_list])   
-          #          print(updated_rewards)
-          #          sqlite_functions.update_table('USERS', 'reward', 'ID', updated_rewards, session['currentuser']['id'])
 
 
 
@@ -443,41 +439,6 @@ def checkout():
          if form.validate():
             checkout_complete = True
             user_points = sqlite_functions.select_from_table('USERS', 'points', 'ID', session['currentuser']['id'] )
-           # reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
-          #  print('testing how many rewards i havezz:', reward[0]['Reward'])
-          #  reward_split = reward[0]['Reward'].split(',')
-         #   if reward_split is not None:
-             #   rewards_int_list = [int(number) for number in reward_split]  
-            #    if isinstance(rewards_int_list, list) and all(isinstance(number, int) for number in rewards_int_list):
-                    #permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', reward[0]['Reward'])   
-               #     connect = sqlite_functions.sqlite_connection()
-                 #   cursor = connect.cursor()
-               #     reward_string = ','.join(['?'] * len(rewards_int_list))                                   
-                 #   select_string = f"Select Permanent FROM Rewards WHERE ID IN ({reward_string})"
-                 #   cursor.execute(select_string, rewards_int_list)
-                 #   reward_check = cursor.fetchall()
-               #     reward_tuples = [row[0] for row in reward_check] 
-               #     print('check every permanent:', reward_tuples) #check_users = [row[0] for row in employ_ids]
-                
-                #    if any(permanent == 'No' for permanent in reward_tuples): 
-                   #     print('check before error:', rewards_int_list )
-                   #     print('rewards not sorted:', rewards_int_list)
-                   #     rewards_int_list.sort()
-                  #      print("sorted rewards",rewards_int_list)
-                  #      for id, yesno in zip(rewards_int_list, reward_tuples):
-                   #         if yesno == 'No':
-                     #           print('temporary: ',yesno,id)
-                      #          if id in rewards_int_list:
-                       #             rewards_int_list.remove(id)
-                           
-                         #   else:
-                        #        print('permanent: ',yesno,id)
-                    #    print(rewards_int_list)
-                    #    updated_rewards = ','.join([str(number) for number in rewards_int_list])   
-                  #      print(updated_rewards)
-                  #      if updated_rewards == None:
-                  #          updated_rewards = '0'
-                  #      sqlite_functions.update_table('USERS', 'reward', 'ID', updated_rewards, session['currentuser']['id'])
             if isinstance(user_points[0]['points'], int): 
                 sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 50 )    
             else:
@@ -497,9 +458,28 @@ def checkout():
     session['cart_items'] = cart_items
     cart_sum = request.args.get('cart_sum', '0') 
     session['cart_sum'] = cart_sum
-    cart_length = request.args.get('cart_length', '0')
-    session['cart_length'] = cart_length
-    return render_template('checkout.html', form = form, cart_sum = cart_sum, cart_length = cart_length, cart_items = cart_items)
+    cart_sum_int = (float(cart_sum))
+   
+
+    connect = sqlite3.connect('database.db') 
+    cur = connect.cursor()
+    cur.execute(f"SELECT cart FROM USERS WHERE email ='{session['currentuser']['email']}'")
+    usertemp = cur.fetchone()
+    current_cart = usertemp[0] if usertemp[0] is not None else ""          
+    end_strip_cart = current_cart.rstrip('|')
+    strip_cart = end_strip_cart.split('|')
+    cart_list = [item.split(',') for item in strip_cart]
+    fixed_cart_list = [[item for item in product if item] for product in cart_list]
+    cart_length = 0
+    for cart in fixed_cart_list:
+        cart_length_int = (int(cart[2]))
+        cart_length = cart_length + cart_length_int
+    coffee_menu = sqlite_functions.select_from_table('MENU')
+    check_coffee = [list(row) for row in coffee_menu]
+    
+
+
+    return render_template('checkout.html', form = form, cart_sum = cart_sum_int, cart_length = cart_length, cart_items = cart_items, check_coffee = check_coffee)
    
 
 

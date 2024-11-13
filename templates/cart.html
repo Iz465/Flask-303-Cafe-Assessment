@@ -40,7 +40,7 @@
             {% if employee_check %}
             <h1 class="total-text"><input style="display: none;" name="cart_sum" value="{{ ( 50 * (cart_total / 100 )) | round(2) }}">Total: ${{ ( 50 * (cart_total / 100 )) | round(2) }}</h1>
             {% else %}
-            <h1 class="total-text"><input style="display: none;" name="cart_sum" value="{{cart_total}}">Total: ${{cart_total}}</h1>
+            <h1 class="total-text"><input style="display: none;" name="cart_sum" value="{{cart_total}}">Total: ${{cart_total | round(2) }}</h1>
             {% endif %}
             <input name="cart_length" style="display: none;" value="{{currentuser.cart|length}}">
             <button class="total-text" type="submit"><h1>Checkout</h1></button>
