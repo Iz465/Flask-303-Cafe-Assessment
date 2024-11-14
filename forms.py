@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import TextField,IntegerField, SubmitField, StringField, RadioField, PasswordField
+from wtforms import TextField,IntegerField, SubmitField, StringField, RadioField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length, NumberRange, Email, EqualTo, InputRequired
 
 
@@ -47,4 +47,11 @@ class CheckOutForm(FlaskForm):
    card_number = StringField("Card Number:", render_kw={"placeholder": "16 digits", "maxlength": 19}, validators=[DataRequired(), Length(max=19)])
    expiry_date = StringField("Expiry Date:", render_kw={"placeholder": "mm/yyyy", "maxlength": 7}, validators=[DataRequired(), Length(max=7)])
    cvc = IntegerField('CVC Code:', render_kw={"placeholder": "3 digits", "maxlength": 3}, validators=[DataRequired(), NumberRange(min=100, max=999)])
+   save_card = BooleanField('Save Card Details')
    submit = SubmitField("Checkout")
+
+
+class FavouriteOrder(FlaskForm):
+   order_quantity = IntegerField('Quantity:', validators= [NumberRange(min=1,max=9)],  render_kw={"style": "width: 25px; margin-right: 5px;", "maxlength": 1})
+   order_check = BooleanField('Select Order')
+   submit = SubmitField('Favourite the Order')

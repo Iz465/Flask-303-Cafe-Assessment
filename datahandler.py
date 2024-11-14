@@ -167,7 +167,8 @@ class UsersHandler(Handler):
                             new_price = old_price + discount_price
                         elif reward_price == 1:
                             new_price = old_price
-                        elif reward_price == 6 and discount_item[0]['ID'] != product_id['id']:
+                        elif reward_price == 3 and discount_item[0]['ID'] != product_id['id']:
+                            print('6666666666666666666666666')
                             discount_price = (product_id['price'] * 90) / 100
                             new_price = old_price + discount_price
                         else:
@@ -180,7 +181,7 @@ class UsersHandler(Handler):
                         
                
             else:
-
+        
                 if discount_item[0]['ID'] == product_id['id'] and reward_price != 1:
                     print('discountttttttttttttttttt')
                     discount_number = (product_id['price'] * 50) / 100
@@ -194,8 +195,7 @@ class UsersHandler(Handler):
                 elif reward_price == 2:
                     newitem = f"{product_id['title']},{size_placeholder},{2},{product_id['img_url']},{product_id['price']}|"
                 
-                elif reward_price == 6:
-                    print('checkkkkkkkkk')
+                elif reward_price == 3:  
                     discount_number = (product_id['price'] * 90) / 100
                     newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
  

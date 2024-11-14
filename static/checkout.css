@@ -8,8 +8,10 @@
     padding: 1%;
 }
 
-.checkout-form form {
-    
+
+.save_card input {
+    margin-top: 7px;
+    margin-left: 10px;
 }
 
 

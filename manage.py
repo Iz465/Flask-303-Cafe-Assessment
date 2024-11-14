@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request, render_template, flash, session
-from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm, CheckOutForm
+from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm, CheckOutForm, FavouriteOrder
 import sqlite3
 import random
 from datetime import datetime, timedelta
@@ -198,7 +198,8 @@ def menu():
         reward = session['currentuser']['reward']
         rewards_split = reward.split(',')
         rewards_int_list = [int(number) for number in rewards_split]
-        return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rewards_int_list = rewards_int_list)
+        favourite_check = True
+        return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rewards_int_list = rewards_int_list, favourite_check = favourite_check)
     return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'])
   
    
@@ -437,12 +438,28 @@ def checkout():
     incorrect_details = False
     if request.method == 'POST':
          if form.validate():
+       
+
+            card = request.form['card_number']
+            expiry_date = request.form['expiry_date']
+            cvc = request.form['cvc']
+            save_card = request.form.get('save_card') == 'y'
+            print(save_card)
+            if save_card:
+                card_details = card + ',' + expiry_date + ',' + cvc
+                print(card_details)
+                sqlite_functions.update_table('USERS', 'card_details', 'ID', card_details, session['currentuser']['id'])
+            else:
+                print('card not saved')
+
+
+
             checkout_complete = True
             user_points = sqlite_functions.select_from_table('USERS', 'points', 'ID', session['currentuser']['id'] )
             users_rewards = session["currentuser"]['reward']
             rewards_split = users_rewards.split(',')
             if isinstance(user_points[0]['points'], int): 
-                if '3' in rewards_split:
+                if '6' in rewards_split:
                     sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 100 )    
                 else:
                     sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 50 )    
@@ -453,7 +470,7 @@ def checkout():
             session["currentuser"] = userhandler.updateusr(session["currentuser"])
      
         
-            if '3' in rewards_split:
+            if '6' in rewards_split:
                 session["currentuser"]['points'] += 100 
             else:
                 session["currentuser"]['points'] += 50 
@@ -490,6 +507,31 @@ def checkout():
 
 
     return render_template('checkout.html', form = form, cart_sum = cart_sum_int, cart_length = cart_length, cart_items = cart_items, check_coffee = check_coffee)
+
+@app.route('/favourite', methods = ['GET', 'POST'])
+def favourite():
+    form = FavouriteOrder()
+    rows = sqlite_functions.get_table('MENU')
+    
+    if request.method == 'POST':
+        print('aaaaaaaaaaaaaaaaaa')
+        if form.validate():
+            print('yyaaaaaaaaaaaaaaaaaay')
+            number = 1
+            for row in rows:
+                quantity = request.form.get(f'order_quantity_id{row["id"]}')
+                checkbox = request.form.get(f'order_check_id{row["id"]}')
+                
+                print(quantity)
+                print(number)
+                print(checkbox)
+                number = number + 1
+                if checkbox and quantity and int(quantity) > 0:
+                    print(f'Item {row["title"]} favourited with quantity: {quantity}')
+            return render_template('favourite.html', rows = rows, form = form)
+
+
+    return render_template('favourite.html', rows = rows, form = form)
    
 
 

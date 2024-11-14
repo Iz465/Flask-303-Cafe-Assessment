@@ -40,6 +40,12 @@
     {{ form.cvc.label }} <br>
     {{ form.cvc(id='cvc', checkout_input_length='3') }}<span id="cvc_validation"></span> <br><br><br>
     
+    <div class="save_card" style="display: flex; flex-direction: row; align-items: start; justify-content: center;">
+      {{ form.save_card.label }} <br>
+      {{ form.save_card }}<br><br><br>
+    </div>
+ 
+    
     {{ form.submit }}
     <br>
   </form>
