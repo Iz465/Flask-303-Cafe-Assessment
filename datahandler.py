@@ -1,6 +1,6 @@
 
 from operator import itemgetter
-import sqlite3
+import sqlite3, sqlite_functions
 
 class Handler():
     def __init__(self):
@@ -141,8 +141,11 @@ class UsersHandler(Handler):
             end_strip_cart = current_cart.rstrip('|')
             strip_cart = end_strip_cart.split('|')
             cart_list = [item.split(',') for item in strip_cart]
+            discount_item = sqlite_functions.select_from_table('Discounts')
+            print(discount_item[0]['ID'])
         
-        
+            print('product id product id product id:', product_id['id'])
+      
             if product_id['title'] in current_cart:
              
                 fixed_cart_list = [[item for item in product if item] for product in cart_list]
@@ -158,22 +161,43 @@ class UsersHandler(Handler):
                         cart[2] = string_number
                         print(cart[4])
                         old_price = (float(cart[4]))
-                        if reward_price == 1:
+                        if discount_item[0]['ID'] == product_id['id'] and reward_price != 1:
+                            print('MATCHING')
+                            discount_price = (product_id['price'] * 50) / 100
+                            new_price = old_price + discount_price
+                        elif reward_price == 1:
                             new_price = old_price
+                        elif reward_price == 6 and discount_item[0]['ID'] != product_id['id']:
+                            discount_price = (product_id['price'] * 90) / 100
+                            new_price = old_price + discount_price
                         else:
                             new_price = old_price + product_id['price'] 
+                        new_price = round(new_price, 2)    
                         string_price = (str(new_price))
                         cart[4] = string_price
                         updated_cart = [','.join(item) for item in fixed_cart_list]   
                         current_cart = '|'.join(updated_cart) + '|'
                         
                
-            else:   
-                if reward_price == 1:
+            else:
+
+                if discount_item[0]['ID'] == product_id['id'] and reward_price != 1:
+                    print('discountttttttttttttttttt')
+                    discount_number = (product_id['price'] * 50) / 100
+                    print(discount_number)
+                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
+                
+
+                elif reward_price == 1:
                     newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{0}|"
                 
                 elif reward_price == 2:
                     newitem = f"{product_id['title']},{size_placeholder},{2},{product_id['img_url']},{product_id['price']}|"
+                
+                elif reward_price == 6:
+                    print('checkkkkkkkkk')
+                    discount_number = (product_id['price'] * 90) / 100
+                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
  
                 else:
                     newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"

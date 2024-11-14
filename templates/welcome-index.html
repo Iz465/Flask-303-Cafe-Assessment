@@ -13,7 +13,7 @@
 {% for row in rows %}
 
 <img class = "showing carousel-images" src = "{{ row.Image_Url }}" style="max-height: 20%; margin-left: 5%; margin-top: 5%;">
-<form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="inconsolata" style="margin-left: 5%;">
+<form action="http://127.0.0.1:5000/{{row.ID}}" method="get" class="inconsolata" style="margin-left: 5%;">
 <p>Special Item of the Day</p>
 <p>{{row.Name}} 50% off</p>
 <p>Time left: <span id="display_time"></span></p>

@@ -246,7 +246,7 @@ def product(product_id):
                 sqlite_functions.update_table('Users', 'reward', 'ID', rewards_string_list, session['currentuser']['id'])
         print('rewards list again:', rewards_int_list)
         
-        #print("TYPE OF PRICE",session["currentuser"])
+       
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
 
 
@@ -321,7 +321,7 @@ def rewards():
             #current_reward_id = ''
             all_rewards = str(id_int)
         else:
-            all_rewards = str(current_reward_id) + ',' + str(id_int)
+            all_rewards = str(current_reward_id) + ',' + str(id_int) 
         new_points = points - points_int
         print('all_rewards is:', all_rewards)
         print('reward is:', reward_type, "points cost is:", reward_points, 'your total points are:', points,)
@@ -439,14 +439,24 @@ def checkout():
          if form.validate():
             checkout_complete = True
             user_points = sqlite_functions.select_from_table('USERS', 'points', 'ID', session['currentuser']['id'] )
+            users_rewards = session["currentuser"]['reward']
+            rewards_split = users_rewards.split(',')
             if isinstance(user_points[0]['points'], int): 
-                sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 50 )    
+                if '3' in rewards_split:
+                    sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 100 )    
+                else:
+                    sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 50 )    
             else:
                 sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', 50 )  
                 session["currentuser"]['points'] = 0
             userhandler = UsersHandler()
             session["currentuser"] = userhandler.updateusr(session["currentuser"])
-            session["currentuser"]['points'] += 50 
+     
+        
+            if '3' in rewards_split:
+                session["currentuser"]['points'] += 100 
+            else:
+                session["currentuser"]['points'] += 50 
             return render_template("checkout.html", checkout_complete = checkout_complete)
          if form.validate() == False:
             incorrect_details = True
