@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, request, render_template, flash, ses
 from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm, CheckOutForm
 import sqlite3
 import random
+import json
 from datetime import datetime, timedelta
 import sqlite_functions, more_functions
 
@@ -182,12 +183,17 @@ def menu():
             data_dict = handler.sorteddata(data_dict,sortbyvalue)
         else:
             data_dict = handler.sorteddata(database_menu,sortbyvalue)
-
+        print("TRIKERY")
         return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"])
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
-    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'])
+    new_data = []
+    for d in database_menu:
+        new_data.append(json.dumps(d))
+    for new in new_data:
+        print(new)
+    return render_template('menu-index.html', data = new_data, currentuser = session['currentuser'], loggedin = session['loggedin'])
 
 @app.route('/<int:product_id>', methods=["POST","GET"])
 def product(product_id):

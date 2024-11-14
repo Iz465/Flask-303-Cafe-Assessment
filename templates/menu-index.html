@@ -1,23 +1,24 @@
 
 {% extends 'base.html' %}
 {% block content %}
+
 <body>
   
  
   <div class="Menu">
     <h2 class="menu-header inconsolata">MENU</h2>
       <div class="menucontroler">
-          <form action="http://127.0.0.1:5000/menu" class="SortSelection" method="POST">
-            <select class="sortForm" id="sortdropdownselector" aria-placeholder="Sort"  type="text" name="sortdropdown" onchange="this.form.submit()">
-              <option id="op0" value="">{{sortbyvalue}}</option>
-              <option id="op1" value="name">name (A - Z)</option>
-              <option id="op2" value="price">price (low - high)</option>
-                
-            </select>
+          
+          <select class="sortForm" id="sortdropdownselector" aria-placeholder="Sort"  type="text" name="sortdropdown" onchange="this.form.submit()">
+            <option id="op0" value="">{{sortbyvalue}}</option>
+            <option id="op1" value="name">name (A - Z)</option>
+            <option id="op2" value="price">price (low - high)</option>
+              
+          </select>
+          
+          <input type="text" id="search" placeholder="Search" value="{{searchbyvalue}}" name="search">
             
-            <input type="text" id="search" placeholder="Search" value="{{searchbyvalue}}" name="search">
-            
-          </form>
+          
       </div>
       <ul id="data">
         {% for items in data %}
@@ -47,7 +48,10 @@
 
   </div>
 
-  
+  <script src="{{ url_for('static', filename='scripts/menu.js') }}"></script>
+  <script>
+    initload({{ data|tojson|safe }})
+  </script>
 </body>
 {% endblock %}
 
