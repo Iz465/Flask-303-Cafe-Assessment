@@ -9,14 +9,14 @@
     <h2 class="menu-header inconsolata">MENU</h2>
       <div class="menucontroler">
           
-          <select class="sortForm" id="sortdropdownselector" aria-placeholder="Sort"  type="text" name="sortdropdown" onchange="this.form.submit()">
-            <option id="op0" value="">{{sortbyvalue}}</option>
-            <option id="op1" value="name">name (A - Z)</option>
-            <option id="op2" value="price">price (low - high)</option>
-              
-          </select>
-          
-          <input type="text" id="search" placeholder="Search" value="{{searchbyvalue}}" name="search">
+        <select class="sortForm" id="sortdropdownselector"  type="text" name="sortdropdown" onchange="reload()">
+          <option id="op0" value="popular" selected>Popular (high - low)</option>
+          <option id="op1" value="name">name (A - Z)</option>
+          <option id="op2" value="price" >price (low - high)</option>
+            
+        </select>
+        
+        <input type="text" id="search" placeholder="Search" value="{{searchbyvalue}}" name="search" oninput="search()" >
             
           
       </div>

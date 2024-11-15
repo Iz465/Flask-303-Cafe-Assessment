@@ -1,18 +1,115 @@
+let global
 
 function initload(data_unparced){
-    clear_data();
+    
 
     data = parcedata(data_unparced);
+    global = data
+    populatemenu(global)
+}
+
+function reload(){
+    populatemenu(global)
+}
+
+function populatemenu(data){
+    clear_data();
+
+    sorteddata = sortdata(data)
+    console.log(sorteddata)
     let ul = document.getElementById('data')
-    for (let i = 0; i < data.length; i++){
-        product_container = createMenuItem(data[i])
+    for (let i = 0; i < sorteddata.length; i++){
+        product_container = createMenuItem(sorteddata[i])
 
         ul.appendChild(product_container)
 
     }
-
 }
 
+function search(){
+    var searchfield = document.getElementById("search");
+    let search_str = searchfield.value;
+    console.log(search_str);
+
+    filtered_data = filter(search_str,global)
+    console.log(filtered_data)
+
+    populatemenu(filtered_data)
+}
+
+function filter(str,data){
+    filtered = []
+    for(let i = 0; i < data.length; i++ ){
+        input = str.toUpperCase()
+        title = data[i].title.toUpperCase()
+        if(title.includes(input)){
+            filtered.push(data[i])
+        }
+    }
+    return filtered
+}
+
+function sortdata(data){
+    var selector = document.getElementById("sortdropdownselector");
+    let sort_id = selector.selectedIndex
+    console.log(global)
+    if(sort_id == 0){
+        return data.sort(sortbypopular);
+    }
+    else if(sort_id == 1){
+        return data.sort(sortbyname);
+    }
+    else if(sort_id == 2){
+        return data.sort(sortbyprice);
+    }
+}
+
+function sortbypopular(a,b){
+    console.log("SORTING BY POPULARITY");
+    const popularA = a.id;
+    const popularB = b.id;
+
+    let comparison = 0;
+    if (popularA > popularB){
+        comparison = 1;
+    } else if (popularA < popularB){
+        comparison = -1;
+    }
+    return comparison;
+}
+
+
+function sortbyname(a,b){
+    console.log("SORTING BY NAME");
+
+    const nameA = a.title.toUpperCase();
+    const nameB = b.title.toUpperCase();
+
+    let comparison = 0;
+    if (nameA > nameB){
+        comparison = 1;
+    } else if (nameA < nameB){
+        comparison = -1;
+    }
+    return comparison;
+}
+
+function sortbyprice(a,b){
+    console.log("SORTING BY PRICE");
+
+    const priceA = a.price;
+    const priceB = b.price;
+
+    let comparison = 0;
+    if (priceA > priceB){
+        comparison = 1;
+    } else if (priceA < priceB){
+        comparison = -1;
+    }
+    return comparison;
+
+
+}
 
 function createMenuItem(dataitem){
     let item_cont = ce('div');
@@ -81,3 +178,4 @@ function parcedata(data){
     return parcedlist
 
 }
+

@@ -174,18 +174,7 @@ def home():
 def menu():
     data_dict = []
     handler = MenuHandler()
-    if request.method == 'POST':
-        searchbyvalue = request.form.get("search")
-        sortbyvalue = request.form.get("sortdropdown")
-        if len(searchbyvalue) > 0:
-            data_dict = handler.searchdata(database_menu,searchbyvalue)
-            print("GRATER THAN 0")
-            data_dict = handler.sorteddata(data_dict,sortbyvalue)
-        else:
-            data_dict = handler.sorteddata(database_menu,sortbyvalue)
-        print("TRIKERY")
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"])
-
+    
     # show the form, it wasn't submitted
     print("Rendr: Default")
     new_data = []

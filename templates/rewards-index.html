@@ -8,6 +8,14 @@
 
 
 <div class = "reward-container">
+  <a href="http://127.0.0.1:5000/minesweeper">
+    <div class = "reward-items" >
+      <img class="reward-image" >
+      <h6 class="inconsolata">Daily Minesweeper Challenge!</h6> 
+      <p class="inconsolata">Points: 300</p>
+    </div>
+  </a>
+
     {% for row in rows %}
      <div class = "reward-items" onclick="openPopup(this)" data-reward-name = "{{row.Name}}">
       <img class="reward-image" src="{{row.Image_Url}}">
