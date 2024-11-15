@@ -61,11 +61,15 @@
     
     {% endfor %}
   </div>
-  <div class="carousel-container">
+  
+  <div class="paralax-cont">
+    <div class="carousel-container">
+      <img class = "carousel-images layer1 showing" src = "{{ url_for('static', filename='images/holding-coffee.webp') }}">
+      <img class = "carousel-images layer1" src = "{{ url_for('static', filename='images/churro.jpg') }}">
+      <img class = "carousel-images layer1" src = "{{ url_for('static', filename='images/coffee-beans.jpg') }}">
+
+    </div>
     
-    <img class = "showing carousel-images" src = "{{ url_for('static', filename='images/holding-coffee.webp') }}">
-    <img class = "carousel-images" src = "{{ url_for('static', filename='images/churro.jpg') }}">
-    <img class = "carousel-images" src = "{{ url_for('static', filename='images/coffee-beans.jpg') }}">
   </div>
 </div>
 

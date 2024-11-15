@@ -47,6 +47,11 @@ h2{
   height: 100%;
   width: 100%;
   z-index: 1;
+  box-shadow: 0px 0px 15px 10px inset;
+  border-style: inset none inset none;
+  border-width: 5px 0px 5px 0px;
+  border-color: rgb(85, 151, 153);
+
 }
 
 .dailyreward-container{
@@ -271,6 +276,7 @@ body{
 .buffer{
   width: 100%;
   background-color: rgb(85, 151, 153);
+  z-index: 5;
 }
 .layer3 {
   transform: translateZ(-15px) scale(2.6);
@@ -290,7 +296,7 @@ body{
   height: 100%;
   width: 100%;
   object-fit: cover;
-  z-index: -1;
+  z-index: 0;
 }
 .about-banner{
   color: white;
