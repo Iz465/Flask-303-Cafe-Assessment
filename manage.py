@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, request, render_template, flash, session
-from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm, CheckOutForm, FavouriteOrder
+from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm, CheckOutForm
 import sqlite3
 import random
 from datetime import datetime, timedelta
@@ -436,7 +436,23 @@ def checkout():
     form = CheckOutForm()
     checkout_complete = False
     incorrect_details = False
+    favourited_order = False
     if request.method == 'POST':
+         if request.form.get('favourited_order') == 'true':
+             print('showing favourite order')
+             checkout_complete = True
+             favourited_order = True
+             rows = sqlite_functions.select_from_table('USERS',category='ID', value=session['currentuser']['id'] )
+             row_list = [list(row) for row in rows]
+             print(row_list[0][9])
+             row_strip = row_list[0][9].strip('|')
+             remove = '|'
+             change = row_strip.replace(remove, ',')
+             favourite_list = change.split(',')
+             print(favourite_list)
+             return render_template('checkout.html', form = form, checkout_complete = checkout_complete, favourited_order = favourited_order, rows = rows, favourite_list = favourite_list)
+         else: 
+            print('no favourite order')
          if form.validate():
        
 
@@ -508,32 +524,32 @@ def checkout():
 
     return render_template('checkout.html', form = form, cart_sum = cart_sum_int, cart_length = cart_length, cart_items = cart_items, check_coffee = check_coffee)
 
+
 @app.route('/favourite', methods = ['GET', 'POST'])
 def favourite():
-    form = FavouriteOrder()
+
     rows = sqlite_functions.get_table('MENU')
+
+
+
     
     if request.method == 'POST':
-        print('aaaaaaaaaaaaaaaaaa')
-        if form.validate():
-            print('yyaaaaaaaaaaaaaaaaaay')
-            number = 1
-            for row in rows:
-                quantity = request.form.get(f'order_quantity_id{row["id"]}')
-                checkbox = request.form.get(f'order_check_id{row["id"]}')
-                
-                print(quantity)
-                print(number)
-                print(checkbox)
-                number = number + 1
-                if checkbox and quantity and int(quantity) > 0:
-                    print(f'Item {row["title"]} favourited with quantity: {quantity}')
-            return render_template('favourite.html', rows = rows, form = form)
+        favourite_string = ''
+        for row in rows:
+              quantity = request.form.get(row['title'])
+              if quantity != '':
+                print(f"quantity for {row['title']} is: {quantity}")
+                print(f"price for {row['title']} is: {float(row['price']) * float(quantity)}")
+                total_price = float(row['price']) * float(quantity)
+
+                favourite_string = favourite_string + f"{row['title']},{quantity}, {round(total_price, 2)}|"
+        print(favourite_string)
+        sqlite_functions.update_table('USERS', 'favourite', 'ID', favourite_string, session['currentuser']['id'])
+        return render_template('favourite.html', rows = rows)
 
 
-    return render_template('favourite.html', rows = rows, form = form)
+    return render_template('favourite.html', rows = rows)
    
-
 
 
 if __name__ == '__main__':

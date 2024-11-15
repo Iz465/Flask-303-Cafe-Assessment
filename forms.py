@@ -51,7 +51,3 @@ class CheckOutForm(FlaskForm):
    submit = SubmitField("Checkout")
 
 
-class FavouriteOrder(FlaskForm):
-   order_quantity = IntegerField('Quantity:', validators= [NumberRange(min=1,max=9)],  render_kw={"style": "width: 25px; margin-right: 5px;", "maxlength": 1})
-   order_check = BooleanField('Select Order')
-   submit = SubmitField('Favourite the Order')

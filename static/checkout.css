@@ -14,5 +14,17 @@
     margin-left: 10px;
 }
 
+.favourite_items_class {
+    display: flex;
+    justify-content: space-around;
+    padding: 5px;
+    align-items: center;
+}
+
+.favourite_items_class p {
+    padding: 10px;
+    
+  
+}
 
 

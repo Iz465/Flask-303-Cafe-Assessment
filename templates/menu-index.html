@@ -25,6 +25,10 @@
       </div>
       {% if favourite_check %}
       <a href="{{ url_for('favourite') }}" style="display: block; text-align: center;">Favourite your order</a>
+      <form action="http://127.0.0.1:5000/checkout" method="POST">
+        <input type="hidden" name="favourited_order" value="true">
+        <button type="submit" style="display: block; text-align: center;">Order your Favourited coffees!</button>
+      </form>
       {% endif %}
       <ul id="data">
         {#This here section needs rework once database has been implemented#}
