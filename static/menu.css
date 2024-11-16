@@ -69,3 +69,37 @@ a.clickable-div{
     width: 80%;
     margin: auto;
 }
+
+
+.favourite-popup {
+    background-color: rgb(230, 241, 232);
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    border: black; 
+    border-width: 2px;
+    border-style: solid;
+    flex-wrap: wrap;
+    visibility: hidden;
+    position: absolute;
+    z-index: 100;
+}
+
+
+.favourite-popup p {
+    padding: 2%;
+}
+
+.favourite-popup h2 {
+    text-align: center;
+}
+
+.favourite-popup input {
+    height: 1%;
+    width: 10%;
+    margin-top: 2.4%;
+}
+
+
+

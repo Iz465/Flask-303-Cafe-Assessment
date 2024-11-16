@@ -20,14 +20,14 @@
       <p>Name: {{ row.name }}</p>
     {% endfor %}
 
-    <!-- Loop through favourite_list and group items into divs -->
+   
     {% for num in range(favourite_list|length) %}
       {% if num % 3 == 0 %}
-        <!-- Start a new div for every 3rd item -->
-        <div class="favourite_items_class">
+        
+        <div class="favourite_items_class"> 
       {% endif %}
       
-      <!-- Display Coffee, Quantity, or Price based on the index -->
+    
       {% if num % 3 == 0 %}
         <p>Coffee: {{ favourite_list[num] }}</p>
       {% elif num % 3 == 1 %}

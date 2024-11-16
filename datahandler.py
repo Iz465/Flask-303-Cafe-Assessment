@@ -40,8 +40,8 @@ class UsersHandler(Handler):
         cur.execute(f"SELECT * FROM USERS")
         totalusers = len(cur.fetchall())
 
-        data = [ totalusers + 1,"",user["name"], user["email"], user["gender"], user["password"]]
-        cur.execute("INSERT INTO USERS (id, cart, name, email, gender, password) VALUES (?, ?, ?, ?, ?, ?)", data)
+        data = [ totalusers + 1,"",user["name"], user["email"], user["gender"], user["password"], 0, 0, "", ""]
+        cur.execute("INSERT INTO USERS (id, cart, name, email, gender, password, points, reward, card_details, favourite) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data)
         connect.commit() 
         connect.close()
         return 0
@@ -144,9 +144,9 @@ class UsersHandler(Handler):
             discount_item = sqlite_functions.select_from_table('Discounts')
             print(discount_item[0]['ID'])
         
-            print('product id product id product id:', product_id['id'])
+          
       
-            if product_id['title'] in current_cart:
+            if product_id['title'] in current_cart: # This if statement allows products to have more than 1. Adjusts the price and quantity for the specific coffee
              
                 fixed_cart_list = [[item for item in product if item] for product in cart_list]
                 print('clean list:', fixed_cart_list)
@@ -162,13 +162,13 @@ class UsersHandler(Handler):
                         print(cart[4])
                         old_price = (float(cart[4]))
                         if discount_item[0]['ID'] == product_id['id'] and reward_price != 1:
-                            print('MATCHING')
+                    
                             discount_price = (product_id['price'] * 50) / 100
                             new_price = old_price + discount_price
                         elif reward_price == 1:
                             new_price = old_price
                         elif reward_price == 3 and discount_item[0]['ID'] != product_id['id']:
-                            print('6666666666666666666666666')
+                          
                             discount_price = (product_id['price'] * 90) / 100
                             new_price = old_price + discount_price
                         else:
@@ -180,38 +180,32 @@ class UsersHandler(Handler):
                         current_cart = '|'.join(updated_cart) + '|'
                         
                
-            else:
+            else: # This activates for products not in the cart. It picks the specific one depending on what reward the user has or if they have no rewards that manipulate the price
         
-                if discount_item[0]['ID'] == product_id['id'] and reward_price != 1:
+                if discount_item[0]['ID'] == product_id['id'] and reward_price != 1: # If user bought item of the day product
                     print('discountttttttttttttttttt')
                     discount_number = (product_id['price'] * 50) / 100
                     print(discount_number)
                     newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
                 
-
-                elif reward_price == 1:
+                elif reward_price == 1: # user bought free coffee reward- this is why price  placeholder is zero
                     newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{0}|"
                 
-                elif reward_price == 2:
+                elif reward_price == 2: # user bought  buy one get 1 free - This is why quantity is 2.
                     newitem = f"{product_id['title']},{size_placeholder},{2},{product_id['img_url']},{product_id['price']}|"
                 
                 elif reward_price == 3:  
                     discount_number = (product_id['price'] * 90) / 100
                     newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
  
-                else:
+                else: # USER has no reward that manipulates the price.
                     newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
               #  print("NEW ITEM\n",newitem)
                 current_cart = current_cart + newitem
           #  print("ProductID:\n",product_id['title'])
         #    print("current cart:\n",current_cart['gender'])
         
-            
-            
-            
-      
-
-
+        
             
             val = (str(current_cart),user["email"])
             command = (f"UPDATE USERS SET cart = '{val[0]}' WHERE email = '{val[1]}'")

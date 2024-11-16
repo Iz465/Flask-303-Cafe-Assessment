@@ -21,7 +21,7 @@ loggedin =[]
 num = 0
 
 
-@app.before_request # This happens everytime flask reloads, before the routes
+@app.before_request # This happens everytime flask reloads meaning all this will happen before the code in the routes
 def before_request():
     global num
     if num <1:
@@ -174,7 +174,31 @@ def home():
 def menu():
     data_dict = []
     handler = MenuHandler()
+    rows = sqlite_functions.get_table('MENU')
+
+    if session['currentuser'] is not None: # This makes it so only logged in useres can see this.
+        updated_reward = sqlite_functions.select_from_table('USERS', 'reward', 'ID', session['currentuser']['id'] )
+        session['currentuser']['reward'] = updated_reward[0]['reward']
+        reward = session['currentuser']['reward']
+        rewards_split = reward.split(',')
+        rewards_int_list = [int(number) for number in rewards_split]
+        favourite_check = True
+
     if request.method == 'POST':
+        if request.form.get('action') == 'favourite_form': # Only form posts that have favourite_form in them will access this.
+            favourite_string = ''
+            for row in rows:
+                quantity = request.form.get(row['title'])
+                if quantity != '':
+                    print(f"quantity for {row['title']} is: {quantity}")
+                    print(f"price for {row['title']} is: {float(row['price']) * float(quantity)}")
+                    total_price = float(row['price']) * float(quantity)
+                    favourite_string = favourite_string + f"{row['title']},{quantity}, {round(total_price, 2)}|"
+            
+            print(favourite_string)
+            sqlite_functions.update_table('USERS', 'favourite', 'ID', favourite_string, session['currentuser']['id'])
+            return redirect(url_for('menu'))
+        
         searchbyvalue = request.form.get("search")
         sortbyvalue = request.form.get("sortdropdown")
         if len(searchbyvalue) > 0:
@@ -184,23 +208,15 @@ def menu():
         else:
             data_dict = handler.sorteddata(database_menu,sortbyvalue)
         
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"], rewards_int_list = rewards_int_list)
+        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"], rewards_int_list = rewards_int_list, favourite_check = favourite_check ,rows = rows)
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
-    if session['currentuser'] is not None:
-        connect = sqlite_functions.sqlite_connection()
-        cursor = connect.cursor()
-        cursor.execute("SELECT reward FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
-        updated_reward = cursor.fetchone()[0]
-        connect.close()
-        session['currentuser']['reward'] = updated_reward
-        reward = session['currentuser']['reward']
-        rewards_split = reward.split(',')
-        rewards_int_list = [int(number) for number in rewards_split]
-        favourite_check = True
-        return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rewards_int_list = rewards_int_list, favourite_check = favourite_check)
-    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'])
+
+
+    if  session['currentuser'] is not None:
+        return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rewards_int_list = rewards_int_list, favourite_check = favourite_check, rows = rows)
+    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rows = rows)
   
    
 
@@ -214,16 +230,10 @@ def product(product_id):
             product_item = product
     
     if request.method == "POST":
-     
-        print('testing product id posting')
         reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
-        print('testing how many rewards i havezz:', reward[0]['Reward'])
         rewards_split = reward[0]['Reward'].split(',')
-        rewards_int_list = [int(reward) for reward in rewards_split]
-        print("int list:",rewards_int_list)
-        rewards_int_list.sort()
-        print('first index only:', rewards_int_list[0])
-
+        rewards_int_list = sorted([int(reward) for reward in rewards_split])
+      
 
         usr = session["currentuser"]
         userhandler = UsersHandler()
@@ -231,23 +241,18 @@ def product(product_id):
         print('the msg is?', msg)
         print('the user is?', usr)
         session["currentuser"] = userhandler.updateusr(usr)
-        print('the user part?', usr)
-        
-        if rewards_int_list[0] != 0:
+     
+        if rewards_int_list[0] != 0: # This makes it so this if statement will only occur if user has rewards bought.
             permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', rewards_int_list[0])
-            print('permanent is: ', permanent[0]['permanent'])
             if permanent[0]['permanent'] == 'No':
                 rewards_int_list.remove(rewards_int_list[0])
                 rewards_string_list = ','.join([str(reward) for reward in rewards_int_list])
                 if rewards_int_list == []:
-                    print('appending appending appending the list')
                     rewards_int_list.append(0) 
                     rewards_string_list = ','.join([str(reward) for reward in rewards_int_list])
-                    print('check rewards:', rewards_string_list)
                 sqlite_functions.update_table('Users', 'reward', 'ID', rewards_string_list, session['currentuser']['id'])
-        print('rewards list again:', rewards_int_list)
+        print('rewards list again:', rewards_int_list) # Show every reward the user has.
         
-       
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
 
 
@@ -271,6 +276,7 @@ def cart():
         print('Log in to view your cart')
     return render_template('cart.html', currentuser = session["currentuser"],cart_total = cart_total)
 
+
 ### Experimental Map stuff
 @app.route('/map', methods=["GET", "POST"])
 def map():
@@ -281,62 +287,46 @@ def map():
         # Render the input form
         post = False
         return render_template('map.html')
+    
+
 ### REWARDS PAGE OPERANDS
 @app.route('/rewards', methods = ['POST', 'GET'])
 def rewards():
     if session['currentuser'] is not None: # doing this atm because of strange problem where session isnt updating properly
-        connect = sqlite_functions.sqlite_connection()
-        cursor = connect.cursor()
-        cursor.execute("SELECT points FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
-        updated_points = cursor.fetchone()[0]
-        cursor.execute("SELECT reward FROM USERS WHERE ID = ?", (session['currentuser']['id'],))
-        updated_reward = cursor.fetchone()[0]
-        connect.close()
-        print('updated reward part 1 is : ', session['currentuser']['reward'])
-        session['currentuser']['points'] = updated_points
-        session['currentuser']['reward'] = updated_reward
-        print('updated reward part 2 is : ', session['currentuser']['reward'])
-        points = updated_points
-        reward = updated_reward
+
+        updated_points = sqlite_functions.select_from_table('USERS', 'points', 'ID', session['currentuser']['id'])
+        updated_reward = sqlite_functions.select_from_table('USERS', 'reward', 'ID', session['currentuser']['id'])
+        session['currentuser']['points'] = updated_points[0]['points']
+        session['currentuser']['reward'] = updated_reward[0]['reward']
+
+        points = updated_points[0]['points']
+        reward = updated_reward[0]['reward']
         rewards_split = reward.split(',')
         rewards_int_list = [int(number) for number in rewards_split]
         print(rewards_int_list)                         
     else:
-        points = None
-        reward = None
-        rewards_split = None
-        rewards_int_list = None
+        points = reward = rewards_split = rewards_int_list = None
+    
+    if request.method == 'POST': # This is for when users buy a reward. 
 
-    if request.method == 'POST':
-        print('you have spent a lot of points!')
-        reward_type = request.form['reward_type']
-        reward_points = request.form['reward_points']
-        reward_id = request.form['reward_id']
-        print('reward id is:', reward_id)
-        points_int = int(reward_points)
-        id_int = int(reward_id)
-        print("points_int type is: ",type(points_int))
+        reward_points = int(request.form['reward_points'])
+        reward_id = int(request.form['reward_id'])
         points = session.get('currentuser', {}).get('points', 0)
         current_reward_id = session['currentuser']['reward']
         if current_reward_id == '0':
-            #current_reward_id = ''
-            all_rewards = str(id_int)
+            all_rewards = str(reward_id)
         else:
-            all_rewards = str(current_reward_id) + ',' + str(id_int) 
-        new_points = points - points_int
-        print('all_rewards is:', all_rewards)
-        print('reward is:', reward_type, "points cost is:", reward_points, 'your total points are:', points,)
-        print('points left after claiming this reward:', new_points)
-        connect = sqlite_functions.sqlite_connection()
-        cursor = connect.cursor()
-        cursor.execute("UPDATE USERS SET points = ?, reward = ? WHERE ID = ?", (new_points,all_rewards, session['currentuser']['id']))
-        connect.commit()
-        connect.close()
+            all_rewards = str(current_reward_id) + ',' + str(reward_id) 
+
+        new_points = points - reward_points
+        sqlite_functions.update_table('USERS', 'points', 'ID', new_points, session['currentuser']['id'], 'reward', all_rewards)
         session['currentuser']['points'] = new_points
         print('currentuser points are: ', session['currentuser']['points'])
         return redirect(url_for('rewards'))
+    
     rows = sqlite_functions.get_table('Rewards')
     return render_template('rewards-index.html', rows = rows, points = points, rewards_int_list = rewards_int_list)
+
 
 ### EMPLOY PAGE OPERANDS ###
 @app.route('/employ')
@@ -350,27 +340,19 @@ def employ():
 @app.route('/employ_application', methods= ['POST', 'GET'])
 def employ_application():
     form = EmployForm()
-   # if request.method == 'POST':
-      #  job_name = request.form['job_name']
-       # print(job_name)
+
     if 'loggedin' in session and session['loggedin']:  # This if statement will check first, whether session has loggedin and then if the loggedin value is set to true. Only logged in users can access this.  
         if request.method == 'POST':
             if form.validate() == False:
                 return render_template('employ_application.html', form = form, check_form = True)
             else:
-                connect = sqlite3.connect('database.db')
-                cursor = connect.cursor()
-                cursor.execute("Select id FROM Employ_Application")
-                employ_ids = cursor.fetchall()
-                check_users = [row[0] for row in employ_ids] # This adds the ids into the check users from the employ ids tuple, so they can be accessed individually.
-                cursor.execute("Select id FROM Employees")
-                employee_ids = cursor.fetchall()
+                employ_ids = sqlite_functions.select_from_table('Employ_Application', 'id')
+                check_users = [row[0] for row in employ_ids] 
+                employee_ids = sqlite_functions.select_from_table('Employees', 'id')
                 check_employees = [row[0] for row in employee_ids]
-                if session['currentuser']['id'] not in check_users and session['currentuser']['id'] not in check_employees:
-                    cursor.execute("Insert INTO Employ_Application (id, name, gender, job_reason) VALUES (?,?,?,?)", 
-                    (session['currentuser']['id'],session['currentuser']['name'],session['currentuser']['gender'], request.form['job_reason'])) 
-                    connect.commit()
-                    connect.close() 
+                if session['currentuser']['id'] not in check_users and session['currentuser']['id'] not in check_employees: # This makes it so only users who have not applied or are employyes can apply for a job.
+                    sqlite_functions.insert_into_table('Employ_Application', ['id', 'name', 'gender', 'job_reason'], 
+                                                       (session['currentuser']['id'],session['currentuser']['name'],session['currentuser']['gender'],request.form['job_reason']))
                     return render_template('employ_application.html', form = form, check_form = False, form_done = True)
                 else:
                     return render_template('employ_application.html', already_applied = True)
@@ -431,31 +413,25 @@ def application_review():
                            products_rows = rows['MENU'], job_rows = rows['EmployJobs'])
 
 
+
 @app.route('/checkout', methods = ['GET', 'POST'])
 def checkout():
     form = CheckOutForm()
-    checkout_complete = False
-    incorrect_details = False
-    favourited_order = False
+    checkout_complete = incorrect_details = favourited_order = False
+
     if request.method == 'POST':
-         if request.form.get('favourited_order') == 'true':
+         if request.form.get('favourited_order') == 'true': # Only posts that have favourited_order will access this 
              print('showing favourite order')
-             checkout_complete = True
-             favourited_order = True
+             checkout_complete = favourited_order = True
              rows = sqlite_functions.select_from_table('USERS',category='ID', value=session['currentuser']['id'] )
              row_list = [list(row) for row in rows]
-             print(row_list[0][9])
              row_strip = row_list[0][9].strip('|')
              remove = '|'
              change = row_strip.replace(remove, ',')
              favourite_list = change.split(',')
-             print(favourite_list)
              return render_template('checkout.html', form = form, checkout_complete = checkout_complete, favourited_order = favourited_order, rows = rows, favourite_list = favourite_list)
-         else: 
-            print('no favourite order')
-         if form.validate():
-       
 
+         if form.validate():
             card = request.form['card_number']
             expiry_date = request.form['expiry_date']
             cvc = request.form['cvc']
@@ -467,8 +443,6 @@ def checkout():
                 sqlite_functions.update_table('USERS', 'card_details', 'ID', card_details, session['currentuser']['id'])
             else:
                 print('card not saved')
-
-
 
             checkout_complete = True
             user_points = sqlite_functions.select_from_table('USERS', 'points', 'ID', session['currentuser']['id'] )
@@ -485,18 +459,19 @@ def checkout():
             userhandler = UsersHandler()
             session["currentuser"] = userhandler.updateusr(session["currentuser"])
      
-        
             if '6' in rewards_split:
                 session["currentuser"]['points'] += 100 
             else:
                 session["currentuser"]['points'] += 50 
             return render_template("checkout.html", checkout_complete = checkout_complete)
+         
          if form.validate() == False:
             incorrect_details = True
             cart_items = session['cart_items']
             cart_sum = session['cart_sum']
             cart_length = session['cart_length']
             return render_template("checkout.html", form = form, incorrect_details = incorrect_details, cart_sum = cart_sum, cart_length = cart_length, cart_items = cart_items)
+    # GET PART BELOW
     cart_items = session.get('currentuser', {}).get('cart', "")
     session['cart_items'] = cart_items
     cart_sum = request.args.get('cart_sum', '0') 
@@ -520,36 +495,8 @@ def checkout():
     coffee_menu = sqlite_functions.select_from_table('MENU')
     check_coffee = [list(row) for row in coffee_menu]
     
-
-
     return render_template('checkout.html', form = form, cart_sum = cart_sum_int, cart_length = cart_length, cart_items = cart_items, check_coffee = check_coffee)
 
-
-@app.route('/favourite', methods = ['GET', 'POST'])
-def favourite():
-
-    rows = sqlite_functions.get_table('MENU')
-
-
-
-    
-    if request.method == 'POST':
-        favourite_string = ''
-        for row in rows:
-              quantity = request.form.get(row['title'])
-              if quantity != '':
-                print(f"quantity for {row['title']} is: {quantity}")
-                print(f"price for {row['title']} is: {float(row['price']) * float(quantity)}")
-                total_price = float(row['price']) * float(quantity)
-
-                favourite_string = favourite_string + f"{row['title']},{quantity}, {round(total_price, 2)}|"
-        print(favourite_string)
-        sqlite_functions.update_table('USERS', 'favourite', 'ID', favourite_string, session['currentuser']['id'])
-        return render_template('favourite.html', rows = rows)
-
-
-    return render_template('favourite.html', rows = rows)
-   
 
 
 if __name__ == '__main__':
