@@ -6,6 +6,13 @@
  <h1>Rewards</h1> <h3>Points: {{points}}</h3>
 </div>
 
+{% if points != None %}
+{% for reward in rewards_int_list %}
+<p>Reward is: {{reward}}</p>
+{% endfor %}
+<p>testing {{rewards_int_list[0] + 60}}</p>
+{% endif %}
+
 
 <div class = "reward-container">
   <a href="http://127.0.0.1:5000/minesweeper">
@@ -17,7 +24,16 @@
   </a>
 
     {% for row in rows %}
-     <div class = "reward-items" onclick="openPopup(this)" data-reward-name = "{{row.Name}}">
+    {% if points != None %}
+    {% if points >= row.points and row.ID not in rewards_int_list %}
+     <div class = "reward-items" onclick="openPopup(this)" data-reward-name = "{{row.Name}}" data-points="{{row.points}}" data-id="{{row.ID}}">
+    {% else %}
+    <div class = "reward-items" data-reward-name = "{{row.Name}}">
+    {% endif %}
+    {% endif %}
+    {% if points == None %}
+    <div class = "reward-items" data-reward-name = "{{row.Name}}">
+    {% endif %}
       <img class="reward-image" src="{{row.Image_Url}}">
         <h6 class="inconsolata">{{row.Name}}</h6> 
               <p class="inconsolata">Points: {{row.Points}}</p>
@@ -30,11 +46,17 @@
 
 
 
-
   <div id="popup" class="popup">
     <button class = "closeBtn" onclick="closePopup()">&times;</button>
-    <h3>Reward</h3>
-    <p>Your reward has been claimed</p>
+    <form action="http://127.0.0.1:5000/rewards" method="POST">
+    <input type="hidden" name="reward_id" id="reward_id_input">
+    <input type="hidden" name="reward_points" id="reward_points_input">
+    <input type="hidden" name="reward_type" id="rewardTypeInput">
+    <h3>Your reward has been claimed</h3>
+    <br><br>
+    <input class="submit_reward" type="submit" value="claim">
+ 
+    </form>
   </div>
 
 

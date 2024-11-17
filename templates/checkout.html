@@ -7,17 +7,48 @@
 <div style="width: 50%; text-align: center; display: flex;">
 
 <div style="width: 50%;"></div>
-<div style="background-color: RGBA(184,216,190,.35); width: 50%; text-align: center; border: 2px; border-style: solid; border-color: rgb (224, 224, 224); padding: 20px;">
 
 
-  {% if checkout_complete %}
-  <div style="width: 200%;">
-    <h1 class="kanit-regular">Checkout complete!</h1>
-    <br>
-    <h3 class="kanit-regular">Here is your receipt</h3>
-  </div>
+{% if checkout_complete %}
+<div style="width: 200%; text-align: center;">
+  <h1 class="kanit-regular">Checkout complete!</h1>
+  <br>
+  <h3 class="kanit-regular">Here is your receipt</h3>
+  
+  {% if favourited_order %}
+    {% for row in rows %}
+      <p>Name: {{ row.name }}</p>
+    {% endfor %}
+
+   
+    {% for num in range(favourite_list|length) %}
+      {% if num % 3 == 0 %}
+        
+        <div class="favourite_items_class"> 
+      {% endif %}
+      
+    
+      {% if num % 3 == 0 %}
+        <p>Coffee: {{ favourite_list[num] }}</p>
+      {% elif num % 3 == 1 %}
+        <p>Quantity: {{ favourite_list[num] }}</p>
+      {% elif num % 3 == 2 %}
+        <p>Price: ${{favourite_list[num] }}</p>
+      {% endif %}
+      
+      {% if num % 3 == 2 %}
+ 
+        </div>
+      {% endif %}
+    {% endfor %}
+    <h2>Total Price: $</h2>
+    {% endif %}
+
+
 
   {% else %}
+  <div style="background-color: RGBA(184,216,190,.35); width: 50%; text-align: center; border: 2px; border-style: solid; border-color: rgb (224, 224, 224); padding: 20px;">
+
   <h1 class="kanit-regular checkout-form">Checkout</h1>
   <h1 class="kanit-regular checkout-form">Payment</h1>
   <img src="{{ url_for('static', filename='images/visa.svg') }}">
@@ -38,6 +69,12 @@
     {{ form.cvc.label }} <br>
     {{ form.cvc(id='cvc', checkout_input_length='3') }}<span id="cvc_validation"></span> <br><br><br>
     
+    <div class="save_card" style="display: flex; flex-direction: row; align-items: start; justify-content: center;">
+      {{ form.save_card.label }} <br>
+      {{ form.save_card }}<br><br><br>
+    </div>
+ 
+    
     {{ form.submit }}
     <br>
   </form>
@@ -50,7 +87,7 @@
 
 
 <div style="background-color: RGBA(184,216,190,.35); border: 2px; border-style: solid ; margin-left: 20px; padding: 20px;">
-  <h1 class="kanit-regular total_price_class" style="padding-right: 20px; padding-left: 20px;">Total Price: ${{ cart_sum }}</h1>
+  <h1 class="kanit-regular total_price_class" style="padding-right: 20px; padding-left: 20px;">Total Price: ${{ cart_sum | round(2) }}</h1>
   <h1 class="kanit-regular total_amount_class" style="padding-right: 20px; padding-left: 20px;">Amount of items in cart: {{cart_length}}</h1>
 </div>
 
@@ -78,7 +115,7 @@
           <img src="{{ url_for('static', filename='images/plus_1.svg') }}" id="item_plus" onclick="product_quantity(this.parentElement, 1)" style="cursor: pointer; height: 15%;" >
           <p class="specific_item_quantity" style="margin-right: 0.5%;">{{item.quantity}}</p>
           <img src="{{ url_for('static', filename='images/minus.svg') }}" id="item_minus"  onclick="product_quantity(this.parentElement, -1)"  style="cursor: pointer; height: 15%; margin-right: -0.5%;">
-        <p class="specific_item_price" style="margin: 0; padding: 0; text-align: center;">${{item.price}}</p> <p class="original_price" style="display: none;">{{item.price}}</p>
+        <p class="specific_item_price" style="margin: 0; padding: 0; text-align: center;">${{item.price}}</p> {% for coffee in check_coffee %} {% if coffee[1] == item.title %} <p class="original_price" style="display: none;">{{coffee[4]}}</p> {% endif %} {% endfor %}
     {% endif %}
 </div>
 </div>

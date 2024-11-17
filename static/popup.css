@@ -1,15 +1,21 @@
 
 .popup {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 30%;
+  text-align: center;
   position: fixed;
-  background-color:beige;
+  background-color: rgb(240, 238, 255);
   top: 20%;
   left: 40%;
-  padding: 20px;
+  padding: 2%;
   border-radius: 10px;
-  box-shadow: 10px 10px 10px rgba(0,0, 0,0.5)
+  box-shadow: 10px 10px 10px rgba(0,0, 0,0.5);
+  visibility: hidden;
   
 }
+
 
 .popup p, .popup h3 {
   text-align: center;
@@ -36,3 +42,15 @@
   border: none;
 
 }
+
+.submit_reward {
+  padding: 10px;
+  background-color: white;
+
+}
+
+
+
+
+
+

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import TextField,IntegerField, SubmitField, StringField, RadioField, PasswordField
+from wtforms import TextField,IntegerField, SubmitField, StringField, RadioField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length, NumberRange, Email, EqualTo, InputRequired
 
 
@@ -13,7 +13,6 @@ class SignUpForm(FlaskForm):
     gender = RadioField('gender',choices=[('M','Male'), ('F','Female'),('O','Other')])
     email = StringField('email',[InputRequired("Please enter an email address"), Email("wrong format")])
     password = PasswordField('password',[InputRequired("Password Required")])
-    admin = RadioField('Are you an admin?', choices = [('Y', 'Yes'), ('N', 'No')])
     submit = SubmitField('Send')
 
 class Login(FlaskForm):
@@ -47,4 +46,7 @@ class CheckOutForm(FlaskForm):
    card_number = StringField("Card Number:", render_kw={"placeholder": "16 digits", "maxlength": 19}, validators=[DataRequired(), Length(max=19)])
    expiry_date = StringField("Expiry Date:", render_kw={"placeholder": "mm/yyyy", "maxlength": 7}, validators=[DataRequired(), Length(max=7)])
    cvc = IntegerField('CVC Code:', render_kw={"placeholder": "3 digits", "maxlength": 3}, validators=[DataRequired(), NumberRange(min=100, max=999)])
+   save_card = BooleanField('Save Card Details')
    submit = SubmitField("Checkout")
+
+

@@ -20,20 +20,58 @@
             
           
       </div>
+
+      {# This code is for teacher task - Lets users favourite an order #}
+      {% if favourite_check %} 
+      <a onclick="open_favourite()" style="display: inline; margin-left: 45%; cursor: pointer;">Favourite your order</a>
+      <form action="http://127.0.0.1:5000/checkout" method="POST">
+        <input type="hidden" name="favourited_order" value="true">
+        <button type="submit" style="display: block; text-align: center;">Order your Favourited coffees!</button>
+      </form>
+      {% endif %}
+      <div class="favourite-popup" id="favourite-popup-id"> {# This is a hidden popup #}
+        <form action="http://127.0.0.1:5000/menu" method="POST">
+        <h2>Favourite your menu</h2><br><br>
+        <input style="margin-left: 40%; width: 20%;" type="submit" value="Save Order"><br><br>
+        <input type="hidden" name="action" value="favourite_form">
+        {% for row in rows %}
+        <div style="display: flex; justify-content: space-around;">
+          <img style="height: 50px; margin-top: 5px;" src="{{row.img_url}}"></img>
+          <p>Name: {{row.title}}</p>
+          <p>Price: ${{row.price}}</p>
+          <p>Quantity: </p>
+          <input name="{{ row.title }}"  type="number" min="1" max="9">
+        </div>
+        <br>
+        {% endfor %}
+        </form>
+      </div>
+
+
       <ul id="data">
         {% for items in data %}
-        <div class = "item-cont">
+        <div class = "item-cont">                            
           <a href="http://127.0.0.1:5000/{{items.id}}" method="POST">
             <img title="product-img" class = "item-image" alt="Image-alt" src="{{items.img_url}}"></img>
             <div class = "item-content">
               <div class="item-text inconsolata">
                 <p class="item-title">{{items.title}}</p>
-                 {% if employee_check %}
-                 <p class="item-price">50% off! <s>${{items.price}}</s></p>
-                 <p class="item-price">${{ (50 * (items.price / 100) )|round(2) }}</p>
-                 {% else %}
-                 <p class="item-price">${{items.price}}</p>
-                 {% endif %}
+                {% if 1 in rewards_int_list %}                {# These if statements modify the item price depending on the rewards the users have #}
+                <p class = "item-price">Free! $0</p>
+                {% elif 3 in rewards_int_list %}
+                <p class="item-price">10% off! <s>${{items.price}}</s></p>
+                <p class="item-price">${{ (90 * (items.price / 100) )|round(2) }}</p>
+                {% elif 4 in rewards_int_list %}
+                <p class = "item-price">Weekly coffee!</p>
+                <p class="item-price">$0</p>
+                {% else %}
+                {% if employee_check %}
+                <p class="item-price">50% off! <s>${{items.price}}</s></p>
+                <p class="item-price">${{ (50 * (items.price / 100) )|round(2) }}</p>
+                {% else %}
+                <p class="item-price">${{items.price}}</p>
+                {% endif %}
+                {% endif %}
                 <p class="item-desc">Ingredients: <br>{{items.contains}}</p>
             
               </div>

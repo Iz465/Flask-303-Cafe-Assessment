@@ -20,7 +20,7 @@
                 <h3>{{items.title}} ({{items.size}})</h3>
                 <p>Quantity: {{items.quantity}}</p>
                 {% if employee_check %}
-                <p>Price: {{ (50 * (items.price / 100) )|round(2) }}$</p>
+                <p>Price: ${{ (50 * (items.price / 100) )|round(2) }}</p>
                 {% else %}
                 <p>Price: {{items.price}}$</p>
                 <input type="hidden" class="price_int" value="{{items.price}}">
@@ -41,9 +41,9 @@
           <form action="http://127.0.0.1:5000/checkout" method="get">
           <div class="total-div" style="display: flex; justify-content: space-between;">
             {% if employee_check %}
-            <h1 class="total-text"><input style="display: none;" name="cart_sum" value="{{ ( 50 * (cart_total / 100 )) | round(2) }}">Total: {{ ( 50 * (cart_total / 100 )) | round(2) }}$</h1>
+            <h1 class="total-text"><input style="display: none;" name="cart_sum" value="{{ ( 50 * (cart_total / 100 )) | round(2) }}">Total: ${{ ( 50 * (cart_total / 100 )) | round(2) }}</h1>
             {% else %}
-            <h1 class="total-text"><input style="display: none;" name="cart_sum" value="{{cart_total}}">Total: {{cart_total}}$</h1>
+            <h1 class="total-text"><input style="display: none;" name="cart_sum" value="{{cart_total}}">Total: ${{cart_total | round(2) }}</h1>
             {% endif %}
             <input name="cart_length" style="display: none;" value="{{currentuser.cart|length}}">
             <button class="total-text" type="submit"><h1>Checkout</h1></button>
