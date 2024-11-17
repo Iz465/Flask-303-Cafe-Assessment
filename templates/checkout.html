@@ -11,15 +11,17 @@
 
 {% if checkout_complete %}
 <div style="width: 200%; text-align: center;">
+<div style="width: 200%;">
   <h1 class="kanit-regular">Checkout complete!</h1>
   <br>
   <h3 class="kanit-regular">Here is your receipt</h3>
   
   {% if favourited_order %}
+  <br>
     {% for row in rows %}
       <p>Name: {{ row.name }}</p>
     {% endfor %}
-
+    <br>
    
     {% for num in range(favourite_list|length) %}
       {% if num % 3 == 0 %}
@@ -41,7 +43,9 @@
         </div>
       {% endif %}
     {% endfor %}
+    <br>
     <h2>Total Price: $</h2>
+  </div>
     {% endif %}
 
 
