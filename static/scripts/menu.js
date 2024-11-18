@@ -1,8 +1,35 @@
 let global
+let reward_global
+let employee_status = false
+function reward(data_reward){
+    data = parcedata(data_reward)
+    reward_global = data
+    for(let i = 0; i < reward_global.length; i++){
+        console.log("REWARD",reward_global[i])
+    }
+}
+
+function applyreward(){
+    let reward_amount = null //counted in percentage, here is 0% reward; default
+    if(reward_global.includes(1)){
+        reward_amount = ["One Free Item",100]
+        console.log(`discount = ${reward_amount[0]}: ${reward_amount[1]}%`)
+    }else if(reward_global.includes(3)){
+        reward_amount = ["10% off",10]
+        console.log(`discount = ${reward_amount[0]}: ${reward_amount[1]}%`)
+    }else if(reward_global.includes(3)){
+        reward_amount = ["One Free Coffe",100]
+        console.log(`discount = ${reward_amount[0]}: ${reward_amount[1]}%`)
+    }else if(employee_status){
+        reward_amount = ["Employee discount",50]
+        console.log(`discount = ${reward_amount[0]}: ${reward_amount[1]}%`)
+    }
+    return reward_amount
+}
 
 function initload(data_unparced){
+    console.log(reward_global)
     
-
     data = parcedata(data_unparced);
     global = data
     populatemenu(global)
@@ -14,6 +41,7 @@ function reload(){
 
 function populatemenu(data){
     clear_data();
+    
 
     sorteddata = sortdata(data)
     console.log(sorteddata)
@@ -112,6 +140,8 @@ function sortbyprice(a,b){
 }
 
 function createMenuItem(dataitem){
+    active_reward = applyreward()
+
     let item_cont = ce('div');
     item_cont.className = "item-cont";
 
@@ -125,6 +155,15 @@ function createMenuItem(dataitem){
     product_img.alt = 'Image-alt';
     product_img.src = dataitem.img_url;
 
+    let rewardbanner = ce("div");
+    rewardbanner.className = "reward-banner";
+    let reward_text = ce('p');
+    reward_text.className = 'item-reward'
+    let textnode = document.createTextNode(`- ${active_reward[1]}%`)
+    reward_text.appendChild(textnode)
+    rewardbanner.appendChild(reward_text)
+
+
     let item_content = ce('div');
     item_content.className = 'item-content';
 
@@ -136,10 +175,33 @@ function createMenuItem(dataitem){
     let titlenode = document.createTextNode(dataitem.title)
     item_title.appendChild(titlenode)
 
-    let item_price = ce('p');
-    item_price.className = 'item-price'
-    let pricenode = document.createTextNode(dataitem.price)
-    item_price.appendChild(pricenode)
+    let pricecontainer = ce('div');
+    pricecontainer.className = "price-container"
+    if(active_reward != null){
+        let diff = active_reward[1]/100 * dataitem.price
+        let result = dataitem.price - diff
+
+        let item_price = ce('p');
+        item_price.className = 'item-price lineover'
+        let pricenode = document.createTextNode(dataitem.price)
+        item_price.appendChild(pricenode)
+        let reward_price = ce('p');
+        reward_price.className = 'item-price reward'
+        let rewardpricenode = document.createTextNode(result.toFixed(2))
+        reward_price.appendChild(rewardpricenode)
+        pricecontainer.appendChild(item_price)
+        pricecontainer.appendChild(reward_price)
+        
+    }
+    else{
+        let item_price = ce('p');
+        item_price.className = 'item-price'
+        let pricenode = document.createTextNode(dataitem.price)
+        item_price.appendChild(pricenode)
+        pricecontainer.appendChild(item_price)
+    }
+    
+
 
     let item_desc = ce('p');
     item_desc.className = 'item-desc'
@@ -147,13 +209,14 @@ function createMenuItem(dataitem){
     item_desc.appendChild(descnode)
 
     item_text.appendChild(item_title)
-    item_text.appendChild(item_price)
+    item_text.appendChild(pricecontainer)
     item_text.appendChild(item_desc)
 
     item_content.appendChild(item_text)
 
     a.appendChild(product_img)
     a.appendChild(item_content)
+    a.appendChild(rewardbanner)
 
     item_cont.appendChild(a)
     

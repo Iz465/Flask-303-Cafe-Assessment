@@ -10,6 +10,12 @@ html, body {
 
 a {
   font-size: 3vh;
+  color: inherit;
+  text-decoration: inherit;
+}
+
+a:hover{
+  color: inherit;
 }
 
 p {
@@ -105,6 +111,7 @@ h2{
 .navigation, a {
   color: white;
   font-weight: 300;
+  text-decoration: none;
 }
 
 
@@ -144,7 +151,8 @@ a.loginbutton{
   height: 100%;
   text-decoration: none;
 }
-a:hover {
+
+a, a:hover, a:focus, a:active {
   text-decoration: none;
 }
 .user-cart{

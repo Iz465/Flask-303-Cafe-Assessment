@@ -173,14 +173,14 @@ def home():
 ### MENU PAGES OPERANDS ###
 @app.route('/menu', methods=["POST","GET"])
 def menu():
-    data_dict = []
-    handler = MenuHandler()
     rows = sqlite_functions.get_table('MENU')
-#    new_data = []
-#    for d in database_menu:
-#       new_data.append(json.dumps(d))
-#    for new in new_data:
-#        print(new)
+    new_data = []
+    for d in database_menu:
+        new_data.append(json.dumps(d))
+    for new in new_data:
+        print(new)
+    
+    newreward = []
 
     if session['currentuser'] is not None: # This makes it so only logged in useres can see this.
         updated_reward = sqlite_functions.select_from_table('USERS', 'reward', 'ID', session['currentuser']['id'] )
@@ -188,6 +188,10 @@ def menu():
         reward = session['currentuser']['reward']
         rewards_split = reward.split(',')
         rewards_int_list = [int(number) for number in rewards_split]
+        
+        for i in rewards_int_list:
+            newreward.append(json.dumps(i))
+            print("Reward:",i)
         favourite_check = True
 
     if request.method == 'POST':
@@ -205,24 +209,17 @@ def menu():
             sqlite_functions.update_table('USERS', 'favourite', 'ID', favourite_string, session['currentuser']['id'])
             return redirect(url_for('menu'))
         
-        searchbyvalue = request.form.get("search")
-        sortbyvalue = request.form.get("sortdropdown")
-        if len(searchbyvalue) > 0:
-            data_dict = handler.searchdata(database_menu,searchbyvalue)
-            print("GRATER THAN 0")
-            data_dict = handler.sorteddata(data_dict,sortbyvalue)
-        else:
-            data_dict = handler.sorteddata(database_menu,sortbyvalue)
+
         
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"], rewards_int_list = rewards_int_list, favourite_check = favourite_check ,rows = rows)
+        return render_template('menu-index.html', data=new_data ,loggedin = session['loggedin'], currentuser = session["currentuser"], rewards_int_list = newreward, favourite_check = favourite_check ,rows = rows)
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
 
 
     if  session['currentuser'] is not None:
-        return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rewards_int_list = rewards_int_list, favourite_check = favourite_check, rows = rows)
-    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rows = rows)
+        return render_template('menu-index.html', data = new_data, currentuser = session['currentuser'], loggedin = session['loggedin'], rewards_int_list = newreward, favourite_check = favourite_check, rows = rows)
+    return render_template('menu-index.html', data = new_data, currentuser = session['currentuser'], loggedin = session['loggedin'], rows = rows)
   
    
 

@@ -27,10 +27,10 @@ a.clickable-div{
     position: relative;
     width: 100%;
     list-style: none;
-}
-a {
     text-decoration: none;
+    color: white;
 }
+
   
 .item-image {
     height: 400px;
@@ -81,6 +81,30 @@ select{
     margin: auto;
 }
 
+.price-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.lineover{
+    text-decoration: line-through;
+    font-size: 70%;
+}
+.reward-banner{
+    display: flex;
+    position: absolute;
+    height: 10%;
+    width: 30%;
+    top: 0px;
+    right: 0px;
+    background-color: #008CBA;
+    justify-content: center;
+    align-items: center;
+}
+.item-reward{
+    font-size: 100%;
+    text-decoration: none;
+}
 
 .favourite-popup {
     background-color: rgb(230, 241, 232);
