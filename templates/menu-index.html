@@ -1,27 +1,24 @@
 
 {% extends 'base.html' %}
 {% block content %}
+
 <body>
   
  
   <div class="Menu">
+    <h2 class="menu-header inconsolata">MENU</h2>
       <div class="menucontroler">
-          <ul>
-            <h2>Welcome {{currentuser.name}}</h2>
-            <form action="http://127.0.0.1:5000/menu" class="SortSelection" method="POST">
-              <label for="name">Sort by: </label>
-              <select class="sortForm" id="sortdropdownselector" type="text" name="sortdropdown" onchange="this.form.submit()">
-                <option id="op0" value="">{{sortbyvalue}}</option>
-                <option id="op1" value="name">name (A - Z)</option>
-                <option id="op2" value="price">price (low - high)</option>
-                  
-              </select>
-              
-              <label for="search">Search</label>
-              <input type="text" id="search" value="{{searchbyvalue}}" name="search">
-              
-            </form>
-          </ul>
+          
+        <select class="sortForm" id="sortdropdownselector"  type="text" name="sortdropdown" onchange="reload()">
+          <option id="op0" value="popular" selected>Popular (high - low)</option>
+          <option id="op1" value="name">name (A - Z)</option>
+          <option id="op2" value="price" >price (low - high)</option>
+            
+        </select>
+        
+        <input type="text" id="search" placeholder="Search" value="{{searchbyvalue}}" name="search" oninput="search()" >
+            
+          
       </div>
 
       {# This code is for teacher task - Lets users favourite an order #}
@@ -52,45 +49,19 @@
 
 
       <ul id="data">
-        {#This here section needs rework once database has been implemented#} 
-        {% for items in data %}
-        <div class = "item-cont">                            
-          <a href="http://127.0.0.1:5000/{{items.id}}" method="POST">
-            <img title="product-img" class = "item-image" alt="Image-alt" src="{{items.img_url}}"></img>
-            <div class = "item-content">
-              <div class="item-text">
-                <p class="item-title">{{items.title}}</p>
-                {% if 1 in rewards_int_list %}                {# These if statements modify the item price depending on the rewards the users have #}
-                <p class = "item-price">Free! $0</p>
-                {% elif 3 in rewards_int_list %}
-                <p class="item-price">10% off! <s>${{items.price}}</s></p>
-                <p class="item-price">${{ (90 * (items.price / 100) )|round(2) }}</p>
-                {% elif 4 in rewards_int_list %}
-                <p class = "item-price">Weekly coffee!</p>
-                <p class="item-price">$0</p>
-                {% else %}
-                {% if employee_check %}
-                <p class="item-price">50% off! <s>${{items.price}}</s></p>
-                <p class="item-price">${{ (50 * (items.price / 100) )|round(2) }}</p>
-                {% else %}
-                <p class="item-price">${{items.price}}</p>
-                {% endif %}
-                {% endif %}
-                <p class="item-desc">Ingredients: <br>{{items.contains}}</p>
-            
-              </div>
-            </div>
-          </a>
-        </div>
-      
-        {% endfor %}
-      
         
       </ul>
 
   </div>
 
-  
+  <script src="{{ url_for('static', filename='scripts/menu.js') }}"></script>
+  <script>
+    isemployee({{employee_check}});
+    reward({{ rewards_int_list|tojson|safe }});
+    initload({{ data|tojson|safe }});
+
+    
+  </script>
 </body>
 {% endblock %}
 

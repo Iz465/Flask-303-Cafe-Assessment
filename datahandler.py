@@ -104,19 +104,22 @@ class UsersHandler(Handler):
         cleanstr = cleanstr.strip(',')
         cleanstr = cleanstr.strip('|')
         items = cleanstr.split('|')
-        print("\nITEMS:")
+        print("\nITEMS:", items[0])
         for item in items:
-            print(item)
             cleanitem = item.strip(',')
             values = cleanitem.split(',')
             print('values before error',values)
             for value in values:
                 print("VALUE:\n",value)
             lis.append({"title":values[0], "size":values[1],"quantity":values[2], 'img_url':values[3], 'price':float(values[4])})
+        
+        print("Parced cart:")
         counter =0
         for lisitems in lis:
             counter += 1
-            print("listitem:",lisitems)
+            print("cart item:",counter)
+            for item in lisitems.items():
+                print(f"| {item[0]}: {item[1]}")
         return lis
     
     def compresscart(self, cart): ### this function compresses cart from dict to string format
@@ -127,10 +130,10 @@ class UsersHandler(Handler):
         return compressedstr
             
 
-    def addtocart(self, user, product_id, reward_price = None, normal_price = None): # make this append data to user database
+    def addtocart(self, user, product_id, size, reward_price = None, normal_price = None): # make this append data to user database
         if self.login(user)[0] == True:
             quantity_placeholder = 1
-            size_placeholder = "s"
+            size_char = size[0]
             connect = sqlite3.connect('database.db') 
             cur = connect.cursor()
             cur.execute(f"SELECT cart FROM USERS WHERE email ='{user['email']}'")
@@ -186,20 +189,20 @@ class UsersHandler(Handler):
                     print('discountttttttttttttttttt')
                     discount_number = (product_id['price'] * 50) / 100
                     print(discount_number)
-                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
+                    newitem = f"{product_id['title']},{size_char},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
                 
                 elif reward_price == 1: # user bought free coffee reward- this is why price  placeholder is zero
-                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{0}|"
+                    newitem = f"{product_id['title']},{size_char},{quantity_placeholder},{product_id['img_url']},{0}|"
                 
                 elif reward_price == 2: # user bought  buy one get 1 free - This is why quantity is 2.
-                    newitem = f"{product_id['title']},{size_placeholder},{2},{product_id['img_url']},{product_id['price']}|"
+                    newitem = f"{product_id['title']},{size_char},{2},{product_id['img_url']},{product_id['price']}|"
                 
                 elif reward_price == 3:  
                     discount_number = (product_id['price'] * 90) / 100
-                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
+                    newitem = f"{product_id['title']},{size_char},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
  
                 else: # USER has no reward that manipulates the price.
-                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
+                    newitem = f"{product_id['title']},{size_char},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
               #  print("NEW ITEM\n",newitem)
                 current_cart = current_cart + newitem
           #  print("ProductID:\n",product_id['title'])

@@ -22,13 +22,14 @@
                 {% if employee_check %}
                 <p>Price: ${{ (50 * (items.price / 100) )|round(2) }}</p>
                 {% else %}
-                <p>Price: ${{items.price}}</p>
+                <p>Price: {{items.price}}$</p>
+                <input type="hidden" class="price_int" value="{{items.price}}">
                 {% endif %}
                
               </div>
               <form action="http://127.0.0.1:5000/cart" class="remove_item_button" method="post">
                 
-                <button value="{{items.title}}" name="removeitem" type="submit" >X</button>
+                <button class="removebutton" value="{{items.title}}" name="removeitem" type="submit" >X</button>
               </form>
               
               
@@ -63,7 +64,6 @@
       </ul>
 
   </div>
-
   
 </body>
 {% endblock %}

@@ -15,7 +15,14 @@
 
 
 <div class = "reward-container">
-    
+  <a href="http://127.0.0.1:5000/minesweeper">
+    <div class = "reward-items" >
+      <img class="reward-image" >
+      <h6 class="inconsolata">Daily Minesweeper Challenge!</h6> 
+      <p class="inconsolata">Points: 300</p>
+    </div>
+  </a>
+
     {% for row in rows %}
     {% if points != None %}
     {% if points >= row.points and row.ID not in rewards_int_list %}

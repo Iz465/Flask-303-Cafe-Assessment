@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, request, render_template, flash, ses
 from forms import SignUpForm, Login, EmployForm, AddProductForm, AddRewardForm, AddJobForm, CheckOutForm
 import sqlite3
 import random
+import json
 from datetime import datetime, timedelta
 import sqlite_functions, more_functions
 
@@ -172,16 +173,27 @@ def home():
 ### MENU PAGES OPERANDS ###
 @app.route('/menu', methods=["POST","GET"])
 def menu():
-    data_dict = []
-    handler = MenuHandler()
     rows = sqlite_functions.get_table('MENU')
+    new_data = []
+    for d in database_menu:
+        new_data.append(json.dumps(d))
+    for new in new_data:
+        print(new)
+    
+    newreward = []
+    isemployee = False
 
     if session['currentuser'] is not None: # This makes it so only logged in useres can see this.
+        isemployee = session['employee_check']
         updated_reward = sqlite_functions.select_from_table('USERS', 'reward', 'ID', session['currentuser']['id'] )
         session['currentuser']['reward'] = updated_reward[0]['reward']
         reward = session['currentuser']['reward']
         rewards_split = reward.split(',')
         rewards_int_list = [int(number) for number in rewards_split]
+        for i in rewards_int_list:
+            newreward.append(json.dumps(i))
+            print("Reward:",i)
+        
         favourite_check = True
 
     if request.method == 'POST':
@@ -199,24 +211,17 @@ def menu():
             sqlite_functions.update_table('USERS', 'favourite', 'ID', favourite_string, session['currentuser']['id'])
             return redirect(url_for('menu'))
         
-        searchbyvalue = request.form.get("search")
-        sortbyvalue = request.form.get("sortdropdown")
-        if len(searchbyvalue) > 0:
-            data_dict = handler.searchdata(database_menu,searchbyvalue)
-            print("GRATER THAN 0")
-            data_dict = handler.sorteddata(data_dict,sortbyvalue)
-        else:
-            data_dict = handler.sorteddata(database_menu,sortbyvalue)
+
         
-        return render_template('menu-index.html', sortbyvalue = sortbyvalue, searchbyvalue = searchbyvalue, data=data_dict ,loggedin = session['loggedin'], currentuser = session["currentuser"], rewards_int_list = rewards_int_list, favourite_check = favourite_check ,rows = rows)
+        return render_template('menu-index.html', data=new_data ,loggedin = json.dumps(session['loggedin']), currentuser = json.dumps(session["currentuser"]),employee_check = json.dumps(isemployee), rewards_int_list = newreward, favourite_check = favourite_check ,rows = rows)
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
-
+    print(session['loggedin'])
 
     if  session['currentuser'] is not None:
-        return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rewards_int_list = rewards_int_list, favourite_check = favourite_check, rows = rows)
-    return render_template('menu-index.html', data = database_menu, currentuser = session['currentuser'], loggedin = session['loggedin'], rows = rows)
+        return render_template('menu-index.html', data = new_data, currentuser = json.dumps(session['currentuser']), loggedin = json.dumps(session['loggedin']), employee_check = json.dumps(isemployee), rewards_int_list = newreward, favourite_check = favourite_check, rows = rows)
+    return render_template('menu-index.html', data = new_data, currentuser = json.dumps(session['currentuser']),rewards_int_list = newreward, loggedin = json.dumps(session['loggedin']),employee_check = json.dumps(isemployee), rows = rows)
   
    
 
@@ -229,19 +234,37 @@ def product(product_id):
         if product['id'] == product_id:
             product_item = product
     
+    newreward = []
+    isemployee = False
+    if session['currentuser'] is not None:
+        updated_reward = sqlite_functions.select_from_table('USERS', 'reward', 'ID', session['currentuser']['id'] )
+        session['currentuser']['reward'] = updated_reward[0]['reward']
+        reward = session['currentuser']['reward']
+        rewards_split = reward.split(',')
+        rewards_int_list = [int(number) for number in rewards_split]
+        for i in rewards_int_list:
+            newreward.append(json.dumps(i))
+            print("Reward:",i)
+
+        isemployee = session['employee_check']
+            
     if request.method == "POST":
+        
         reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
         rewards_split = reward[0]['Reward'].split(',')
         rewards_int_list = sorted([int(reward) for reward in rewards_split])
-      
+        
+        
+        size = request.form.get('pick-size')
+        print("SIZE OF DRINK:\n",size)
 
         usr = session["currentuser"]
         userhandler = UsersHandler()
-        msg =userhandler.addtocart(usr,product_item, reward_price= rewards_int_list[0], normal_price=product_item['price'])
+        msg =userhandler.addtocart(usr,product_item, size, reward_price= rewards_int_list[0], normal_price=product_item['price'])
         print('the msg is?', msg)
         print('the user is?', usr)
         session["currentuser"] = userhandler.updateusr(usr)
-     
+    
         if rewards_int_list[0] != 0: # This makes it so this if statement will only occur if user has rewards bought.
             permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', rewards_int_list[0])
             if permanent[0]['permanent'] == 'No':
@@ -253,7 +276,7 @@ def product(product_id):
                 sqlite_functions.update_table('Users', 'reward', 'ID', rewards_string_list, session['currentuser']['id'])
         print('rewards list again:', rewards_int_list) # Show every reward the user has.
         
-    return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
+    return render_template("product-index.html", product = product_item, currentuser = session["currentuser"],rewards_int_list = newreward, employee_check = json.dumps(isemployee))
 
 
 
@@ -272,11 +295,16 @@ def cart():
             msg =userhandler.removefromcart(usr,item)
             
             session["currentuser"] = userhandler.updateusr(usr)
+
     else:
         print('Log in to view your cart')
-    return render_template('cart.html', currentuser = session["currentuser"],cart_total = cart_total)
+    return render_template('cart.html', currentuser = session["currentuser"], cart_total = cart_total)
 
 
+### experiment minesweeper minigame
+@app.route("/minesweeper",methods=['GET'])
+def minesweeper():
+    return render_template('minesweeper.html')
 ### Experimental Map stuff
 @app.route('/map', methods=["GET", "POST"])
 def map():
