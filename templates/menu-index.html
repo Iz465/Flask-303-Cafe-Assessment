@@ -88,9 +88,10 @@
 
   <script src="{{ url_for('static', filename='scripts/menu.js') }}"></script>
   <script>
+    let log = {{loggedin}}
     reward({{ rewards_int_list|tojson|safe }})
-    initload({{ data|tojson|safe }})
-    
+    initload({{ data|tojson|safe }});
+
     
   </script>
 </body>

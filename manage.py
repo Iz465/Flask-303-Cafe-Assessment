@@ -181,6 +181,7 @@ def menu():
         print(new)
     
     newreward = []
+    
 
     if session['currentuser'] is not None: # This makes it so only logged in useres can see this.
         updated_reward = sqlite_functions.select_from_table('USERS', 'reward', 'ID', session['currentuser']['id'] )
@@ -188,10 +189,10 @@ def menu():
         reward = session['currentuser']['reward']
         rewards_split = reward.split(',')
         rewards_int_list = [int(number) for number in rewards_split]
-        
         for i in rewards_int_list:
             newreward.append(json.dumps(i))
             print("Reward:",i)
+        
         favourite_check = True
 
     if request.method == 'POST':
@@ -211,15 +212,15 @@ def menu():
         
 
         
-        return render_template('menu-index.html', data=new_data ,loggedin = session['loggedin'], currentuser = session["currentuser"], rewards_int_list = newreward, favourite_check = favourite_check ,rows = rows)
+        return render_template('menu-index.html', data=new_data ,loggedin = json.dumps(session['loggedin']), currentuser = session["currentuser"], rewards_int_list = newreward, favourite_check = favourite_check ,rows = rows)
 
     # show the form, it wasn't submitted
     print("Rendr: Default")
-
+    print(session['loggedin'])
 
     if  session['currentuser'] is not None:
-        return render_template('menu-index.html', data = new_data, currentuser = session['currentuser'], loggedin = session['loggedin'], rewards_int_list = newreward, favourite_check = favourite_check, rows = rows)
-    return render_template('menu-index.html', data = new_data, currentuser = session['currentuser'], loggedin = session['loggedin'], rows = rows)
+        return render_template('menu-index.html', data = new_data, currentuser = session['currentuser'], loggedin = json.dumps(session['loggedin']), rewards_int_list = newreward, favourite_check = favourite_check, rows = rows)
+    return render_template('menu-index.html', data = new_data, currentuser = session['currentuser'],rewards_int_list = newreward, loggedin = json.dumps(session['loggedin']), rows = rows)
   
    
 

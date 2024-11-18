@@ -1,5 +1,5 @@
 let global
-let reward_global
+let reward_global =[]
 let employee_status = false
 function reward(data_reward){
     data = parcedata(data_reward)
@@ -155,13 +155,16 @@ function createMenuItem(dataitem){
     product_img.alt = 'Image-alt';
     product_img.src = dataitem.img_url;
 
-    let rewardbanner = ce("div");
-    rewardbanner.className = "reward-banner";
-    let reward_text = ce('p');
-    reward_text.className = 'item-reward'
-    let textnode = document.createTextNode(`- ${active_reward[1]}%`)
-    reward_text.appendChild(textnode)
-    rewardbanner.appendChild(reward_text)
+    if(active_reward != null){
+        let rewardbanner = ce("div");
+        rewardbanner.className = "reward-banner";
+        let reward_text = ce('p');
+        reward_text.className = 'item-reward'
+        let textnode = document.createTextNode(`- ${active_reward[1]}%`)
+        reward_text.appendChild(textnode)
+        rewardbanner.appendChild(reward_text)
+    }
+    
 
 
     let item_content = ce('div');
@@ -216,7 +219,10 @@ function createMenuItem(dataitem){
 
     a.appendChild(product_img)
     a.appendChild(item_content)
-    a.appendChild(rewardbanner)
+    if(active_reward != null){
+        a.appendChild(rewardbanner)
+    }
+    
 
     item_cont.appendChild(a)
     
