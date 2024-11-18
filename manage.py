@@ -239,11 +239,13 @@ def product(product_id):
         reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
         rewards_split = reward[0]['Reward'].split(',')
         rewards_int_list = sorted([int(reward) for reward in rewards_split])
-      
+
+        size = request.form.get('pick-size')
+        print("SIZE OF DRINK:\n",size)
 
         usr = session["currentuser"]
         userhandler = UsersHandler()
-        msg =userhandler.addtocart(usr,product_item, reward_price= rewards_int_list[0], normal_price=product_item['price'])
+        msg =userhandler.addtocart(usr,product_item, size, reward_price= rewards_int_list[0], normal_price=product_item['price'])
         print('the msg is?', msg)
         print('the user is?', usr)
         session["currentuser"] = userhandler.updateusr(usr)
@@ -266,7 +268,10 @@ def product(product_id):
 ### Cart PAGE
 @app.route('/cart', methods=["POST",'GET'])
 def cart():
+    cart_total = 0
     if session.get("currentuser"):
+        for item in session["currentuser"]["cart"]:
+            cart_total += item['price']
         if request.method == "POST":
             usr = session["currentuser"]
             userhandler = UsersHandler()
@@ -275,9 +280,10 @@ def cart():
             msg =userhandler.removefromcart(usr,item)
             
             session["currentuser"] = userhandler.updateusr(usr)
+
     else:
         print('Log in to view your cart')
-    return render_template('cart.html', currentuser = session["currentuser"])
+    return render_template('cart.html', currentuser = session["currentuser"], cart_total = cart_total)
 
 
 ### experiment minesweeper minigame

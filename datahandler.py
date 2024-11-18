@@ -130,7 +130,7 @@ class UsersHandler(Handler):
         return compressedstr
             
 
-    def addtocart(self, user, product_id, reward_price = None, normal_price = None): # make this append data to user database
+    def addtocart(self, user, product_id, size, reward_price = None, normal_price = None): # make this append data to user database
         if self.login(user)[0] == True:
             quantity_placeholder = 1
             size_char = size[0]
@@ -189,20 +189,20 @@ class UsersHandler(Handler):
                     print('discountttttttttttttttttt')
                     discount_number = (product_id['price'] * 50) / 100
                     print(discount_number)
-                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
+                    newitem = f"{product_id['title']},{size_char},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
                 
                 elif reward_price == 1: # user bought free coffee reward- this is why price  placeholder is zero
-                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{0}|"
+                    newitem = f"{product_id['title']},{size_char},{quantity_placeholder},{product_id['img_url']},{0}|"
                 
                 elif reward_price == 2: # user bought  buy one get 1 free - This is why quantity is 2.
-                    newitem = f"{product_id['title']},{size_placeholder},{2},{product_id['img_url']},{product_id['price']}|"
+                    newitem = f"{product_id['title']},{size_char},{2},{product_id['img_url']},{product_id['price']}|"
                 
                 elif reward_price == 3:  
                     discount_number = (product_id['price'] * 90) / 100
-                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
+                    newitem = f"{product_id['title']},{size_char},{quantity_placeholder},{product_id['img_url']},{round(discount_number, 2)}|"
  
                 else: # USER has no reward that manipulates the price.
-                    newitem = f"{product_id['title']},{size_placeholder},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
+                    newitem = f"{product_id['title']},{size_char},{quantity_placeholder},{product_id['img_url']},{product_id['price']}|"
               #  print("NEW ITEM\n",newitem)
                 current_cart = current_cart + newitem
           #  print("ProductID:\n",product_id['title'])
