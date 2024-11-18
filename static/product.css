@@ -157,3 +157,15 @@ input[type=radio]{
     border-style: solid;
     border-width: 3px;
 }
+
+
+.lineover{
+    text-decoration: line-through;
+    font-size: 70%;
+}
+#newprice{
+    font-size: 40px;
+}
+.hidden{
+    display: none;
+}

@@ -234,11 +234,27 @@ def product(product_id):
         if product['id'] == product_id:
             product_item = product
     
+    newreward = []
+    isemployee = False
+    if session['currentuser'] is not None:
+        updated_reward = sqlite_functions.select_from_table('USERS', 'reward', 'ID', session['currentuser']['id'] )
+        session['currentuser']['reward'] = updated_reward[0]['reward']
+        reward = session['currentuser']['reward']
+        rewards_split = reward.split(',')
+        rewards_int_list = [int(number) for number in rewards_split]
+        for i in rewards_int_list:
+            newreward.append(json.dumps(i))
+            print("Reward:",i)
+
+        isemployee = session['employee_check']
+            
     if request.method == "POST":
+        
         reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
         rewards_split = reward[0]['Reward'].split(',')
         rewards_int_list = sorted([int(reward) for reward in rewards_split])
-
+        
+        
         size = request.form.get('pick-size')
         print("SIZE OF DRINK:\n",size)
 
@@ -248,7 +264,7 @@ def product(product_id):
         print('the msg is?', msg)
         print('the user is?', usr)
         session["currentuser"] = userhandler.updateusr(usr)
-     
+    
         if rewards_int_list[0] != 0: # This makes it so this if statement will only occur if user has rewards bought.
             permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', rewards_int_list[0])
             if permanent[0]['permanent'] == 'No':
@@ -260,7 +276,7 @@ def product(product_id):
                 sqlite_functions.update_table('Users', 'reward', 'ID', rewards_string_list, session['currentuser']['id'])
         print('rewards list again:', rewards_int_list) # Show every reward the user has.
         
-    return render_template("product-index.html", product = product_item, currentuser = session["currentuser"])
+    return render_template("product-index.html", product = product_item, currentuser = session["currentuser"],rewards_int_list = newreward, employee_check = json.dumps(isemployee))
 
 
 
