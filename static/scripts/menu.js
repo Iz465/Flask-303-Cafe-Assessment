@@ -8,7 +8,10 @@ function reward(data_reward){
         console.log("REWARD",reward_global[i])
     }
 }
-
+function isemployee(check){
+    console.log("isempl",check)
+    employee_status = check
+}
 function applyreward(){
     let reward_amount = null //counted in percentage, here is 0% reward; default
     if(reward_global.includes(1)){
@@ -20,7 +23,8 @@ function applyreward(){
     }else if(reward_global.includes(3)){
         reward_amount = ["One Free Coffe",100]
         console.log(`discount = ${reward_amount[0]}: ${reward_amount[1]}%`)
-    }else if(employee_status){
+    }
+    if(employee_status){
         reward_amount = ["Employee discount",50]
         console.log(`discount = ${reward_amount[0]}: ${reward_amount[1]}%`)
     }
@@ -154,15 +158,18 @@ function createMenuItem(dataitem){
     product_img.className = 'item-image';
     product_img.alt = 'Image-alt';
     product_img.src = dataitem.img_url;
-
+    
+    let rewardbanner = ce("div");
     if(active_reward != null){
-        let rewardbanner = ce("div");
+        
         rewardbanner.className = "reward-banner";
         let reward_text = ce('p');
         reward_text.className = 'item-reward'
         let textnode = document.createTextNode(`- ${active_reward[1]}%`)
         reward_text.appendChild(textnode)
         rewardbanner.appendChild(reward_text)
+    }else{
+        rewardbanner.display = "none"
     }
     
 

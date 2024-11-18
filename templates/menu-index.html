@@ -49,38 +49,6 @@
 
 
       <ul id="data">
-        {% for items in data %}
-        <div class = "item-cont">                            
-          <a href="http://127.0.0.1:5000/{{items.id}}" method="POST">
-            <img title="product-img" class = "item-image" alt="Image-alt" src="{{items.img_url}}"></img>
-            <div class = "item-content">
-              <div class="item-text inconsolata">
-                <p class="item-title">{{items.title}}</p>
-                {% if 1 in rewards_int_list %}                {# These if statements modify the item price depending on the rewards the users have #}
-                <p class = "item-price">Free! $0</p>
-                {% elif 3 in rewards_int_list %}
-                <p class="item-price">10% off! <s>${{items.price}}</s></p>
-                <p class="item-price">${{ (90 * (items.price / 100) )|round(2) }}</p>
-                {% elif 4 in rewards_int_list %}
-                <p class = "item-price">Weekly coffee!</p>
-                <p class="item-price">$0</p>
-                {% else %}
-                {% if employee_check %}
-                <p class="item-price">50% off! <s>${{items.price}}</s></p>
-                <p class="item-price">${{ (50 * (items.price / 100) )|round(2) }}</p>
-                {% else %}
-                <p class="item-price">${{items.price}}</p>
-                {% endif %}
-                {% endif %}
-                <p class="item-desc">Ingredients: <br>{{items.contains}}</p>
-            
-              </div>
-            </div>
-          </a>
-        </div>
-      
-        {% endfor %}
-      
         
       </ul>
 
@@ -88,8 +56,8 @@
 
   <script src="{{ url_for('static', filename='scripts/menu.js') }}"></script>
   <script>
-    let log = {{loggedin}}
-    reward({{ rewards_int_list|tojson|safe }})
+    isemployee({{employee_check}});
+    reward({{ rewards_int_list|tojson|safe }});
     initload({{ data|tojson|safe }});
 
     
