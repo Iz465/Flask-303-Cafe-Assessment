@@ -6,20 +6,20 @@
  <h1>Rewards</h1> <h3>Points: {{points}}</h3>
 </div>
 
-{% if points != None %}
+{# {% if points != None %}
 {% for reward in rewards_int_list %}
 <p>Reward is: {{reward}}</p>
 {% endfor %}
-<p>testing {{rewards_int_list[0] + 60}}</p>
-{% endif %}
+
+{% endif %} #}
 
 
 <div class = "reward-container">
   <a href="http://127.0.0.1:5000/minesweeper">
     <div class = "reward-items" >
-      <img class="reward-image" >
+      <img class="reward-image" src="{{ url_for('static', filename='images/minesweeper.png') }}">
       <h6 class="inconsolata">Daily Minesweeper Challenge!</h6> 
-      <p class="inconsolata">Points: 300</p>
+      <p class="inconsolata" style="visibility: hidden;">Points: </p>
     </div>
   </a>
 
@@ -59,6 +59,7 @@
     </form>
   </div>
 
+  <div style="height: 30%;"></div>
 
 
 

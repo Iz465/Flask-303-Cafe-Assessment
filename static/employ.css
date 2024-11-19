@@ -1,12 +1,13 @@
 
 .employ-container{
-  margin: auto;
-  margin-top: 1rem;
+  margin-left: 25%;
+  margin-top: 5%;
   padding: 0%;
   display: grid;
   list-style: none;
-  gap: 8px;
-  grid-template-columns: repeat(2, minmax(10px, 1fr));
+  gap: 5%;
+  grid-template-columns: repeat(1, 50%);
+  
   width: 90%;
 }
 

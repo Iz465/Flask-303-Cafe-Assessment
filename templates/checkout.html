@@ -10,11 +10,18 @@
 
 
 {% if checkout_complete %}
+
 <div style="width: 200%; text-align: center;">
-<div style="width: 200%;">
+  {% if favourited_order %}
+  <div style="width: 200%;">
+  {% endif %}
+
+  
   <h1 class="kanit-regular">Checkout complete!</h1>
   <br>
+
   <h3 class="kanit-regular">Here is your receipt</h3>
+
   
   {% if favourited_order %}
   <br>
@@ -135,6 +142,7 @@
 </div>
 </div>
 </div>
+<div style="height: 30%;"></div>
 
 
 
