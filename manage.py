@@ -256,6 +256,8 @@ def product(product_id):
         
         
         size = request.form.get('pick-size')
+        if size is None:
+            size = 'S'
         print("SIZE OF DRINK:\n",size)
 
         usr = session["currentuser"]
@@ -402,37 +404,46 @@ def application_review():
                    'add_reward': more_functions.add_item, 'remove_reward': more_functions.remove_item, 'add_job': more_functions.add_item, 
                    'remove_job': more_functions.remove_item, 'remove_employee': more_functions.remove_item } # Holding the request names in dictionary so i can make the code cleaner
     if request.method == 'POST':
+       print('bandos')
        for form_action, function in form_values.items():
          if form_action in request.form:
                 id = request.form.get(form_action) 
                 if form_action in ['Approve', 'Deny']:
+                    print('lol')
                     function(id) # activates the function from the form values dictionary
                 elif 'add' in form_action:
                    if 'product' in form_action:
+                       print('1')
                        add_product = function() 
                    elif 'reward' in form_action:
+                       print('2')
                        add_reward = function() 
                    elif 'job' in form_action:
+                       print('3')
                        add_job = function()  
 
                 elif 'remove_' in form_action:
+                    print('4')
                     function('MENU' if 'product' in form_action else 'Rewards' if 'reward' in form_action else 'EmployJobs' if 'job' in form_action else 'Employees', id)
                 else:
+                    print('5')
                     function()
                 break   # will stop loop once the action value being used in form is found
          
        if product_form.validate():
            print("Product added")
-           sqlite_functions.insert_into_table('testing_table', ['product', 'price', 'ingredients', 'image', 'description'],
+           sqlite_functions.insert_into_table('MENU', ['title', 'price', 'contains', 'img_url', 'description'],
                                               (product_form.product.data, product_form.price.data, product_form.ingredients.data, product_form.image.data, product_form.description.data))
-       if reward_form.validate():
+       elif reward_form.validate():
            print("Reward added")
            sqlite_functions.insert_into_table('Rewards', ['Name', 'Points', 'Image_Url'],
                                               (reward_form.reward.data, reward_form.points.data, reward_form.image.data))
-       if job_form.validate():
+       elif job_form.validate():
            print('Job added')
            sqlite_functions.insert_into_table('EmployJobs', ['Job_Name', 'Salary', 'Description', 'Image_Url'],
                                               (job_form.job.data, job_form.salary.data, job_form.description.data, job_form.image.data))
+       else:
+           print('not added')
            
     db_tables = ['Employ_Application', 'Rewards', 'MENU', 'EmployJobs', 'Employees']
     rows = {table: sqlite_functions.get_table(table) for table in db_tables}

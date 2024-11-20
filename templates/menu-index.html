@@ -20,6 +20,7 @@
             
           
       </div>
+  
 
       {# This code is for teacher task - Lets users favourite an order #}
       {% if favourite_check %} 
@@ -47,13 +48,13 @@
         </form>
       </div>
 
-
+      <br><br>
       <ul id="data">
         
       </ul>
 
   </div>
-<div style="height: 20%;"></div>
+<div style="height: 120%;"></div>
   <script src="{{ url_for('static', filename='scripts/menu.js') }}"></script>
   <script>
     isemployee({{employee_check}});

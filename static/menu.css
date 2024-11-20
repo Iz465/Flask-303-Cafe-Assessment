@@ -6,9 +6,11 @@
     padding: 0%;
     display: grid;
     list-style: none;
-    gap: 8px;
-    grid-template-columns: repeat(5, minmax(1px, 1fr));
+    gap: 9%;
+   /* grid-template-columns: repeat(5, minmax(1px, 1fr)); */
+    grid-template-columns: repeat(3, 25%);
     width: 100%;
+    
 }
 .menu-header{
     margin-top: 2rem;
