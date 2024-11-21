@@ -20,6 +20,7 @@
     text-align: left;
     padding: 5px;
     margin-left: 25%;
+    color: black;
 
     
 }
@@ -44,10 +45,26 @@
 
 
 .receipt-container-1{
+    text-align: center;
+   
 
-    margin-left: 46%;
-    margin-top: 5%;
+}
 
+.checkout-complete-class {
+    width: 200%;
+    color: black;
+   
+}
+
+.checkout-complete-class table {
+    margin: 0 auto;
+
+}
+
+
+
+.checkout-complete-class table th {
+    padding: 30px;
 }
 
 
