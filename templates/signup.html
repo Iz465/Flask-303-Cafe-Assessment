@@ -1,31 +1,53 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="{{ url_for('static', filename='fontstyles.css') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
     </head>
     <body>
         <div class="form-container">
-            <form action="http://127.0.0.1:5000/signup" method="POST">
-                <div>
-                    {{ form.hidden_tag() }}
-                    {{ form.name.label }} <br>
-                    {{ form.name }}
-                    <br>
-
-                    {{ form.gender.label }} {{ form.gender}}
-                    <br>
-                    {{ form.email.label }} <br>
-                    {{ form.email }}
-                    <br>
-                    {{ form.password.label }} <br>
-                    {{ form.password }}
-                    <br>
-               
-                    {{ form.submit }}
-                    <br>
+            <div class="login-container">
+                <div class="col-1">
+                    <h1 class="title inconsolata">CREATE ACCOUNT</h1>
+                    <form action="http://127.0.0.1:5000/signup" method="POST">
+                        <div class="form-input">
+                            {{ form.hidden_tag() }}
+                            <div class="input-container">
+                                {{ form.name(placeholder="Name") }}
+                            </div>
+        
+                            {{ form.gender}}
+                            <div class="input-container">
+                                {{ form.email(placeholder="Email") }}
+                            </div>
+                            <div class="input-container">
+                                {{ form.password(placeholder="Password") }}
+                            </div>
+                            
+                            {{ form.submit }}
+                        </div>
+                        
+                    </form>
 
                 </div>
-            </form>
+                <div class="col-2">
+                    <img class="cover-img" src="{{ url_for('static', filename='images/pastries-img-1.avif') }}" alt="">
+                    <a href="{{ url_for('login') }}" class="login">
+                        <div>
+                            <h2 class="inconsolata">Log In</h2>
+                        </div>
+                        
+                    </a>
+                    <a href="{{ url_for('signup') }}" class="signup selected">
+                        <div>
+                            <h2 class="inconsolata">Sign Up</h2>
+                        </div>
+                    </a>
+
+                </div>
+
+            </div>
+            
         </div>
         
     </body>

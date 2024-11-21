@@ -57,7 +57,7 @@
       </div>
 
     </div>
-    <div class="login-container">
+    <div class="login-container" style="float: right;">
       
       <a class="loginbutton" href="{{ url_for('login') }}">
         <div class="img-container color-filter">
@@ -67,7 +67,10 @@
       </a>
       
       <div class="dropdown-content-user">
-        <a href="#">this is a link</a>
+        {% if currentuser != none %}
+
+          <a href="{{ url_for('logout') }}">LOG OUT</a>
+        {%endif%}
       </div>
       
     </div>
