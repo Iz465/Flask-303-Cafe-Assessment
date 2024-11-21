@@ -81,6 +81,14 @@ def index():
 def hello_admin():
     return "hello Admin"
 
+@app.route('/logout')
+def logout():
+    print("logging out of user")
+    session['currentuser'] = None
+    session['admin_check'] = None
+    session['employee_check'] = None
+    session['loggedin'] = False
+    return redirect(url_for('home'))
 ### LOGIN OPERANDS
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -105,7 +113,7 @@ def login():
                 else:
                     session['employee_check'] = False
                 session['loggedin'] = True
-                return render_template('profile.html', currentuser = currentuser)
+                return redirect(url_for('home'))
             return render_template('login.html', form = form)
     if request.method == 'GET':
         return render_template('login.html', form = form)
@@ -124,7 +132,7 @@ def signup():
             userhandler.signup(form.data)
             print('printing form:')
             print(form.data)
-            return f'{form.name}\n{form.email}\n{form.gender}'
+            return redirect(url_for('login'))
     if request.method == 'GET':
         print("getting form")
         return render_template('signup.html', form = form)
