@@ -32,7 +32,7 @@
             <tr>
                 <td>{{row.name}}</td>
                 <td>{{row.gender}}</td>
-                <td>Baker</td>
+                <td>Barista</td>
                 <td>{{row.job_reason}}</td>
                 <td><button type="submit" name="Approve" value="{{row.id}}">Approve</button></td>
                 <td><button type="submit" name="Deny" value="{{row.id}}">Deny</button></td>
@@ -125,7 +125,7 @@
             {% for row in employee_rows %}
             <tr>
                 <td>{{row.name}}</td>
-                <td>Baker</td>
+                <td>Barista</td>
                 <td><button type="submit" name="remove_employee" value="{{row.id}}">Remove</button></td>
             </tr>
             {% endfor %}
@@ -227,6 +227,6 @@
           
 
 </div>
-
+<div style="height: 30%;"></div>
 
 {% endblock %}

@@ -257,32 +257,34 @@ def product(product_id):
         isemployee = session['employee_check']
             
     if request.method == "POST":
+        if session['currentuser'] is not None:
+            reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
+            rewards_split = reward[0]['Reward'].split(',')
+            rewards_int_list = sorted([int(reward) for reward in rewards_split])
         
-        reward = sqlite_functions.select_from_table('USERS', 'Reward', 'ID', session['currentuser']['id'] )
-        rewards_split = reward[0]['Reward'].split(',')
-        rewards_int_list = sorted([int(reward) for reward in rewards_split])
         
-        
-        size = request.form.get('pick-size')
-        print("SIZE OF DRINK:\n",size)
+            size = request.form.get('pick-size')
+            if size is None:
+                size = 'S'
+            print("SIZE OF DRINK:\n",size)
 
-        usr = session["currentuser"]
-        userhandler = UsersHandler()
-        msg =userhandler.addtocart(usr,product_item, size, reward_price= rewards_int_list[0], normal_price=product_item['price'])
-        print('the msg is?', msg)
-        print('the user is?', usr)
-        session["currentuser"] = userhandler.updateusr(usr)
+            usr = session["currentuser"]
+            userhandler = UsersHandler()
+            msg =userhandler.addtocart(usr,product_item, size, reward_price= rewards_int_list[0], normal_price=product_item['price'])
+            print('the msg is?', msg)
+            print('the user is?', usr)
+            session["currentuser"] = userhandler.updateusr(usr)
     
-        if rewards_int_list[0] != 0: # This makes it so this if statement will only occur if user has rewards bought.
-            permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', rewards_int_list[0])
-            if permanent[0]['permanent'] == 'No':
-                rewards_int_list.remove(rewards_int_list[0])
-                rewards_string_list = ','.join([str(reward) for reward in rewards_int_list])
-                if rewards_int_list == []:
-                    rewards_int_list.append(0) 
+            if rewards_int_list[0] != 0: # This makes it so this if statement will only occur if user has rewards bought.
+                permanent = sqlite_functions.select_from_table('Rewards', 'Permanent', 'ID', rewards_int_list[0])
+                if permanent[0]['permanent'] == 'No':
+                    rewards_int_list.remove(rewards_int_list[0])
                     rewards_string_list = ','.join([str(reward) for reward in rewards_int_list])
-                sqlite_functions.update_table('Users', 'reward', 'ID', rewards_string_list, session['currentuser']['id'])
-        print('rewards list again:', rewards_int_list) # Show every reward the user has.
+                    if rewards_int_list == []:
+                        rewards_int_list.append(0) 
+                        rewards_string_list = ','.join([str(reward) for reward in rewards_int_list])
+                    sqlite_functions.update_table('Users', 'reward', 'ID', rewards_string_list, session['currentuser']['id'])
+            print('rewards list again:', rewards_int_list) # Show every reward the user has.
         
     return render_template("product-index.html", product = product_item, currentuser = session["currentuser"],rewards_int_list = newreward, employee_check = json.dumps(isemployee))
 
@@ -424,23 +426,27 @@ def application_review():
                        add_job = function()  
 
                 elif 'remove_' in form_action:
+                    print('4')
                     function('MENU' if 'product' in form_action else 'Rewards' if 'reward' in form_action else 'EmployJobs' if 'job' in form_action else 'Employees', id)
                 else:
+                    print('5')
                     function()
                 break   # will stop loop once the action value being used in form is found
          
        if product_form.validate():
            print("Product added")
-           sqlite_functions.insert_into_table('testing_table', ['product', 'price', 'ingredients', 'image', 'description'],
+           sqlite_functions.insert_into_table('MENU', ['title', 'price', 'contains', 'img_url', 'description'],
                                               (product_form.product.data, product_form.price.data, product_form.ingredients.data, product_form.image.data, product_form.description.data))
-       if reward_form.validate():
+       elif reward_form.validate():
            print("Reward added")
            sqlite_functions.insert_into_table('Rewards', ['Name', 'Points', 'Image_Url'],
                                               (reward_form.reward.data, reward_form.points.data, reward_form.image.data))
-       if job_form.validate():
+       elif job_form.validate():
            print('Job added')
            sqlite_functions.insert_into_table('EmployJobs', ['Job_Name', 'Salary', 'Description', 'Image_Url'],
                                               (job_form.job.data, job_form.salary.data, job_form.description.data, job_form.image.data))
+       else:
+           print('not added')
            
     db_tables = ['Employ_Application', 'Rewards', 'MENU', 'EmployJobs', 'Employees']
     rows = {table: sqlite_functions.get_table(table) for table in db_tables}
@@ -465,7 +471,11 @@ def checkout():
              remove = '|'
              change = row_strip.replace(remove, ',')
              favourite_list = change.split(',')
-             return render_template('checkout.html', form = form, checkout_complete = checkout_complete, favourited_order = favourited_order, rows = rows, favourite_list = favourite_list)
+             favourite_sum = 0
+             for i in range(2, len(favourite_list), 3): 
+                favourite_sum += float(favourite_list[i]) 
+                 
+             return render_template('checkout.html', form = form, checkout_complete = checkout_complete, favourited_order = favourited_order, rows = rows, favourite_list = favourite_list, favourite_sum = favourite_sum)
 
          if form.validate():
             card = request.form['card_number']
@@ -484,6 +494,7 @@ def checkout():
             user_points = sqlite_functions.select_from_table('USERS', 'points', 'ID', session['currentuser']['id'] )
             users_rewards = session["currentuser"]['reward']
             rewards_split = users_rewards.split(',')
+            cart_check = session['currentuser']['cart']
             if isinstance(user_points[0]['points'], int): 
                 if '6' in rewards_split:
                     sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 100 )    
@@ -499,7 +510,39 @@ def checkout():
                 session["currentuser"]['points'] += 100 
             else:
                 session["currentuser"]['points'] += 50 
-            return render_template("checkout.html", checkout_complete = checkout_complete)
+            
+            cart_quantity = ''
+            cart_price = ''
+            cart_title = ''
+
+            for cart in cart_check:
+                if cart_title:  
+                    cart_title = cart_title + ',' + cart['title']
+                else:
+                    cart_title = cart['title']
+    
+                if cart_quantity:  
+                    cart_quantity = cart_quantity + ',' + cart['quantity']  # Convert to string if necessary
+                else:
+                    cart_quantity = cart['quantity']
+    
+                if cart_price:  
+                    cart_price = cart_price + ',' + str(cart['price'])  # Convert to string if necessary
+                else:
+                    cart_price = str(cart['price'])
+
+
+            titles = cart_title.split(',')
+            quantities = cart_quantity.split(',')
+            prices = cart_price.split(',')
+            print('Final titles:', titles)
+            print('Final quantities:', quantities)
+            print('Final prices:', prices)
+            cart_finished = list(zip(titles, quantities, prices))
+            cart_sum = float(session['cart_sum'])
+            return render_template("checkout.html", checkout_complete = checkout_complete, cart_finished = cart_finished, cart_sum = cart_sum)
+         
+         
          
          if form.validate() == False:
             incorrect_details = True

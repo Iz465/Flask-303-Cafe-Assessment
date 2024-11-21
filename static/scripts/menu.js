@@ -148,6 +148,9 @@ function createMenuItem(dataitem){
 
     let item_cont = ce('div');
     item_cont.className = "item-cont";
+    
+
+    
 
     let a = ce('a');
     a.href = 'http://127.0.0.1:5000/' + dataitem.id;

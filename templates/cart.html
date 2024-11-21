@@ -8,8 +8,9 @@
  
   <div class="Menu">
       <div class="menucontroler">
+        <br><br>
           <ul>
-            <h2>{{currentuser.name}}'s cart</h2>
+            <h2>{{currentuser.name}}'s cart</h2><br><br>
       </div>
       <ul id="cart_data">
         {% if currentuser.cart|length > 0 %}
@@ -64,7 +65,7 @@
       </ul>
 
   </div>
-  
+  <div style="height: 40%;"></div>
 </body>
 {% endblock %}
 

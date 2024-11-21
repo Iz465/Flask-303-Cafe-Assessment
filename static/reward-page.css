@@ -1,34 +1,37 @@
 
 .reward-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    display: grid;
+    list-style: none;
+    width: 80%;
+    gap: 9%;
+    margin: 0 auto;   
+    grid-template-columns: repeat(3, 25%);
+    color: white;
+
    
 }
 
 .reward-items {
-    background-color: rgba(184,216,190,.35);
+    background-color: #008CBA;
     text-align: center;
-    padding: 20px;
-    width: 50vh;
-    margin: 20px;
-    border-color: rgba(184,216,190,1);
-    border-style: solid;
+    width: 40vh;
     cursor: pointer;
+   
+
+ 
 }
 
-.reward-items h6 {
-   padding: 25px 0 0 0;
+.reward-items h3 {
+   margin-top: 20px;
 }
 
 .reward-items p {
-    margin: 0; 
-    padding: 0; 
+    font-size: 30px;
 }
 
 
 .reward-image {
-max-height: 30dvh;
+max-height: 40dvh;
 }
 
 

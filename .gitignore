@@ -9,3 +9,6 @@ htmlcov/
 .tox/
 docs/_build/
 *.pyc
+__pycache__/datahandler.cpython-311.pyc
+__pycache__/datahandler.cpython-311.pyc
+__pycache__/datahandler.cpython-311.pyc

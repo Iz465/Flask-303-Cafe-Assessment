@@ -38,30 +38,9 @@
 
 </div>
 
-<div class="images-wrapper">
+{# <div class="images-wrapper">
   
-  <div class="absol-cont">
-    {% for row in rows %}
-    <div class="dailyreward-container">
-      <img class = "showing carousel-images dailyreward-img" src = "{{ row.Image_Url }}">
-      <div class="dailyreward-form">
-        <form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="form-container inconsolata" >
 
-          <h2>Special Item of the Day</h2>
-          <p>{{row.Name}} 50% off</p>
-          <p>Time left: <span id="display_time"></span></p>
-          <button type="submit">Order</button>
-
-        </form>
-
-      </div>
-      
-    </div>
-    
-    
-    {% endfor %}
-  </div>
-  
   <div class="paralax-cont">
     <div class="carousel-container">
       <img class = "carousel-images layer1 showing" src = "{{ url_for('static', filename='images/holding-coffee.webp') }}">
@@ -71,6 +50,53 @@
     </div>
     
   </div>
+</div> #}
+
+{# 
+<div class="absol-cont">
+  {% for row in rows %}
+  <div class="dailyreward-container">
+    <img class = "showing carousel-images dailyreward-img" src = "{{ row.Image_Url }}">
+    <div class="dailyreward-form">
+      <form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="form-container inconsolata" >
+
+        <h2>Coffee of the day</h2>
+        <p>{{row.Name}} 50% off</p>
+        <p>Time left: <span id="display_time"></span></p>
+        <button type="submit">Order</button>
+
+      </form>
+
+    </div>
+    
+  </div>
+  
+  
+  {% endfor %}
+</div>
+
+#}
+
+<div style="background-color: #BFE6F9;">
+  {% for row in rows %}
+  <div class="dailyreward-container">
+    <img class = "showing carousel-images dailyreward-img" src = "{{ row.Image_Url }}">
+    <div class="dailyreward-form">
+      <form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="form-container inconsolata" style="background-color: #008CBA;" >
+
+        <h2>Coffee of the day</h2>
+        <p>{{row.Name}} 50% off</p>
+        <p>Time left: <span id="display_time"></span></p>
+        <button type="submit">Order</button>
+
+      </form>
+
+    </div>
+    
+  </div>
+  
+  
+  {% endfor %}
 </div>
 
 
