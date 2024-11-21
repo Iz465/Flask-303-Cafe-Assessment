@@ -21,6 +21,7 @@ form{
     background-color: rgb(59, 122, 122);
     overflow: hidden;
     border-radius: 30px;
+    box-shadow: 0 0 10px 1px;
 }
 .title{
     margin-left: auto;
@@ -34,7 +35,7 @@ form{
     height: 90%;
     border-radius: 0 0 100px 0;
     background-color: rgb(79, 131, 133);
-    
+    box-shadow: 1px 2px 5px;
 
 }
 .col-2{
