@@ -77,12 +77,12 @@
 
 #}
 
-<div style="background-color: rgb(85, 151, 153);">
+<div style="background-color: #BFE6F9;">
   {% for row in rows %}
   <div class="dailyreward-container">
     <img class = "showing carousel-images dailyreward-img" src = "{{ row.Image_Url }}">
     <div class="dailyreward-form">
-      <form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="form-container inconsolata" >
+      <form action="http://127.0.0.1:5000/{{row.ID}}" method="POST" class="form-container inconsolata" style="background-color: #008CBA;" >
 
         <h2>Coffee of the day</h2>
         <p>{{row.Name}} 50% off</p>

@@ -487,6 +487,7 @@ def checkout():
             user_points = sqlite_functions.select_from_table('USERS', 'points', 'ID', session['currentuser']['id'] )
             users_rewards = session["currentuser"]['reward']
             rewards_split = users_rewards.split(',')
+            cart_check = session['currentuser']['cart']
             if isinstance(user_points[0]['points'], int): 
                 if '6' in rewards_split:
                     sqlite_functions.update_table('USERS', 'cart', 'ID', "", session['currentuser']['id'], 'points', user_points[0]['points'] + 100 )    
@@ -502,7 +503,39 @@ def checkout():
                 session["currentuser"]['points'] += 100 
             else:
                 session["currentuser"]['points'] += 50 
-            return render_template("checkout.html", checkout_complete = checkout_complete)
+            
+            print('loololololo',cart_check)
+            cart_quantity = ''
+            cart_price = ''
+            cart_title = ''
+
+            for cart in cart_check:
+                if cart_title:  
+                    cart_title = cart_title + ',' + cart['title']
+                else:
+                    cart_title = cart['title']
+    
+                if cart_quantity:  
+                    cart_quantity = cart_quantity + ',' + cart['quantity']  # Convert to string if necessary
+                else:
+                    cart_quantity = cart['quantity']
+    
+                if cart_price:  
+                    cart_price = cart_price + ',' + str(cart['price'])  # Convert to string if necessary
+                else:
+                    cart_price = str(cart['price'])
+
+
+            titles = cart_title.split(',')
+            quantities = cart_quantity.split(',')
+            prices = cart_price.split(',')
+            print('Final titles:', titles)
+            print('Final quantities:', quantities)
+            print('Final prices:', prices)
+            cart_finished = list(zip(titles, quantities, prices))
+            return render_template("checkout.html", checkout_complete = checkout_complete, cart_finished = cart_finished)
+         
+         
          
          if form.validate() == False:
             incorrect_details = True

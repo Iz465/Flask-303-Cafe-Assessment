@@ -61,11 +61,12 @@ h2{
 }
 
 .dailyreward-container{
+  color: white;
   position: relative;
   margin: auto;
   width: 50%;
   display: flex;
-  background-color: #beefff;
+  background-color: #008CBA;
   border: 5px solid black;
   padding: 50px;
   border-radius: 5%;
@@ -78,7 +79,7 @@ h2{
 .dailyreward-form{
   display: flex;
   flex-direction: column;
-  background-color: #beefff;
+  background-color: #008CBA;
   width: 100%;
   padding-left: 5%;
 }
@@ -86,7 +87,7 @@ h2{
   display: flex;
   margin-top: auto;
   align-self: baseline;
-  background-color: rgb(85, 151, 153);
+  background-color: #BFE6F9;
 }
 .form-container{
   display: flex;
@@ -283,7 +284,7 @@ body{
 }
 .buffer{
   width: 100%;
-  background-color: rgb(85, 151, 153);
+  background-color: #BFE6F9;
   z-index: 5;
 }
 .layer3 {
@@ -307,7 +308,7 @@ body{
   z-index: 0;
 }
 .about-banner{
-  color: white;
+  color: black;
   margin: auto;
   text-align: center;
   padding-top: 50px;

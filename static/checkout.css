@@ -19,15 +19,36 @@
     grid-template-columns: 300px 300px 300px;
     text-align: left;
     padding: 5px;
-    margin-left: 30%;
+    margin-left: 25%;
 
     
 }
 
 .favourite_items_class p {
-    padding: 10px;
+    padding: 20px;
+
+
     
-  
 }
+
+.receipt-container {
+
+
+    margin-left: 9%;
+    margin-top: -3%;
+
+ 
+
+}
+
+
+
+.receipt-container-1{
+
+    margin-left: 46%;
+    margin-top: 5%;
+
+}
+
 
 

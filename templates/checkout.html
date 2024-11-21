@@ -12,9 +12,9 @@
 {% if checkout_complete %}
 
 <div style="width: 200%; text-align: center;">
-  {% if favourited_order %}
+
   <div style="width: 200%;">
-  {% endif %}
+
 
   
   <h1 class="kanit-regular">Checkout complete!</h1>
@@ -22,39 +22,69 @@
 
   <h3 class="kanit-regular">Here is your receipt</h3>
 
-  
-  {% if favourited_order %}
-  <br>
-    {% for row in rows %}
-      <p>Name: {{ row.name }}</p>
-    {% endfor %}
+    {% if favourited_order %}
+    <div class = 'receipt-container'>
     <br>
-   
-    {% for num in range(favourite_list|length) %}
-      {% if num % 3 == 0 %}
-        
-        <div class="favourite_items_class"> 
-      {% endif %}
-      
+      {% for row in rows %}
+      <div style="margin-top: 25%; margin-left: 3%;">
+        <p>Name: {{ row.name }}</p>
+      </div>
+      {% endfor %}
+      <br>
+     
+      {% for num in range(favourite_list|length) %}
+        {% if num % 3 == 0 %}
+          
+        <div class="favourite_items_class">
     
-      {% if num % 3 == 0 %}
-        <p>Coffee: {{ favourite_list[num] }}</p>
-      {% elif num % 3 == 1 %}
-        <p>Quantity: {{ favourite_list[num] }}</p>
-      {% elif num % 3 == 2 %}
-        <p>Price: ${{favourite_list[num] }}</p>
-      {% endif %}
-      
-      {% if num % 3 == 2 %}
- 
-        </div>
-      {% endif %}
-    {% endfor %}
-    <br>
-    <h2>Total Price: $</h2>
-  </div>
-    {% endif %}
+  
+        {% endif %}
 
+      
+        {% if num % 3 == 0 %}
+          <p>Coffee: {{ favourite_list[num] }}</p>
+        {% elif num % 3 == 1 %}
+          <p>Quantity: {{ favourite_list[num] }}</p>
+        {% elif num % 3 == 2 %}
+          <p>Price: ${{favourite_list[num] }}</p>
+        {% endif %}
+        
+        {% if num % 3 == 2 %}
+   
+          </div>
+        {% endif %}
+      {% endfor %}
+      <br>
+      <h2>Total Price: $</h2>
+    </div>
+    {% else %}
+    <div class="receipt-container-1">
+      <table>
+        <thead>
+            <tr>
+                <th><h1>Coffee</h1></th>
+                <th><h1>Amount</h1></th>
+                <th><h1>Price</h1></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for title, quantity, price in cart_finished %}
+            <tr>
+                <td><p>{{ title }}</p></td>
+                <td><p>{{ quantity }}</p></td>
+                <td><p>{{ price }}</p></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    </div>
+      
+      {% endif %}
+  
+  </div>
+  
+ 
 
 
   {% else %}
