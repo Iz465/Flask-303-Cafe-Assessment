@@ -13,12 +13,12 @@ class SignUpForm(FlaskForm):
     gender = RadioField('gender',choices=[('M','Male'), ('F','Female'),('O','Other')])
     email = StringField('email',[InputRequired("Please enter an email address"), Email("wrong format")])
     password = PasswordField('password',[InputRequired("Password Required")])
-    submit = SubmitField('Send')
+    submit = SubmitField('CREATE')
 
 class Login(FlaskForm):
     email = StringField('email',[InputRequired("Please enter an email address"), Email("wrong format")])
     password = PasswordField('password',[InputRequired("Password Required")])
-    submit = SubmitField('Send')
+    submit = SubmitField('LOGIN')
 
 class AddProductForm(FlaskForm):
    product = StringField("Product:", [InputRequired("Please enter product")])

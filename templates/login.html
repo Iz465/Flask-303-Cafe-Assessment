@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="{{ url_for('static', filename='fontstyles.css') }}" rel="stylesheet">
+
         <link href="{{ url_for('static', filename='form.css') }}" rel="stylesheet">
     </head>
     <body>
@@ -19,14 +21,30 @@
                                 <img src="https://www.svgrepo.com/show/529052/lock-password.svg" alt="">
                                 {{ form.password(placeholder="Password") }}
                             </div>
-                            {{ form.submit }}
+                            <div class="submit">
+                                <a href="">Forgot Password?</a>
+                                <div class="login-button">
+                                    {{ form.submit }}
+                                </div>
+                            </div>
+                            
 
                         </div>
                     </form>
-                    <a href="{{ url_for('signup') }}">dont have an account? sign up</a>
                 </div>
                 <div class="col-2">
                     <img class="cover-img" src="{{ url_for('static', filename='images/pastries-img-1.avif') }}" alt="">
+                    <a href="" class="login selected">
+                        <div>
+                            <h2 class="inconsolata">Log In</h2>
+                        </div>
+                        
+                    </a>
+                    <a href="{{ url_for('signup') }}" class="signup">
+                        <div>
+                            <h2 class="inconsolata">Sign Up</h2>
+                        </div>
+                    </a>
 
                 </div>
                 
