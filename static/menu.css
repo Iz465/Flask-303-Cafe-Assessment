@@ -67,15 +67,17 @@ a.clickable-div{
     font-size:medium;
 }
 .menucontroler{
-    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
 }
 .sortForm{
     margin: 0%;
     height: 40px;
+    width: 20%;
 }
 #search{
+    width: 20%;
     height: 40px;
-    margin-left: auto;
 }
 select{
     margin: 0%;

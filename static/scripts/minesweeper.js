@@ -1,3 +1,10 @@
+/*
+This Javascript file is used to power
+the minesweeper page, any variables created in 
+global space are used to store data over an entire 
+game *session*
+*/
+
 let minefield = [];
 let checkedsquares =[];
 let totalflags = 0;
@@ -6,6 +13,7 @@ let gamestate = true;
 
 
 
+//randomly assign a bomb to a given cell
 function isbomb(){
     let rand = Math.random();
     if(rand < 0.1){
@@ -14,6 +22,8 @@ function isbomb(){
     }
     return false;
 }
+
+//fills a 10*10 grid with cells and adds eventlisteners to each cell
 function buildgridsquares(){
     const gridcontainer = document.getElementById("grid-cont");
     const grid_width = 10;
@@ -21,7 +31,7 @@ function buildgridsquares(){
     for(let y = 1; y <= grid_width; y++){
         for(let x = 1 ; x <= grid_height; x++){
             let cord = {X: x,Y:y};
-            cord.bomb = isbomb();
+            cord.bomb = isbomb(); //randomly decide if this cell will serve as a bomb
             cord.guide = 0;
             cord.uncovered = false;
             cord.flagged = false;
@@ -30,7 +40,7 @@ function buildgridsquares(){
             gridsquare.className = `grid-square covered`;
             gridsquare.addEventListener('click',function(){uncoversquare(cord)});
 
-            gridsquare.addEventListener('contextmenu', function(ev) {
+            gridsquare.addEventListener('contextmenu', function(ev) { // enables right-click to serve the purpouse of planting a flag
                 ev.preventDefault();
                 flag(cord);
                 return false;
@@ -44,6 +54,8 @@ function buildgridsquares(){
     let bombdisplay = document.getElementById('display-totalbombs')
     bombdisplay.textContent = `Total Bombs: ${totalbombs}`
 }
+
+//admin function to reveal all bombs
 function showbombs(){
     for(let i = 0; i < minefield.length; i++){
         if (minefield[i].bomb == true){
@@ -52,6 +64,8 @@ function showbombs(){
         }
     }
 }
+
+//sets the number of bombs in proximity of all cells
 function setguides(){
     listofguides =[]
     for (let i = 0 ; i < minefield.length; i++){
@@ -65,6 +79,8 @@ function setguides(){
     }
 
 }
+
+//admin function to display all cells with guide > 0
 function showguides(){
     listofguides =[]
     for (let i = 0 ; i < minefield.length; i++){
@@ -77,6 +93,8 @@ function showguides(){
     }
 
 }
+
+//display a guide when it is clicked
 function showguide(c){
     idName = `(${c.X},${c.Y})`;
     square = document.getElementById(idName);
@@ -85,12 +103,15 @@ function showguide(c){
     let guidecolors = ['blue','green','red','darkblue','darkred','cyan','black','darkgray'];
     square.style.color = guidecolors[c.guide-1];
 }
+
+//display a bomb when it is clicked
 function showbomb(c){
     idName = `(${c.X},${c.Y})`;
     square = document.getElementById(idName);
     square.textContent = "X";
 }
 
+//returns number of bombs adjacent to given cell
 function countadjacent(cord){
     if(cord.bomb == true){
         return 0
@@ -107,6 +128,8 @@ function countadjacent(cord){
     return counter
 
 }
+
+//returns cell given a coordinate
 function finder(cord){
     let adjacent = minefield.find(o => o.X === cord[0] && o.Y === cord[1]);
     if(adjacent == undefined){
@@ -115,13 +138,15 @@ function finder(cord){
     return adjacent
 
 }
+
+//admin function to print minefield coordinates in console.log
 function printfield(){
     for (let i = 0; i < minefield.length; i++){
         console.log(minefield[i]);
     }
 }
 
-
+//display uncovered cell uppon clicking it
 function uncoversquare(cord){
     if(gamestate == false){
         console.log('game already ended')
@@ -152,6 +177,8 @@ function uncoversquare(cord){
     }
 
 }
+
+//checks to see if the game has been won or lost
 function checkgamestate(){
     let temp_bombs = []
     let temp_unchecked = []
@@ -179,6 +206,9 @@ function checkgamestate(){
     }
     return true
 }
+
+
+//add or remove a flag from a cell uppon right-clicking it
 function flag(cord){
     idName = `(${cord.X},${cord.Y})`;
     square = document.getElementById(idName);
@@ -210,6 +240,7 @@ function flag(cord){
     updateflaginfo()
 }
 
+//returns surrounding cells of a given coordinate: n,s,e,w,ne,nw,se,sw
 function getsurounding(cord){
     let n = [cord.X,cord.Y - 1];
     let s = [cord.X,cord.Y + 1];
@@ -226,7 +257,7 @@ function getsurounding(cord){
 }
 
 
-
+//clears surounding empty spaces if an empty space is uncovered
 function clearempty(cord){
     console.clear()
     //check 8 surounding cords
@@ -253,6 +284,8 @@ function clearempty(cord){
     }
 
 }
+
+//returns unchecked empty cells in area
 function getuncheckedempty(uncheckedsquares){
     filter = []
 
@@ -287,11 +320,13 @@ function getuncheckedempty(uncheckedsquares){
 
 }
 
+//uppdates the total flags remaining
 function updateflaginfo(){
     let flaginfo = document.getElementById('display-totalflags')
     flaginfo.textContent = `Total Flags: ${totalflags}`;
 }
 
+//End minesweeper game
 function endgame(){
     console.log("GAME ENDED")
     let overlay = document.getElementById('overlay')
@@ -299,6 +334,7 @@ function endgame(){
     gamestate = false
 }
 
+//restart minesweeper game
 function restart(){
     const list = document.getElementsByClassName("grid-square");
 
@@ -316,6 +352,8 @@ function restart(){
 
 }
 
+
+//start minesweeper game
 function startgame(){
     minefield = [];
     checkedsquares =[];
@@ -335,4 +373,5 @@ function startgame(){
     }
     
 }
+
 startgame()

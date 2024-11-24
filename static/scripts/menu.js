@@ -1,6 +1,8 @@
 let global
 let reward_global =[]
 let employee_status = false
+
+//parce reward data from json
 function reward(data_reward){
     data = parcedata(data_reward)
     reward_global = data
@@ -8,10 +10,14 @@ function reward(data_reward){
         console.log("REWARD",reward_global[i])
     }
 }
+
+//check if user is an employee
 function isemployee(check){
     console.log("isempl",check)
     employee_status = check
 }
+
+//returns reward ammount as percentage
 function applyreward(){
     let reward_amount = null //counted in percentage, here is 0% reward; default
     if(reward_global.includes(1)){
@@ -31,6 +37,7 @@ function applyreward(){
     return reward_amount
 }
 
+// assigns data to global variable, then populates menu
 function initload(data_unparced){
     console.log(reward_global)
     
@@ -39,10 +46,12 @@ function initload(data_unparced){
     populatemenu(global)
 }
 
+//deletes then re-populates all menuitems in html
 function reload(){
     populatemenu(global)
 }
 
+//apply sorting to data then populates all data to html
 function populatemenu(data){
     clear_data();
     
@@ -58,6 +67,7 @@ function populatemenu(data){
     }
 }
 
+//gets input from search bar then reloads data passed though filter
 function search(){
     var searchfield = document.getElementById("search");
     let search_str = searchfield.value;
@@ -69,6 +79,7 @@ function search(){
     populatemenu(filtered_data)
 }
 
+//compares data from search with each dataitem; returning only items which passed through the filter
 function filter(str,data){
     filtered = []
     for(let i = 0; i < data.length; i++ ){
@@ -81,6 +92,8 @@ function filter(str,data){
     return filtered
 }
 
+
+//gets imput from sortdropdownselector then sorts it based on its numerical value; sorts by popular, name, and price
 function sortdata(data){
     var selector = document.getElementById("sortdropdownselector");
     let sort_id = selector.selectedIndex
@@ -96,6 +109,7 @@ function sortdata(data){
     }
 }
 
+//sorting by popular
 function sortbypopular(a,b){
     console.log("SORTING BY POPULARITY");
     const popularA = a.id;
@@ -110,7 +124,7 @@ function sortbypopular(a,b){
     return comparison;
 }
 
-
+//sorting by name
 function sortbyname(a,b){
     console.log("SORTING BY NAME");
 
@@ -126,6 +140,7 @@ function sortbyname(a,b){
     return comparison;
 }
 
+//sorting by price
 function sortbyprice(a,b){
     console.log("SORTING BY PRICE");
 
@@ -143,6 +158,7 @@ function sortbyprice(a,b){
 
 }
 
+//given item from database constructs an html object then returns it
 function createMenuItem(dataitem){
     active_reward = applyreward()
 
@@ -239,15 +255,17 @@ function createMenuItem(dataitem){
     return item_cont
 }
 
-
+//shorthand for create element
 function ce(elementname){
     return document.createElement(elementname);
 }
 
+//clear all data in html
 function clear_data(){
     document.getElementById('data').innerHTML = ""
 }
 
+//parce jsondata
 function parcedata(data){
     let parcedlist =[];
     for(let i = 0 ; i< data.length; i++){

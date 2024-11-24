@@ -6,7 +6,7 @@ import json
 from datetime import datetime, timedelta
 import sqlite_functions, more_functions
 
-from datahandler import MenuHandler, UsersHandler
+from datahandler import UsersHandler
 
 
 
