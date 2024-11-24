@@ -137,12 +137,7 @@
 
 
 <div class="specific_item_div" style="background-color: rgb(240, 238, 255); height: 16vh; width: 15vw; display: flex; flex-direction: column; justify-content: space-around; text-align: center;  margin-left: 25%; border-radius: 10px;">
-  <img src="{{item.img_url}}" style="height: 16vh; width: auto; position: absolute; border-radius: 10px;">
-    {% if employee_check %}
-        <p style="margin: 0;">Item: {{item.title}}</p> 
-        <p style="margin: 0;">Size: {{item.size}}. Quantity: {{item.quantity}}. Price: ${{ ( 50 * (item.price / 100 )) | round(2) }}</p>
-    {% else %}
-       
+  <img src="{{item.img_url}}" style="height: 16vh; width: auto; position: absolute; border-radius: 10px;">       
         <div style="text-align: right; margin-right: 10%;">
           <h3 class="specific_item_price" style="margin: 0; margin-top: -5%; margin-left: 20%; padding: 0; text-align: center;">${{item.price}}</h3> {% for coffee in check_coffee %} {% if coffee[1] == item.title %} <h3 class="original_price" style="display: none;">{{coffee[4]}}</h3> {% endif %} {% endfor %}
          <div style="text-align: center; margin-left: 20%;">
@@ -151,7 +146,7 @@
           <p class="specific_item_quantity" style="margin-right: 0.5%;">{{item.quantity}}</p>
           <img src="{{ url_for('static', filename='images/minus.svg') }}" id="item_minus"  onclick="product_quantity(this.parentElement.parentElement, -1)"  style="cursor: pointer; height: 15%; margin-right: -0.5%;">
         </div>
-    {% endif %}
+
 </div>
 </div>
 <br><br>
