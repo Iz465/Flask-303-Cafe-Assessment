@@ -6,26 +6,6 @@ class Handler():
     def __init__(self):
         self.sortingmethods = []
         self.tablevalues = []
-    def sorteddata(self,data, method_sort):
-        sorted_list = data
-        if method_sort == self.sortingmethods[0]:
-            sorted_list = sorted(data, key=itemgetter(self.tablevalues[0]))
-        elif method_sort == self.sortingmethods[1]:
-            sorted_list = sorted(data, key=itemgetter(self.tablevalues[1]))
-        return sorted_list
-    def searchdata(self,data, search_value):
-        datalist = []
-        for item in data:
-            if search_value.upper() in item[self.tablevalues[0]].upper():
-                print(item[self.tablevalues[0]])
-                datalist.append(item)
-        return datalist
-
-class MenuHandler(Handler):
-    def __init__(self) -> None:
-        super().__init__()
-        self.sortingmethods = ["name","price"]
-        self.tablevalues = ['title','price']
 
 class UsersHandler(Handler):
     def __init__(self) -> None:
