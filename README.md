@@ -1,6 +1,6 @@
-**Great Days Cafe**
+# **Great Days Cafe**
 
-Modules Installed:
+### **Modules Installed:**
 
 flask
 
@@ -21,3 +21,18 @@ WTForms
 virtualenv
 
 jinja2
+
+### **Example Login Credentials:**
+
+**Normal user:**
+
+email: sus@gmail.com
+
+password: Pass
+
+**Employee user:**
+
+email: employeetest@gmail.com
+
+password: employee100
+
